@@ -1,1 +1,1 @@
-testing collaborative editing with Gabi
+testing collaborative editing with Gavi
