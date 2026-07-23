@@ -1,0 +1,41 @@
+# === Node / React dependencies (IGNORE EVERYWHERE) ===
+node_modules/
+**/node_modules/
+
+# === Build outputs (IGNORE EVERYWHERE) ===
+dist/
+build/
+out/
+coverage/
+**/dist/
+**/build/
+**/out/
+**/coverage/
+
+# === Env / secrets ===
+.env
+.env.*
+!.env.example
+
+# === Logs ===
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+.npm-cache/
+
+# === OS junk ===
+.DS_Store
+Thumbs.db
+
+# === Editor / IDE ===
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/AGENTS.md
+
+.idea/
+*.swp
+
+# === Superpowers skills local artifacts ===
+artifacts/
