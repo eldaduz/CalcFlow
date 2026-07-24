@@ -22,7 +22,7 @@ The AI must verify all live information against Jira and GitHub before acting.
 - Release: v0.1.0 — Basic Calculator MVP
 - Current phase: Foundation
 - Goal: Establish the repository, development standards, unit testing foundation, and project documentation
-- Overall status: CFL-2 Application Foundation is committed and awaits deployment/human smoke confirmation
+- Overall status: CFL-9 and CFL-10 have passed feature-level QA; CFL-11 remains in progress pending Gavi's separate-machine validation. CFL-2 completion confirmation remains deferred.
 
 ## Current Approved Sequence
 
@@ -45,11 +45,11 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Owner: Eldad
 - Work mode: Direct on `main` under the approved Foundation exception
 - Branch: No Feature branch; current branch is `main`
-- Current Work Items: CFL-15, CFL-34, CFL-35, and CFL-36 are committed and ready for deployment
-- Jira status: CFL-2 and all completed child items are Ready for Deployment
+- Current Work Items: CFL-49 — Validate Environment Reproduction with Gavi is pending under CFL-11
+- Jira status: CFL-2 remains Ready for Deployment; CFL-9 and CFL-10 are ready for deployment after QA; CFL-11 is In Progress
 - Pull Request: None; not required for the approved Foundation Features
-- Blockers: None currently recorded
-- Next required action: Confirm deployment applicability and human smoke testing for CFL-2 before marking it Done
+- Blockers: CFL-49 requires Gavi to validate a clean install and the documented commands on his own machine
+- Next required action: Obtain Gavi's CFL-49 validation, then complete CFL-11 QA
 
 ### Gavi
 
@@ -66,10 +66,10 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 ### Eldad
 
 - Next Feature: CFL-2 — Application Foundation
-- Current Feature: CFL-2 is committed and awaiting completion confirmation; CFL-9 is the next Foundation Feature after that confirmation
+- Current Feature: CFL-11 — Foundation Documentation and Verification
 - Work mode: Direct on `main`; no Feature branch or pull request
-- Required action: Confirm deployment applicability and human smoke testing for CFL-2 before selecting CFL-9
-- Human approval required: Yes, before marking CFL-2 Done or beginning the next Feature
+- Required action: Await Gavi's CFL-49 environment-reproduction evidence; CFL-9 and CFL-10 await separate Feature-level commit approval
+- Human approval required: Received to implement CFL-9, CFL-10, and CFL-11; required again before each Feature-level commit
 
 ### Gavi
 
@@ -93,8 +93,9 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Package state: package.json and package-lock.json are aligned at version 0.1.0, and installed direct dependencies resolve successfully
 - Configuration findings: duplicate Prettier configuration was removed, ESLint now covers future `src` files, and README formatting passes
 - Application state: React 19 and Vite 8 are initialized with a minimal `src/main.jsx` entry point and `src/App.jsx` application shell; `dev`, `build`, and `preview` scripts exist
-- Unit tests: Not yet configured
-- QA: CFL-15/CFL-34 combined QA passed
+- Development standards: Node `^20.19.0 || >=22.12.0` and npm `>=10.0.0` are documented; clean package installation, lint, and formatting checks pass
+- Unit tests: Vitest 4 with jsdom is configured; the App shell has one meaningful render test and both test and coverage commands pass
+- QA: CFL-9/CFL-10 feature-level QA passed: clean `npm ci`, dependency check, entry verification, lint, formatting, test, coverage, build, diff, and dev/preview HTTP 200 smoke checks
 - Regression: CFL-15/CFL-34 combined regression passed
 - Deployment: Not configured
 - Smoke test: Local development server returned HTTP 200
@@ -124,6 +125,7 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Foundation work still requires human approvals, verification, testing, Jira updates, SECOND_BRAIN.md updates, evidence, deployment checks, and smoke testing where relevant
 - Temporary CFL-15/CFL-34 exception: CFL-15 remained In Progress while CFL-34 proceeded; their QA and regression were combined, and neither entered Code Review
 - Commit policy: The CFL-15/CFL-34 installment was committed in `96d8ff5` and CFL-2 completion in `b28120c`; each remaining Foundation Feature will use one direct-main commit after its Feature-level verification and approval
+- Sequencing decision: Human approval allows CFL-9, CFL-10, and CFL-11 to proceed while CFL-2 remains Ready for Deployment; CFL-2's final confirmation is deferred
 - Verified Foundation changes are committed to `main` only after explicit human approval
 - Every non-Foundation Feature uses one Git branch and one primary pull request unless another exception is explicitly approved
 - One human owner per Feature
@@ -175,5 +177,5 @@ Update this file when:
 - Work completed: Foundation policy corrections were committed to `main` in `746906c`; CFL-15/CFL-34 were committed in `96d8ff5`; CFL-2 completion was committed in `b28120c`
 - Files or areas changed: CFL-35 structure documentation, Feature-level QA evidence, and SECOND_BRAIN.md
 - Verification performed: clean `npm ci`, `npm ls --depth=0`, entry-point verification, `npm run lint`, `npm run format:check`, `npm run build`, local development and preview HTTP 200 smoke tests, and `git diff --check` passed
-- Current risks: The supported Node/npm baseline is undocumented, and test coverage and CI are not configured
-- Next safe action: Confirm whether CFL-2 deployment is applicable and provide human smoke confirmation; then select CFL-9
+- Current risks: CFL-49 remains an external human validation gate; CI and deployment are not configured
+- Next safe action: Gavi completes CFL-49 on his machine. Separately, request approval for the CFL-9 and CFL-10 Feature-level direct-main commits.
