@@ -22,7 +22,7 @@ The AI must verify all live information against Jira and GitHub before acting.
 - Release: v0.1.0 — Basic Calculator MVP
 - Current phase: Foundation
 - Goal: Establish the repository, development standards, unit testing foundation, and project documentation
-- Overall status: CFL-9 and CFL-10 have passed feature-level QA; CFL-11 remains in progress pending Gavi's separate-machine validation. CFL-2 completion confirmation remains deferred.
+- Overall status: CFL-9 and CFL-10 have passed feature-level QA; CFL-11 remains in progress with the CFL-48 lockfile repair verified locally; CFL-49 still needs Gavi's separate-machine validation. CFL-2 completion confirmation remains deferred.
 
 ## Current Approved Sequence
 
@@ -41,15 +41,15 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 ### Eldad
 
-- Jira Feature: CFL-2 — Application Foundation
+- Jira Feature: CFL-11 — Foundation Documentation and Verification
 - Owner: Eldad
 - Work mode: Direct on `main` under the approved Foundation exception
 - Branch: No Feature branch; current branch is `main`
-- Current Work Items: CFL-49 — Validate Environment Reproduction with Gavi is pending under CFL-11
-- Jira status: CFL-2 remains Ready for Deployment; CFL-9 and CFL-10 are ready for deployment after QA; CFL-11 is In Progress
+- Current Work Items: CFL-48 — Verify Clean Installation and Quality Commands is active under CFL-11; CFL-49 — Validate Environment Reproduction with Gavi remains pending
+- Jira status: CFL-2 remains Ready for Deployment; CFL-9 and CFL-10 are ready for deployment after QA; CFL-11 is In Progress; CFL-48 is In Progress; CFL-49 is Selected for Development
 - Pull Request: None; not required for the approved Foundation Features
 - Blockers: CFL-49 requires Gavi to validate a clean install and the documented commands on his own machine
-- Next required action: Obtain Gavi's CFL-49 validation, then complete CFL-11 QA
+- Next required action: Make the verified package repair available for Gavi's CFL-49 validation without violating the one-commit-per-Feature rule, then complete approved CFL-11 QA and request approval for the single Feature-level commit
 
 ### Gavi
 
@@ -65,10 +65,10 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 ### Eldad
 
-- Next Feature: CFL-2 — Application Foundation
+- Next Feature: None selected while CFL-11 remains active
 - Current Feature: CFL-11 — Foundation Documentation and Verification
 - Work mode: Direct on `main`; no Feature branch or pull request
-- Required action: Await Gavi's CFL-49 environment-reproduction evidence; CFL-9 and CFL-10 await separate Feature-level commit approval
+- Required action: Resolve how Gavi receives the verified package repair, complete CFL-49, then run approved CFL-11 QA before the single Feature-level commit
 - Human approval required: Received to implement CFL-9, CFL-10, and CFL-11; required again before each Feature-level commit
 
 ### Gavi
@@ -90,10 +90,12 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - CFL-15/CFL-34 installment: Committed directly to `main` in `96d8ff5`
 - CFL-2 Feature QA: Passed for CFL-15, CFL-34, CFL-35, and CFL-36
 - CFL-2 Feature commit: Committed directly to `main` in `b28120c`
+- CFL-48 repair: `package.json` now records npm 11.16.0 as the package manager, and npm 11.16.0 regenerated `package-lock.json` with the missing cross-platform `@emnapi/core` and `@emnapi/runtime` records
+- CFL-48 verification: Node 24.18.0/npm 11.16.0 clean `npm ci`, Linux/WASM dry-run installs, dependency validation, lint, formatting, tests, coverage, build, and development/preview HTTP 200 smoke checks passed
 - Package state: package.json and package-lock.json are aligned at version 0.1.0, and installed direct dependencies resolve successfully
 - Configuration findings: duplicate Prettier configuration was removed, ESLint now covers future `src` files, and README formatting passes
 - Application state: React 19 and Vite 8 are initialized with a minimal `src/main.jsx` entry point and `src/App.jsx` application shell; `dev`, `build`, and `preview` scripts exist
-- Development standards: Node `^20.19.0 || >=22.12.0` and npm `>=10.0.0` are documented; clean package installation, lint, and formatting checks pass
+- Development standards: Node `^20.19.0 || >=22.12.0` and npm `11.16.0` are documented; npm 11.16.0 is recorded as the lockfile-generating package manager; clean package installation, lint, and formatting checks pass
 - Unit tests: Vitest 4 with jsdom is configured; the App shell has one meaningful render test and both test and coverage commands pass
 - QA: CFL-9/CFL-10 feature-level QA passed: clean `npm ci`, dependency check, entry verification, lint, formatting, test, coverage, build, diff, and dev/preview HTTP 200 smoke checks
 - Regression: CFL-15/CFL-34 combined regression passed
@@ -174,8 +176,8 @@ Update this file when:
 
 ## Latest Handoff
 
-- Work completed: Foundation policy corrections were committed to `main` in `746906c`; CFL-15/CFL-34 were committed in `96d8ff5`; CFL-2 completion was committed in `b28120c`
-- Files or areas changed: CFL-35 structure documentation, Feature-level QA evidence, and SECOND_BRAIN.md
-- Verification performed: clean `npm ci`, `npm ls --depth=0`, entry-point verification, `npm run lint`, `npm run format:check`, `npm run build`, local development and preview HTTP 200 smoke tests, and `git diff --check` passed
+- Work completed: CFL-48 package manifest and cross-platform lockfile repair is implemented and verified but not yet committed
+- Files or areas changed: package.json, package-lock.json, README.md, and SECOND_BRAIN.md
+- Verification performed: Node 24.18.0/npm 11.16.0 clean `npm ci`; Linux and WASM install dry runs; `npm ls --depth=0`; lint; formatting; tests; coverage; build; local development and preview HTTP 200 smoke tests; lockfile idempotency; and Git diff checks passed
 - Current risks: CFL-49 remains an external human validation gate; CI and deployment are not configured
-- Next safe action: Gavi completes CFL-49 on his machine. Separately, request approval for the CFL-9 and CFL-10 Feature-level direct-main commits.
+- Next safe action: Decide how Gavi receives the staged package repair without an early Feature commit, complete CFL-49, run approved CFL-11 QA/regression, and then request approval for the single direct-main Feature commit
