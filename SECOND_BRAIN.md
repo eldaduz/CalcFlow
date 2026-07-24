@@ -46,10 +46,10 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Work mode: Direct on `main` under the approved Foundation exception
 - Branch: No Feature branch; current branch is `main`
 - Current Work Item: CFL-15 — Review Existing Repository Configuration
-- Jira status: Selected for Development
+- Jira status: In Progress
 - Pull Request: None; not required for the approved Foundation Features
 - Blockers: None currently recorded
-- Next required action: Begin CFL-15 after human approval
+- Next required action: Complete the read-only CFL-15 repository review and present findings for approval
 
 ### Gavi
 
@@ -68,7 +68,7 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Next Feature: CFL-2 — Application Foundation
 - First Work Item: CFL-15 — Review Existing Repository Configuration
 - Work mode: Direct on `main`; no Feature branch or pull request
-- Required action: Begin CFL-15 after approval and move only CFL-15 to In Progress
+- Required action: Review the existing repository configuration and present findings before applying configuration changes
 - Human approval required: Yes
 
 ### Gavi
@@ -86,6 +86,10 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - SECOND_BRAIN.md: Added to main
 - Foundation delivery policy: Approved exception uses `main` directly for CFL-2, CFL-9, CFL-10, and CFL-11
 - Jira backlog: Product Epics, Features, Stories, Tasks, releases, ownership split, and foundation sequence prepared
+- CFL-15 review: Read-only repository configuration review completed; corrective changes await human approval
+- Package state: package.json and package-lock.json are consistent, and installed direct dependencies resolve successfully
+- Configuration findings: duplicate Prettier files conflict, ESLint targets an unrelated path and does not configure future `src` files, and README formatting currently fails
+- Application state: React and Vite are not initialized; no application source, development, build, preview, test, or coverage commands exist
 - Unit tests: Not yet configured
 - QA: Not started
 - Regression: Not started
@@ -104,6 +108,8 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 ## Open Bugs and Blockers
 
 - No active product Bug is currently recorded here
+- CFL-15 configuration findings require an approved corrective-change decision before they are modified
+- An untracked `cspell.json` appeared during the review and has not been modified or included in the approved work
 - Gavi's Jira and GitHub access must be confirmed before his first Feature begins
 - Open design decisions remain in design.md and must not be assumed by an AI
 
@@ -162,8 +168,8 @@ Update this file when:
 
 ## Latest Handoff
 
-- Work completed: Foundation release and direct-on-main exception were approved; documentation corrections were prepared
-- Files or areas changed: PROJECT_PLAN.md and SECOND_BRAIN.md in the working tree
-- Verification performed: Jira CFL-2 and CFL-15, GitHub branches and pull requests, local `main`, and the required project documents were checked
-- Current risks: The repository implementation state has not yet been reviewed; unit testing, CI, and deployment are not yet configured
-- Next safe action: After human approval of these documentation changes, commit them to `main`, then begin CFL-15 and move only CFL-15 to In Progress
+- Work completed: Foundation policy corrections were committed to `main` in commit `746906c`; CFL-15 moved to In Progress
+- Files or areas changed: PROJECT_PLAN.md and SECOND_BRAIN.md were committed; SECOND_BRAIN.md now records the CFL-15 start milestone
+- Verification performed: Jira confirms only CFL-15 is In Progress; CFL-2 and all other children remain Selected for Development
+- Current risks: Prettier configuration conflicts, ESLint currently provides no rules for future `src` files, format checking fails on README.md, React/Vite are not initialized, and the supported Node/npm baseline is undocumented
+- Next safe action: Present CFL-15 findings and minimal recommendations, then wait for human approval before changing configuration
