@@ -25,7 +25,7 @@ export default defineConfig([
   },
 
   {
-    files: ['src/**/*.{js,jsx}'],
+    files: ['src/**/*.{js,jsx}', 'tests/**/*.{js,jsx}'],
     plugins: {
       react,
       'react-hooks': reactHooks,
