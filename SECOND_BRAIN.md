@@ -22,7 +22,7 @@ The AI must verify all live information against Jira and GitHub before acting.
 - Release: v0.1.0 — Basic Calculator MVP
 - Current phase: Foundation
 - Goal: Establish the repository, development standards, unit testing foundation, and project documentation
-- Overall status: CFL-9 and CFL-10 have passed feature-level QA; CFL-11 remains in progress with the CFL-48 lockfile repair verified locally; CFL-49 still needs Gavi's separate-machine validation. CFL-2 completion confirmation remains deferred.
+- Overall status: CFL-9 and CFL-10 have passed feature-level QA; CFL-11 remains in progress pending Gavi's separate-machine CFL-49 validation. CFL-48's package repair was committed to `main` in `72c5a81`. CFL-2 completion confirmation remains deferred. A temporary, approved sequencing exception allows CFL-16 preparation for v0.2.0 while this external Foundation validation is pending.
 
 ## Current Approved Sequence
 
@@ -45,11 +45,22 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Owner: Eldad
 - Work mode: Direct on `main` under the approved Foundation exception
 - Branch: No Feature branch; current branch is `main`
-- Current Work Items: CFL-48 — Verify Clean Installation and Quality Commands is active under CFL-11; CFL-49 — Validate Environment Reproduction with Gavi remains pending
+- Current Work Items: CFL-48 — Verify Clean Installation and Quality Commands is committed in `72c5a81`; CFL-49 — Validate Environment Reproduction with Gavi remains pending
 - Jira status: CFL-2 remains Ready for Deployment; CFL-9 and CFL-10 are ready for deployment after QA; CFL-11 is In Progress; CFL-48 is In Progress; CFL-49 is Selected for Development
 - Pull Request: None; not required for the approved Foundation Features
 - Blockers: CFL-49 requires Gavi to validate a clean install and the documented commands on his own machine
-- Next required action: Make the verified package repair available for Gavi's CFL-49 validation without violating the one-commit-per-Feature rule, then complete approved CFL-11 QA and request approval for the single Feature-level commit
+- Next required action: Gavi synchronizes `main` at `72c5a81` and completes CFL-49; CFL-11 remains In Progress until that evidence is available
+
+### Eldad — approved parallel preparation
+
+- Jira Feature: CFL-16 — Expression Evaluation
+- Owner: Eldad
+- Jira status: Selected for Development
+- Work mode: Standard non-Foundation workflow; preparation only under the approved temporary sequencing exception
+- Branch and Pull Request: None yet; create `feature/CFL-16-expression-evaluation` only after the planning approval
+- First Work Item: CFL-52 — Select and Document the Expression Parser Approach (Backlog)
+- Dependencies: CFL-14 is independent and may proceed in parallel; CFL-16 blocks CFL-17, CFL-18, CFL-20, and CFL-21
+- Next required action: Switch to GPT-5.6 Sol / High for the parser-planning decision, present the plan, and obtain human approval before creating a branch or moving CFL-52 to In Progress
 
 ### Gavi
 
@@ -65,11 +76,11 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 ### Eldad
 
-- Next Feature: None selected while CFL-11 remains active
-- Current Feature: CFL-11 — Foundation Documentation and Verification
-- Work mode: Direct on `main`; no Feature branch or pull request
-- Required action: Resolve how Gavi receives the verified package repair, complete CFL-49, then run approved CFL-11 QA before the single Feature-level commit
-- Human approval required: Received to implement CFL-9, CFL-10, and CFL-11; required again before each Feature-level commit
+- Current Foundation Feature: CFL-11 — Foundation Documentation and Verification (In Progress; blocked on Gavi's CFL-49 validation)
+- Selected parallel Feature: CFL-16 — Expression Evaluation (Selected for Development; no implementation started)
+- Work mode: CFL-11 stays direct on `main`; CFL-16 uses the standard branch-and-PR workflow after planning approval
+- Required action: For CFL-16, obtain Sol / High parser-planning approval before any branch or work-item transition; for CFL-11, wait for Gavi's CFL-49 evidence
+- Human approval required: Received for this temporary sequencing arrangement; required again for CFL-16 planning, implementation, branch creation, and all Feature-level commits
 
 ### Gavi
 
@@ -91,6 +102,7 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - CFL-2 Feature QA: Passed for CFL-15, CFL-34, CFL-35, and CFL-36
 - CFL-2 Feature commit: Committed directly to `main` in `b28120c`
 - CFL-48 repair: `package.json` now records npm 11.16.0 as the package manager, and npm 11.16.0 regenerated `package-lock.json` with the missing cross-platform `@emnapi/core` and `@emnapi/runtime` records
+- CFL-48 commit: Package repair was committed and pushed to `main` in `72c5a81` (`chore: update package manager to npm 11.16.0 and regenerate lockfile for cross-platform dependency consistency`)
 - CFL-48 verification: Node 24.18.0/npm 11.16.0 clean `npm ci`, Linux/WASM dry-run installs, dependency validation, lint, formatting, tests, coverage, build, and development/preview HTTP 200 smoke checks passed
 - Package state: package.json and package-lock.json are aligned at version 0.1.0, and installed direct dependencies resolve successfully
 - Configuration findings: duplicate Prettier configuration was removed, ESLint now covers future `src` files, and README formatting passes
@@ -128,6 +140,8 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Temporary CFL-15/CFL-34 exception: CFL-15 remained In Progress while CFL-34 proceeded; their QA and regression were combined, and neither entered Code Review
 - Commit policy: The CFL-15/CFL-34 installment was committed in `96d8ff5` and CFL-2 completion in `b28120c`; each remaining Foundation Feature will use one direct-main commit after its Feature-level verification and approval
 - Sequencing decision: Human approval allows CFL-9, CFL-10, and CFL-11 to proceed while CFL-2 remains Ready for Deployment; CFL-2's final confirmation is deferred
+- Temporary sequencing/WIP exception: While CFL-11 waits for Gavi's CFL-49 external validation, Eldad may prepare CFL-16 for v0.2.0. This does not start implementation or waive the standard branch, pull request, peer-review, QA, deployment, or smoke-test requirements.
+- Jira dependency correction: CFL-14 and CFL-16 are independent and may proceed in parallel. CFL-16 blocks CFL-17, CFL-18, CFL-20, and CFL-21.
 - Verified Foundation changes are committed to `main` only after explicit human approval
 - Every non-Foundation Feature uses one Git branch and one primary pull request unless another exception is explicitly approved
 - One human owner per Feature
@@ -176,8 +190,8 @@ Update this file when:
 
 ## Latest Handoff
 
-- Work completed: CFL-48 package manifest and cross-platform lockfile repair is implemented and verified but not yet committed
-- Files or areas changed: package.json, package-lock.json, README.md, and SECOND_BRAIN.md
+- Work completed: CFL-48 package manifest and cross-platform lockfile repair is implemented, verified, committed, and pushed in `72c5a81`
+- Files or areas changed: package.json and package-lock.json (commit `72c5a81`); this handoff records the approved CFL-16 sequencing and dependency correction
 - Verification performed: Node 24.18.0/npm 11.16.0 clean `npm ci`; Linux and WASM install dry runs; `npm ls --depth=0`; lint; formatting; tests; coverage; build; local development and preview HTTP 200 smoke tests; lockfile idempotency; and Git diff checks passed
 - Current risks: CFL-49 remains an external human validation gate; CI and deployment are not configured
-- Next safe action: Decide how Gavi receives the staged package repair without an early Feature commit, complete CFL-49, run approved CFL-11 QA/regression, and then request approval for the single direct-main Feature commit
+- Next safe action: Gavi pulls `main` at `72c5a81` and performs CFL-49; separately, switch to GPT-5.6 Sol / High to plan CFL-16 and obtain approval before creating `feature/CFL-16-expression-evaluation` or beginning CFL-52
