@@ -2,6 +2,19 @@
 
 CalcFlow is a React and Vite calculator application.
 
+## Prerequisites
+
+- Node.js `^20.19.0 || >=22.12.0`
+- npm `>=10.0.0` (the project package manager)
+
+## Installation
+
+Install the locked dependency set from a clean checkout:
+
+```sh
+npm ci
+```
+
 ## Structure
 
 - `src/main.jsx` starts the React application.
