@@ -81,7 +81,7 @@ Official references checked on 2026-07-24:
 - [Codex rate card](https://help.openai.com/en/articles/20001106-codex-rate-card)
 - [GPT-5.6 availability and positioning](https://help.openai.com/en/articles/20001354-gpt-56-in-chatgpt)
 
-The current Codex picker and official rate card override this section if availability or rates change. Any permanent change to the matrix requires human approval and an update to this file.
+Recheck the current Codex picker and official rate card before changing this matrix. Availability or rates override this section. Any permanent matrix change requires human approval and an update to this file.
 
 ## 5. Manual Configuration Change Procedure
 
@@ -122,33 +122,33 @@ When the current configuration is not known, ask the user to state what is curre
 
 For Gavi-owned Features, Codex will normally use the **Review / QA** configuration when Eldad reviews the PR or assists with QA. If Eldad temporarily performs implementation, use the **Default work** configuration.
 
-| Jira Feature | Owner | Default work | Review / QA | Escalation condition and configuration |
-|---|---|---|---|---|
-| CFL-2 — Application Foundation | Eldad | GPT-5.6 Luna / Medium | GPT-5.4 Mini / Medium | Toolchain conflict, broken package graph, or unexplained build failure → Terra / High |
-| CFL-9 — Development Standards | Eldad | GPT-5.4 Mini / Medium | GPT-5.4 Mini / Medium | Complex ESLint or module-resolution conflict → Terra / Medium |
-| CFL-10 — Unit Testing Foundation | Eldad | GPT-5.6 Luna / Medium | GPT-5.6 Luna / Medium | Test-environment or coverage behavior remains unexplained → Terra / High |
-| CFL-11 — Foundation Documentation and Verification | Eldad | GPT-5.4 Mini / Medium | GPT-5.4 Mini / Medium | Reproducibility failure across environments → Terra / Medium |
-| CFL-12 — Basic Arithmetic | Gavi | GPT-5.6 Luna / Medium | GPT-5.6 Luna / Medium | Precision, rounding, or numeric edge cases remain unresolved → Terra / High |
-| CFL-13 — Basic Calculator Interaction | Gavi | GPT-5.6 Luna / Medium | GPT-5.6 Terra / Medium | State transitions interact incorrectly across multiple actions → Terra / High |
-| CFL-14 — Expression Input and Editing | Gavi | GPT-5.6 Terra / Medium | GPT-5.6 Terra / High | Expression-state design becomes coupled to parser architecture → Sol / High |
-| CFL-16 — Expression Evaluation | Eldad | Planning and parser decision: GPT-5.6 Sol / High. Implementation and UT: GPT-5.6 Terra / High | GPT-5.6 Sol / High | Nested precedence, parser safety, or cross-Feature failures remain unresolved → Sol / Extra High after approval |
-| CFL-17 — Powers and Roots | Eldad | GPT-5.6 Terra / Medium | GPT-5.6 Terra / Medium | Domain, precision, or nth-root edge cases remain unresolved → Terra / High |
-| CFL-18 — Logarithmic Functions | Gavi | GPT-5.6 Luna / Medium | GPT-5.6 Terra / Medium | Domain or parser-integration failures → Terra / High |
-| CFL-19 — Trigonometric Functions | Eldad | GPT-5.6 Terra / High | GPT-5.6 Terra / High | Undefined-angle tolerance or DEG/RAD cross-feature failure → Sol / High |
-| CFL-20 — Angle Mode | Eldad | GPT-5.6 Luna / Medium | GPT-5.6 Terra / Medium | Mode state is inconsistent across trigonometric functions → Terra / High |
-| CFL-21 — Additional Scientific Operations | Gavi | GPT-5.6 Terra / Medium | GPT-5.6 Terra / Medium | Percentage semantics, factorial limits, or expression integration remain ambiguous → Terra / High |
-| CFL-22 — Calculation History | Gavi | GPT-5.6 Luna / Medium | GPT-5.6 Luna / Medium | Reuse creates state corruption or parser coupling → Terra / Medium |
-| CFL-23 — Memory Operations | Gavi | GPT-5.4 Mini / Medium | GPT-5.6 Luna / Medium | Memory state is corrupted by errors or expression transitions → Terra / Medium |
-| CFL-24 — Keyboard Support | Gavi | GPT-5.6 Terra / Medium | GPT-5.6 Terra / High | Global shortcut, focus, or event-order bugs are difficult to isolate → Sol / High |
-| CFL-25 — Responsive Interface | Gavi | GPT-5.6 Luna / Medium | GPT-5.6 Luna / Medium | Cross-breakpoint layout conflict or persistent overflow → Terra / Medium |
-| CFL-26 — Accessibility | Gavi | GPT-5.6 Terra / High | GPT-5.6 Terra / High | Conflicting semantics, focus behavior, or live-region behavior → Sol / High |
-| CFL-27 — Application Logging | Eldad | GPT-5.6 Terra / Medium | GPT-5.6 Terra / Medium | Logging affects calculator behavior or unexpected failures are not isolated → Terra / High |
-| CFL-28 — Log Export and Submission Evidence | Gavi | GPT-5.4 Mini / Medium | GPT-5.6 Luna / Medium | Browser download, JSON integrity, or final evidence is unreliable → Terra / Medium |
-| CFL-29 — Continuous Integration | Eldad | GPT-5.6 Terra / Medium | GPT-5.6 Terra / Medium | CI differs from local results or coverage enforcement is unstable → Terra / High |
-| CFL-30 — Vercel Deployment | Gavi | GPT-5.4 Mini / Medium | GPT-5.6 Luna / Medium | Preview/production mismatch or unexplained deployment failure → Terra / High |
-| CFL-31 — Release Management | Eldad | GPT-5.4 Mini / Medium | GPT-5.4 Mini / Medium | Tag, release, deployment, and Jira states conflict → Terra / Medium |
-| CFL-32 — Dependency Governance | Eldad | GPT-5.6 Terra / Medium | GPT-5.6 Terra / High | Security, maintenance, bundle, or dependency-tree risk is unclear → Sol / High |
-| CFL-33 — License Reporting | Gavi | GPT-5.4 Mini / Medium | GPT-5.6 Luna / Medium | Unknown, custom, or incompatible licenses require investigation → Terra / High |
+| Jira Feature                                       | Owner | Default work                                                                                  | Review / QA            | Escalation condition and configuration                                                                          |
+| -------------------------------------------------- | ----- | --------------------------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------- |
+| CFL-2 — Application Foundation                     | Eldad | GPT-5.6 Luna / Medium                                                                         | GPT-5.4 Mini / Medium  | Toolchain conflict, broken package graph, or unexplained build failure → Terra / High                           |
+| CFL-9 — Development Standards                      | Eldad | GPT-5.4 Mini / Medium                                                                         | GPT-5.4 Mini / Medium  | Complex ESLint or module-resolution conflict → Terra / Medium                                                   |
+| CFL-10 — Unit Testing Foundation                   | Eldad | GPT-5.6 Luna / Medium                                                                         | GPT-5.6 Luna / Medium  | Test-environment or coverage behavior remains unexplained → Terra / High                                        |
+| CFL-11 — Foundation Documentation and Verification | Eldad | GPT-5.4 Mini / Medium                                                                         | GPT-5.4 Mini / Medium  | Reproducibility failure across environments → Terra / Medium                                                    |
+| CFL-12 — Basic Arithmetic                          | Gavi  | GPT-5.6 Luna / Medium                                                                         | GPT-5.6 Luna / Medium  | Precision, rounding, or numeric edge cases remain unresolved → Terra / High                                     |
+| CFL-13 — Basic Calculator Interaction              | Gavi  | GPT-5.6 Luna / Medium                                                                         | GPT-5.6 Terra / Medium | State transitions interact incorrectly across multiple actions → Terra / High                                   |
+| CFL-14 — Expression Input and Editing              | Gavi  | GPT-5.6 Terra / Medium                                                                        | GPT-5.6 Terra / High   | Expression-state design becomes coupled to parser architecture → Sol / High                                     |
+| CFL-16 — Expression Evaluation                     | Eldad | Planning and parser decision: GPT-5.6 Sol / High. Implementation and UT: GPT-5.6 Terra / High | GPT-5.6 Sol / High     | Nested precedence, parser safety, or cross-Feature failures remain unresolved → Sol / Extra High after approval |
+| CFL-17 — Powers and Roots                          | Eldad | GPT-5.6 Terra / Medium                                                                        | GPT-5.6 Terra / Medium | Domain, precision, or nth-root edge cases remain unresolved → Terra / High                                      |
+| CFL-18 — Logarithmic Functions                     | Gavi  | GPT-5.6 Luna / Medium                                                                         | GPT-5.6 Terra / Medium | Domain or parser-integration failures → Terra / High                                                            |
+| CFL-19 — Trigonometric Functions                   | Eldad | GPT-5.6 Terra / High                                                                          | GPT-5.6 Terra / High   | Undefined-angle tolerance or DEG/RAD cross-feature failure → Sol / High                                         |
+| CFL-20 — Angle Mode                                | Eldad | GPT-5.6 Luna / Medium                                                                         | GPT-5.6 Terra / Medium | Mode state is inconsistent across trigonometric functions → Terra / High                                        |
+| CFL-21 — Additional Scientific Operations          | Gavi  | GPT-5.6 Terra / Medium                                                                        | GPT-5.6 Terra / Medium | Percentage semantics, factorial limits, or expression integration remain ambiguous → Terra / High               |
+| CFL-22 — Calculation History                       | Gavi  | GPT-5.6 Luna / Medium                                                                         | GPT-5.6 Luna / Medium  | Reuse creates state corruption or parser coupling → Terra / Medium                                              |
+| CFL-23 — Memory Operations                         | Gavi  | GPT-5.4 Mini / Medium                                                                         | GPT-5.6 Luna / Medium  | Memory state is corrupted by errors or expression transitions → Terra / Medium                                  |
+| CFL-24 — Keyboard Support                          | Gavi  | GPT-5.6 Terra / Medium                                                                        | GPT-5.6 Terra / High   | Global shortcut, focus, or event-order bugs are difficult to isolate → Sol / High                               |
+| CFL-25 — Responsive Interface                      | Gavi  | GPT-5.6 Luna / Medium                                                                         | GPT-5.6 Luna / Medium  | Cross-breakpoint layout conflict or persistent overflow → Terra / Medium                                        |
+| CFL-26 — Accessibility                             | Gavi  | GPT-5.6 Terra / High                                                                          | GPT-5.6 Terra / High   | Conflicting semantics, focus behavior, or live-region behavior → Sol / High                                     |
+| CFL-27 — Application Logging                       | Eldad | GPT-5.6 Terra / Medium                                                                        | GPT-5.6 Terra / Medium | Logging affects calculator behavior or unexpected failures are not isolated → Terra / High                      |
+| CFL-28 — Log Export and Submission Evidence        | Gavi  | GPT-5.4 Mini / Medium                                                                         | GPT-5.6 Luna / Medium  | Browser download, JSON integrity, or final evidence is unreliable → Terra / Medium                              |
+| CFL-29 — Continuous Integration                    | Eldad | GPT-5.6 Terra / Medium                                                                        | GPT-5.6 Terra / Medium | CI differs from local results or coverage enforcement is unstable → Terra / High                                |
+| CFL-30 — Vercel Deployment                         | Gavi  | GPT-5.4 Mini / Medium                                                                         | GPT-5.6 Luna / Medium  | Preview/production mismatch or unexplained deployment failure → Terra / High                                    |
+| CFL-31 — Release Management                        | Eldad | GPT-5.4 Mini / Medium                                                                         | GPT-5.4 Mini / Medium  | Tag, release, deployment, and Jira states conflict → Terra / Medium                                             |
+| CFL-32 — Dependency Governance                     | Eldad | GPT-5.6 Terra / Medium                                                                        | GPT-5.6 Terra / High   | Security, maintenance, bundle, or dependency-tree risk is unclear → Sol / High                                  |
+| CFL-33 — License Reporting                         | Gavi  | GPT-5.4 Mini / Medium                                                                         | GPT-5.6 Luna / Medium  | Unknown, custom, or incompatible licenses require investigation → Terra / High                                  |
 
 ## 7. Bug-Fixing Rule
 

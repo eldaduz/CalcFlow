@@ -51,13 +51,15 @@ The project uses the following sources of truth:
 - **design.md**: approved UI and UX rules
 - **PROJECT_PLAN.md**: permanent process, scope, workflow, ownership, quality, and delivery rules
 - **SECOND_BRAIN.md**: current operational state, active work, latest handoff, blockers, and next safe action
+- **CODEX_MODEL_GUIDE.md**: approved Codex model, reasoning, escalation, and manual-switch rules
 
 When information conflicts:
 
 1. Jira and GitHub define the live state.
 2. PROJECT_PLAN.md defines the approved permanent rules.
-3. SECOND_BRAIN.md provides the latest operational summary.
-4. The AI must stop and report the conflict rather than guessing.
+3. CODEX_MODEL_GUIDE.md defines Codex configuration rules.
+4. SECOND_BRAIN.md provides the latest operational summary.
+5. The AI must stop and report the conflict rather than guessing.
 
 ## 4. Team and AI Usage
 
