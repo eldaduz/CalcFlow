@@ -112,7 +112,7 @@ The Feature owner is responsible for:
 - documentation required by the Feature;
 - keeping Jira and SECOND_BRAIN.md accurate through the AI agent.
 
-The other team member is the primary human reviewer.
+The other team member is the primary human reviewer for non-Foundation Features. The four approved Foundation Features use explicit human approval instead of formal peer review.
 
 ## 6. Approved Feature Ownership
 
@@ -148,14 +148,16 @@ The agreed workload is approximately balanced: 76 Story Points for Eldad and 75 
 
 ## 7. Release Sequence
 
-### Foundation
+### v0.1.0 — Basic Calculator MVP
+
+Foundation:
 
 1. Application Foundation
 2. Development Standards
 3. Unit Testing Foundation
 4. Foundation Documentation and Verification
 
-### v0.1.0 — Basic Calculator MVP
+MVP functionality:
 
 - Basic Arithmetic
 - Basic Calculator Interaction
@@ -212,30 +214,64 @@ The approved first sequence is:
 
 The AI must not choose freely among these four Features. It must follow this sequence and the Jira dependency links.
 
+### Approved Foundation delivery exception
+
+The following four Foundation Features are an approved exception to the standard Feature branch and pull-request workflow:
+
+- CFL-2 — Application Foundation
+- CFL-9 — Development Standards
+- CFL-10 — Unit Testing Foundation
+- CFL-11 — Foundation Documentation and Verification
+
+For these four Features only:
+
+- work is performed directly on `main`;
+- no Feature branch is created;
+- no pull request is opened;
+- no reviewer is requested;
+- the formal Code Review stage is skipped;
+- human approval remains mandatory before implementation or any material change;
+- relevant verification, lint, tests, coverage, build, and clean-install checks remain mandatory;
+- Jira and SECOND_BRAIN.md updates remain mandatory;
+- findings, decisions, and verification evidence must be documented;
+- changes may be committed to `main` only after the approved work is complete, verified, and approved for commit.
+
+The Foundation Jira flow is:
+
+```text
+Selected for Development
+→ In Progress
+→ QA
+→ Ready for Deployment
+→ Done
+```
+
+All non-Foundation Features follow the standard branch, pull-request, reviewer, Code Review, QA, deployment, and smoke-test workflow.
+
 ## 9. Git Branch Strategy
 
 ### Branch rule
 
-Use one Git branch per Jira Feature.
+Except for the four named Foundation Features in Section 8, use one Git branch per Jira Feature.
 
 Examples:
 
 ```text
-feature/CFL-2-application-foundation
 feature/CFL-12-basic-arithmetic
 feature/CFL-16-expression-evaluation
 ```
 
 ### Rules
 
-- A Feature branch is created from an updated main branch.
-- All Stories and Tasks under the Feature are developed in that branch.
+- CFL-2, CFL-9, CFL-10, and CFL-11 are performed directly on `main` under the approved Foundation exception.
+- For every non-Foundation Feature, a Feature branch is created from an updated main branch.
+- All Stories and Tasks under a non-Foundation Feature are developed in that branch.
 - One human owns the Feature branch.
 - Eldad and Gavi must not develop concurrently on the same Feature branch.
 - Unrelated work must not be added to the branch.
 - One pull request is normally opened at the end of the Feature.
 - An intermediate pull request is allowed only when the Feature is unusually large, risky, or needs early integration.
-- Direct commits to main are not allowed except for an exceptional administrative correction explicitly approved by both team members.
+- Direct commits to main are not allowed except for the approved Foundation exception or an exceptional administrative correction explicitly approved by both team members.
 
 ### Pull request naming
 
@@ -266,17 +302,48 @@ Backlog
 → Done
 ```
 
+For CFL-2, CFL-9, CFL-10, and CFL-11 only, the approved workflow is:
+
+```text
+Selected for Development
+→ In Progress
+→ QA
+→ Ready for Deployment
+→ Done
+```
+
+These Foundation Features do not enter Code Review because they do not use a branch, pull request, or reviewer. All other Features use the standard workflow.
+
 ### Status meaning
 
 - **Backlog**: not yet approved for near-term work
 - **Selected for Development**: approved as upcoming work
 - **In Progress**: active implementation is taking place
-- **Code Review**: implementation and unit tests are complete, and the pull request awaits review
-- **QA**: the pull request is approved, and the Feature is undergoing QA and regression testing
-- **Ready for Deployment**: QA and regression passed, relevant bugs are resolved, and the Feature is ready to merge and deploy
-- **Done**: merged to main, deployed, and smoke-tested successfully
+- **Code Review**: for non-Foundation Features, implementation and unit tests are complete, and the pull request awaits review
+- **QA**: the pull request is approved for a non-Foundation Feature, or approved Foundation work is ready for QA and regression testing
+- **Ready for Deployment**: QA and regression passed, relevant bugs are resolved, and the Feature is ready to merge or commit and deploy
+- **Done**: merged or committed to main, deployed, and smoke-tested successfully
 
 ## 11. Complete Feature Delivery Cycle
+
+The standard branch and pull-request steps in this section apply to all non-Foundation Features. CFL-2, CFL-9, CFL-10, and CFL-11 use the approved Foundation delivery cycle below.
+
+### Foundation delivery cycle
+
+For each approved Foundation Feature, the AI must:
+
+1. Verify Jira, GitHub, ownership, release, dependencies, acceptance criteria, and the current `main` state.
+2. Present a short development plan and receive human approval.
+3. Move only the child item whose work is actually beginning to In Progress.
+4. Perform the approved work directly on `main` without creating a branch or pull request.
+5. Preserve valid configuration, limit changes to the approved scope, and update Jira and SECOND_BRAIN.md at required milestones.
+6. Run all relevant verification, lint, tests, coverage, build, clean-install, and regression checks, documenting evidence and risks.
+7. Present a QA plan and receive human approval before moving the Feature and completed children directly from In Progress to QA.
+8. After QA and regression pass, move the Feature and completed children to Ready for Deployment and present the verification evidence.
+9. Commit directly to `main` only after the work is complete, verified, and explicitly approved for commit.
+10. Deploy and smoke-test when applicable, then move the Feature and completed children to Done only after human confirmation.
+
+No branch, pull request, reviewer, or formal Code Review is required for these four Foundation Features. Human approvals, testing, evidence, Jira updates, SECOND_BRAIN.md updates, deployment checks, and smoke-test requirements still apply where relevant.
 
 ### Step 1 — Select the next Feature
 
@@ -372,7 +439,7 @@ QA must not begin until the Feature owner approves the plan.
 
 The AI performs or assists with the approved QA plan.
 
-Regression testing is mandatory for every Feature and must verify that previously completed calculator behaviour still works.
+Regression testing is mandatory for every Feature and must verify that previously completed calculator behavior still works.
 
 Typical verification includes:
 
@@ -430,7 +497,7 @@ Unit tests are part of implementation and are owned by the Feature owner.
 
 ### QA
 
-QA validates the complete Feature against acceptance criteria and real user behaviour.
+QA validates the complete Feature against acceptance criteria and real user behavior.
 
 ### Regression
 
@@ -462,12 +529,14 @@ Human approval is mandatory:
 1. before starting a new Feature;
 2. before implementation, after the AI presents the development plan;
 3. for scope, architecture, ownership, dependency, release, or workflow changes;
-4. during pull-request review by the other team member;
+4. during pull-request review by the other team member for non-Foundation Features;
 5. before QA, after the AI presents the QA plan;
 6. before merge and deployment, after the Ready for Deployment summary;
 7. before marking Done, by confirming the Production smoke test.
 
 The AI must stop at these points and must not infer approval.
+
+For the four Foundation Features, formal peer review is replaced by explicit human approval before material changes, before QA, before committing verified work to `main`, before deployment, and before marking Done.
 
 ## 14. WIP Rules
 
@@ -478,14 +547,15 @@ The AI must stop at these points and must not infer approval.
 
 ## 15. Second Brain Rules
 
-SECOND_BRAIN.md must exist in main so every new branch begins with the latest merged operational summary.
+SECOND_BRAIN.md must exist in main so every standard Feature branch begins with the latest merged operational summary and Foundation work performed directly on `main` has a current handoff.
 
 Git does not keep a file automatically synchronized across branches. Therefore:
 
 - every AI reads SECOND_BRAIN.md from the latest main state before starting;
 - Jira and GitHub are checked for live changes that may not yet be merged into the file;
-- the Feature owner updates SECOND_BRAIN.md inside the Feature branch at required milestones;
-- the update reaches main through the Feature pull request;
+- the Feature owner updates SECOND_BRAIN.md inside the Feature branch at required milestones for standard Features;
+- the update reaches main through the Feature pull request for standard Features;
+- for the four Foundation Features, the Feature owner updates SECOND_BRAIN.md directly on `main` at the same required milestones;
 - during parallel work, each AI updates only its own owner/Feature section where possible;
 - before continuing long-running work, the Feature branch must be synchronized with main;
 - merge conflicts in SECOND_BRAIN.md must be resolved using Jira and GitHub as the live truth;
@@ -508,7 +578,7 @@ Required update milestones:
 
 - Prefer simple and clear solutions.
 - Do not use eval.
-- Avoid AI-generated overengineering.
+- Avoid AI-generated over engineering.
 - Do not add abstractions without demonstrated need.
 - Both human team members must be able to understand and explain merged code.
 - Package choices must prioritize correctness, reliability, security, maintainability, and clarity.
@@ -600,12 +670,12 @@ A Feature is Done only when:
 
 - all approved child work items are complete;
 - implementation and unit tests are complete;
-- peer review is approved;
+- peer review is approved for non-Foundation Features;
 - CI checks pass;
 - QA and mandatory regression pass;
 - relevant Bugs are fixed and retested;
 - documentation is updated;
-- the pull request is merged to main;
+- the pull request is merged to main for non-Foundation Features, or the verified Foundation work is committed directly to `main` under the approved exception;
 - Vercel Production deployment succeeds;
 - Production smoke test is confirmed by a human;
 - Jira and SECOND_BRAIN.md are updated.

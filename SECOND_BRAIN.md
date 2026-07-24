@@ -19,7 +19,8 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 ## Current Release
 
-- Release: Foundation phase before v0.1.0
+- Release: v0.1.0 — Basic Calculator MVP
+- Current phase: Foundation
 - Goal: Establish the repository, development standards, unit testing foundation, and project documentation
 - Overall status: Ready to begin approved foundation work
 
@@ -41,12 +42,14 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 ### Eldad
 
 - Jira Feature: CFL-2 — Application Foundation
-- Branch: Not created yet
+- Owner: Eldad
+- Work mode: Direct on `main` under the approved Foundation exception
+- Branch: No Feature branch; current branch is `main`
 - Current Work Item: CFL-15 — Review Existing Repository Configuration
 - Jira status: Selected for Development
-- Pull Request: Not opened
+- Pull Request: None; not required for the approved Foundation Features
 - Blockers: None currently recorded
-- Next required action: Read the repository state and present a short development plan for approval
+- Next required action: Begin CFL-15 after human approval
 
 ### Gavi
 
@@ -64,7 +67,8 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 - Next Feature: CFL-2 — Application Foundation
 - First Work Item: CFL-15 — Review Existing Repository Configuration
-- Required action: Present a short development and verification plan before moving CFL-15 to In Progress
+- Work mode: Direct on `main`; no Feature branch or pull request
+- Required action: Begin CFL-15 after approval and move only CFL-15 to In Progress
 - Human approval required: Yes
 
 ### Gavi
@@ -80,6 +84,7 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - design.md: Present in main and defines the shared UI/UX source of truth
 - PROJECT_PLAN.md: Added to main
 - SECOND_BRAIN.md: Added to main
+- Foundation delivery policy: Approved exception uses `main` directly for CFL-2, CFL-9, CFL-10, and CFL-11
 - Jira backlog: Product Epics, Features, Stories, Tasks, releases, ownership split, and foundation sequence prepared
 - Unit tests: Not yet configured
 - QA: Not started
@@ -90,10 +95,10 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 ## Open Reviews
 
 - Pull Request: None
-- Feature: None
-- Owner: None
-- Reviewer: None
-- Review status: Not applicable
+- Feature: CFL-2 — Application Foundation
+- Owner: Eldad
+- Reviewer: Not required under the approved Foundation exception
+- Review status: Formal Code Review is not used for the four Foundation Features
 - CI status: Not configured
 
 ## Open Bugs and Blockers
@@ -104,10 +109,15 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 ## Approved Operating Decisions
 
-- One Git branch per Jira Feature
-- One primary pull request per Feature
+- Foundation belongs to v0.1.0 — Basic Calculator MVP
+- CFL-2, CFL-9, CFL-10, and CFL-11 are performed directly on `main`
+- The four Foundation Features do not use a Feature branch, pull request, reviewer, or formal Code Review stage
+- Foundation Jira flow is Selected for Development → In Progress → QA → Ready for Deployment → Done
+- Foundation work still requires human approvals, verification, testing, Jira updates, SECOND_BRAIN.md updates, evidence, deployment checks, and smoke testing where relevant
+- Verified Foundation changes are committed to `main` only after explicit human approval
+- Every non-Foundation Feature uses one Git branch and one primary pull request unless another exception is explicitly approved
 - One human owner per Feature
-- The other team member is the primary reviewer
+- The other team member is the primary reviewer for non-Foundation Features
 - AI agents may move Jira items between stages only according to PROJECT_PLAN.md
 - Human approval is mandatory at the defined control points
 - Mandatory regression testing is part of every QA cycle
@@ -129,6 +139,7 @@ Before acting, the AI must confirm:
 - Human owner is known
 - Current Feature is known
 - Current Work Item is known
+- Foundation or standard work mode is known
 - Jira ownership, release, status, dependencies, and acceptance criteria were checked
 - Current branch and pull-request state were checked
 - Required human approval was identified
@@ -151,8 +162,8 @@ Update this file when:
 
 ## Latest Handoff
 
-- Work completed: Approved project workflow and operating rules were consolidated into PROJECT_PLAN.md and this SECOND_BRAIN.md
-- Files or areas changed: PROJECT_PLAN.md, SECOND_BRAIN.md
-- Verification performed: Files created in the GitHub main branch
+- Work completed: Foundation release and direct-on-main exception were approved; documentation corrections were prepared
+- Files or areas changed: PROJECT_PLAN.md and SECOND_BRAIN.md in the working tree
+- Verification performed: Jira CFL-2 and CFL-15, GitHub branches and pull requests, local `main`, and the required project documents were checked
 - Current risks: The repository implementation state has not yet been reviewed; unit testing, CI, and deployment are not yet configured
-- Next safe action: Eldad's AI reads PROJECT_PLAN.md, SECOND_BRAIN.md, design.md, Jira CFL-2 and CFL-15, and the current repository configuration, then presents a short plan for CFL-15 before coding or changing Jira status
+- Next safe action: After human approval of these documentation changes, commit them to `main`, then begin CFL-15 and move only CFL-15 to In Progress
