@@ -22,7 +22,7 @@ The AI must verify all live information against Jira and GitHub before acting.
 - Release: v0.1.0 — Basic Calculator MVP
 - Current phase: Foundation
 - Goal: Establish the repository, development standards, unit testing foundation, and project documentation
-- Overall status: Ready to begin approved foundation work
+- Overall status: CFL-15 and CFL-34 passed combined QA and are approved for direct commit; CFL-2 continues as one Feature-level delivery
 
 ## Current Approved Sequence
 
@@ -45,11 +45,11 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Owner: Eldad
 - Work mode: Direct on `main` under the approved Foundation exception
 - Branch: No Feature branch; current branch is `main`
-- Current Work Item: CFL-15 — Review Existing Repository Configuration
-- Jira status: In Progress
+- Current Work Items: CFL-15 — Review Existing Repository Configuration (QA passed); CFL-34 — Initialize React with Vite in the Existing Repository (QA passed)
+- Jira status: CFL-15 Ready for Deployment; CFL-34 Ready for Deployment
 - Pull Request: None; not required for the approved Foundation Features
 - Blockers: None currently recorded
-- Next required action: Complete the read-only CFL-15 repository review and present findings for approval
+- Next required action: Commit the approved CFL-15/CFL-34 installment, then continue CFL-2 without interim commits
 
 ### Gavi
 
@@ -66,10 +66,10 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 ### Eldad
 
 - Next Feature: CFL-2 — Application Foundation
-- First Work Item: CFL-15 — Review Existing Repository Configuration
+- Current Work Items: CFL-15 and CFL-34
 - Work mode: Direct on `main`; no Feature branch or pull request
-- Required action: Review the existing repository configuration and present findings before applying configuration changes
-- Human approval required: Yes
+- Required action: Commit the approved CFL-15/CFL-34 installment, then continue CFL-2 without interim commits
+- Human approval required: Received for the CFL-15/CFL-34 commit; required again before the completed CFL-2 Feature commit
 
 ### Gavi
 
@@ -86,15 +86,15 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - SECOND_BRAIN.md: Added to main
 - Foundation delivery policy: Approved exception uses `main` directly for CFL-2, CFL-9, CFL-10, and CFL-11
 - Jira backlog: Product Epics, Features, Stories, Tasks, releases, ownership split, and foundation sequence prepared
-- CFL-15 review: Read-only repository configuration review completed; corrective changes await human approval
-- Package state: package.json and package-lock.json are consistent, and installed direct dependencies resolve successfully
-- Configuration findings: duplicate Prettier files conflict, ESLint targets an unrelated path and does not configure future `src` files, and README formatting currently fails
-- Application state: React and Vite are not initialized; no application source, development, build, preview, test, or coverage commands exist
+- CFL-15 review: Repository configuration review and approved corrective changes passed combined QA
+- Package state: package.json and package-lock.json are aligned at version 0.1.0, and installed direct dependencies resolve successfully
+- Configuration findings: duplicate Prettier configuration was removed, ESLint now covers future `src` files, and README formatting passes
+- Application state: React 19 and Vite 8 are initialized with a minimal `src/main.jsx` entry point and `src/App.jsx` application shell; `dev`, `build`, and `preview` scripts exist
 - Unit tests: Not yet configured
-- QA: Not started
-- Regression: Not started
+- QA: CFL-15/CFL-34 combined QA passed
+- Regression: CFL-15/CFL-34 combined regression passed
 - Deployment: Not configured
-- Smoke test: Not performed
+- Smoke test: Local development server returned HTTP 200
 
 ## Open Reviews
 
@@ -108,8 +108,7 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 ## Open Bugs and Blockers
 
 - No active product Bug is currently recorded here
-- CFL-15 configuration findings require an approved corrective-change decision before they are modified
-- An untracked `cspell.json` appeared during the review and has not been modified or included in the approved work
+- CFL-15 and CFL-34 passed combined QA and await explicit commit approval
 - Gavi's Jira and GitHub access must be confirmed before his first Feature begins
 - Open design decisions remain in design.md and must not be assumed by an AI
 
@@ -120,6 +119,8 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - The four Foundation Features do not use a Feature branch, pull request, reviewer, or formal Code Review stage
 - Foundation Jira flow is Selected for Development → In Progress → QA → Ready for Deployment → Done
 - Foundation work still requires human approvals, verification, testing, Jira updates, SECOND_BRAIN.md updates, evidence, deployment checks, and smoke testing where relevant
+- Temporary CFL-15/CFL-34 exception: CFL-15 remained In Progress while CFL-34 proceeded; their QA and regression were combined, and neither entered Code Review
+- Commit policy: The approved CFL-15/CFL-34 installment may be committed now; all remaining CFL-2 work is committed together only after the full Feature is complete, verified, and approved
 - Verified Foundation changes are committed to `main` only after explicit human approval
 - Every non-Foundation Feature uses one Git branch and one primary pull request unless another exception is explicitly approved
 - One human owner per Feature
@@ -168,8 +169,8 @@ Update this file when:
 
 ## Latest Handoff
 
-- Work completed: Foundation policy corrections were committed to `main` in commit `746906c`; CFL-15 moved to In Progress
-- Files or areas changed: PROJECT_PLAN.md and SECOND_BRAIN.md were committed; SECOND_BRAIN.md now records the CFL-15 start milestone
-- Verification performed: Jira confirms only CFL-15 is In Progress; CFL-2 and all other children remain Selected for Development
-- Current risks: Prettier configuration conflicts, ESLint currently provides no rules for future `src` files, format checking fails on README.md, React/Vite are not initialized, and the supported Node/npm baseline is undocumented
-- Next safe action: Present CFL-15 findings and minimal recommendations, then wait for human approval before changing configuration
+- Work completed: Foundation policy corrections were committed to `main` in commit `746906c`; CFL-15 configuration corrections and CFL-34 React/Vite initialization passed combined QA in the working tree
+- Files or areas changed: ESLint configuration, package metadata and lock metadata, README formatting, React/Vite entry files, an entry-point verification script, QA evidence, and SECOND_BRAIN.md
+- Verification performed: clean `npm ci`, `npm ls --depth=0`, entry-point verification, `npm run lint`, `npm run format:check`, `npm run build`, local development and preview HTTP 200 smoke tests, and `git diff --check` passed
+- Current risks: The supported Node/npm baseline is undocumented, and test coverage and CI are not configured
+- Next safe action: Commit the approved CFL-15/CFL-34 installment, then begin the next CFL-2 child item and retain all remaining Feature changes until the Feature-level commit approval
