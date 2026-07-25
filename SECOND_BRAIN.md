@@ -12,10 +12,10 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 ## Last Updated
 
-- Date: 2026-07-24
-- Updated by: Eldad / ChatGPT
-- Human owner: Eldad
-- AI used: ChatGPT
+- Date: 2026-07-25
+- Updated by: Gavi / Claude
+- Human owner: Gavi
+- AI used: Claude
 
 ## Current Release
 
@@ -45,11 +45,11 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Owner: Eldad
 - Work mode: Direct on `main` under the approved Foundation exception
 - Branch: No Feature branch; current branch is `main`
-- Current Work Items: CFL-48 — Verify Clean Installation and Quality Commands is committed in `72c5a81`; CFL-49 — Validate Environment Reproduction with Gavi remains pending
-- Jira status: CFL-2 remains Ready for Deployment; CFL-9 and CFL-10 are ready for deployment after QA; CFL-11 is In Progress; CFL-48 is In Progress; CFL-49 is Selected for Development
+- Current Work Items: CFL-48 — Verify Clean Installation and Quality Commands is committed in `72c5a81`; CFL-49 — Validate Environment Reproduction with Gavi is In Progress with validation evidence recorded (2026-07-25)
+- Jira status: CFL-2 remains Ready for Deployment; CFL-9 and CFL-10 are ready for deployment after QA; CFL-11 is In Progress; CFL-48 is In Progress; CFL-49 is In Progress, evidence attached, awaiting human approval to move to QA
 - Pull Request: None; not required for the approved Foundation Features
-- Blockers: CFL-49 requires Gavi to validate a clean install and the documented commands on his own machine
-- Next required action: Gavi synchronizes `main` at `72c5a81` and completes CFL-49; CFL-11 remains In Progress until that evidence is available
+- Blockers: None currently; CFL-49 evidence is recorded and needs human review/approval before QA
+- Next required action: Human owner reviews CFL-49 evidence and approves the move to QA; CFL-11 can then proceed toward Ready for Deployment
 
 ### Eldad — approved parallel preparation
 
@@ -64,13 +64,13 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 ### Gavi
 
-- Jira Feature: None active
-- Branch: None
-- Current Work Item: None
-- Jira status: No active work
-- Pull Request: None
-- Blockers: Foundation must progress before dependent development begins
-- Next required action: Confirm repository and tool access when requested
+- Jira Feature: CFL-11 — Foundation Documentation and Verification (supporting Eldad's Feature by completing its blocking child item)
+- Branch: None; direct on `main` at `4cbd443` under the approved Foundation exception
+- Current Work Item: CFL-49 — Validate Environment Reproduction with Gavi (moved to In Progress, evidence recorded, awaiting human approval to move to QA)
+- Jira status: CFL-49 In Progress with validation evidence comment attached
+- Pull Request: None; not required for the approved Foundation Features
+- Blockers: None currently; awaiting human approval to progress CFL-49 to QA
+- Next required action: Human approval to move CFL-49 (and CFL-11 once complete) to QA; then select Gavi's first own Feature (CFL-12 — Basic Arithmetic is next in the approved ownership/release sequence, still in Backlog)
 
 ## Next Approved Work
 
@@ -126,8 +126,10 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 ## Open Bugs and Blockers
 
 - No active product Bug is currently recorded here
-- CFL-2 awaits deployment/human smoke confirmation; CFL-49 requires Gavi to verify the later foundation setup in his own environment
-- Gavi's Jira and GitHub access must be confirmed before his first Feature begins
+- CFL-2 awaits deployment/human smoke confirmation
+- CFL-49 evidence recorded 2026-07-25; awaiting human approval to move to QA (not a functional Bug — see environment notes below)
+- Environment note: Gavi's machine has global Node/npm installed via the root-owned nodejs.org `.pkg` installer; global npm cannot be upgraded without sudo. Resolved for this project via Corepack shims in `~/.local/bin` (no root needed) rather than a global npm upgrade.
+- Environment note: on Gavi's machine, `npm run preview` / `npx vite preview` hangs and never binds to a port; running `node node_modules/vite/bin/vite.js preview` directly works correctly. Use the direct invocation for preview smoke checks on this machine.
 - Open design decisions remain in design.md and must not be assumed by an AI
 
 ## Approved Operating Decisions
@@ -190,8 +192,8 @@ Update this file when:
 
 ## Latest Handoff
 
-- Work completed: CFL-48 package manifest and cross-platform lockfile repair is implemented, verified, committed, and pushed in `72c5a81`
-- Files or areas changed: package.json and package-lock.json (commit `72c5a81`); this handoff records the approved CFL-16 sequencing and dependency correction
-- Verification performed: Node 24.18.0/npm 11.16.0 clean `npm ci`; Linux and WASM install dry runs; `npm ls --depth=0`; lint; formatting; tests; coverage; build; local development and preview HTTP 200 smoke tests; lockfile idempotency; and Git diff checks passed
-- Current risks: CFL-49 remains an external human validation gate; CI and deployment are not configured
-- Next safe action: Gavi pulls `main` at `72c5a81` and performs CFL-49; separately, switch to GPT-5.6 Sol / High to plan CFL-16 and obtain approval before creating `feature/CFL-16-expression-evaluation` or beginning CFL-52
+- Work completed: CFL-49 environment validation performed by Gavi on `main` at `4cbd443`; evidence recorded as a Jira comment on CFL-49 and CFL-49 moved to In Progress
+- Files or areas changed: None in the repository; working tree confirmed clean before and after validation (no commit made)
+- Verification performed: Node v24.15.0 (satisfies engines range) / npm 11.16.0 via Corepack (no sudo) clean `npm ci`; lint; format:check; test; coverage (100%); build; dev server HTTP 200; preview server HTTP 200 via direct vite binary invocation (npm/npx wrapper hangs on this machine — documented above)
+- Current risks: CI and deployment are not configured; CFL-49/CFL-11 need human approval to proceed to QA; the npm/npx preview-hang and root-owned global npm install are documented environment quirks, not resolved at the system level
+- Next safe action: Human owner reviews CFL-49 evidence and approves moving CFL-49 (and CFL-11 once its other items are complete) to QA; once Foundation reaches Ready for Deployment, Gavi's first Feature (CFL-12 — Basic Arithmetic) can be selected per the approved sequence
