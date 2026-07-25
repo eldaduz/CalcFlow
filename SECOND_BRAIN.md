@@ -64,13 +64,21 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 ### Gavi
 
-- Jira Feature: None active (CFL-49 support work is complete; CFL-11 itself remains owned by Eldad)
-- Branch: None
-- Current Work Item: None; CFL-49 — Validate Environment Reproduction with Gavi is complete and in QA
-- Jira status: No active work
-- Pull Request: None
-- Blockers: Foundation (CFL-11) must reach Ready for Deployment before Gavi's own Features begin
-- Next required action: Human owner selects Gavi's first Feature per the approved sequence (CFL-12 — Basic Arithmetic is next in ownership order and release v0.1.0, still in Backlog)
+- Jira Feature: CFL-12 — Basic Arithmetic (first of an approved run through CFL-13 and CFL-14)
+- Owner: Gavi
+- Work mode: Standard non-Foundation workflow (Feature branch per Feature); AI (Claude, in Cowork) implementing with Gavi's explicit authorization while Gavi is offline overnight
+- Current Work Item: CFL-12 — Basic Arithmetic, moving Backlog → Selected for Development → In Progress
+- Jira status: See live Jira for current state; this file updated at each milestone
+- Pull Request: None yet — Cowork sandbox has no GitHub network/API access (confirmed 2026-07-26: SSH port 22 and HTTPS 443 to github.com both blocked by sandbox allowlist), so branches are created and committed locally only; Gavi must push and open PRs himself
+- Blockers: None for CFL-12/13/14 specifically (see sequencing exception below); CFL-11 remains blocked on Eldad's own completion
+- Next required action: Gavi reviews local branches, pushes them, and opens PRs (commands recorded in Latest Handoff) when back online
+
+### Gavi — approved parallel sequencing exception (2026-07-26)
+
+- Decision: CFL-11 (Foundation Documentation and Verification) is owned by Eldad and remains In Progress. Rather than have the AI advance Eldad's Feature on Gavi's authorization alone (an ownership-boundary violation), Gavi explicitly approved letting his own Feature track (CFL-12 → CFL-13 → CFL-14) proceed in parallel overnight, mirroring the existing CFL-16 parallel-preparation exception already recorded in this document.
+- Scope: This exception covers planning, branch creation, implementation, and testing for CFL-12, CFL-13, and CFL-14 only. It does not authorize any AI agent to change CFL-11, CFL-48, or any other Eldad-owned work item.
+- Standard branch, PR, peer-review, QA, and deployment requirements are not waived — only the sequencing/timing relative to CFL-11 is adjusted.
+- Approved by: Gavi (human owner for CFL-12/13/14), 2026-07-26, overnight/offline session
 
 ## Next Approved Work
 
