@@ -67,12 +67,12 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Jira Feature: CFL-12 — Basic Arithmetic (first of an approved run through CFL-13 and CFL-14)
 - Owner: Gavi
 - Work mode: Standard non-Foundation workflow (Feature branch per Feature)
-- Current Work Item: CFL-12 — Basic Arithmetic, moved Backlog → Selected for Development → In Progress → Code Review → **merged** → **QA**
-- Jira status: QA (synced from Code Review after confirming the merge on GitHub). Not advanced further without a presented/approved QA plan — see comment on the Jira issue.
-- Pull Request: **PR #1 merged** — `feature/CFL-12-basic-arithmetic` → `main`, merge commit `428de91`, merged 2026-07-26 06:31 UTC.
-- PR #1 review history: Eldad requested changes. Addressed in commit `0320094` — removed the calculation-layer rounding in `roundResult()` (renamed `assertFiniteResult()`) that could overflow otherwise-valid finite results (e.g. `divide(Number.MAX_VALUE, 1)`) or silently truncate valid precision (e.g. `1/3`); the module now returns the raw JS arithmetic result and only guards against genuine overflow, explicitly deferring display rounding/formatting to CFL-13/CFL-14. Full real pipeline (`npm ci`/lint/format/test/coverage/build) was run against the branch tip and reported on the PR before Eldad approved and it was merged.
-- Blockers: None. CFL-11 (Eldad's Foundation Feature) reached Done in Jira before this merged.
-- Next required action: Gavi to direct CFL-12's QA plan and remaining lifecycle (Ready for Deployment/Done are gated on a production smoke test, which isn't available yet since deployment isn't configured — same open gap as CFL-2).
+- Current Work Item: CFL-12 — Basic Arithmetic, moved Backlog → Selected for Development → In Progress → Code Review → merged → QA → **Ready for Deployment**
+- Jira status: Ready for Deployment. Done is not reachable yet — it requires a production smoke test, and deployment isn't configured for this project yet (same open gap as CFL-2).
+- Pull Request: **PR #1 merged** — `feature/CFL-12-basic-arithmetic` → `main`, merge commit `428de91`, merged 2026-07-26 06:31 UTC, after Eldad's review comments were addressed in commit `0320094` (removed calculation-layer rounding that could overflow otherwise-valid finite results or silently truncate precision; `arithmetic.js` now returns the raw JS result and only guards genuine overflow, deferring display rounding to CFL-13/CFL-14).
+- QA (2026-07-26, on `main` post-merge, evidence on the Jira issue): acceptance criteria, edge cases (overflow, large-finite-stays-finite, unrounded precision), and negative tests independently re-verified by direct execution, not just re-running existing tests. Regression: 22/22 tests passing on `main`, 100% coverage, clean lint/format/build. Integration sanity check: CFL-13's branch (which consumes `arithmetic.js` directly) reconfirmed fully green against this exact `main` tip. No defects found, no Bug filed.
+- Blockers: None. CFL-11 (Eldad's Foundation Feature) reached Done in Jira before CFL-12 merged.
+- Next required action: none for CFL-12 itself until deployment exists; see CFL-13 below for the active work.
 
 ### Gavi — approved parallel sequencing exception (2026-07-26)
 
@@ -109,6 +109,10 @@ Resolves the two judgment calls CFL-13 flagged to Eldad (see above). Eldad repli
 
 - **`0` button double width — approved as double-width.** This matches the existing keypad diagram (design.md line ~93) and the permissive note at line ~108, and matches what CFL-13 already implemented. Action still pending: when design.md is next safely editable (i.e. after CFL-12/13 land, per Gavi's instruction to avoid touching it while in-flight work depends on it), remove item 4 from "Open Design Decisions" — no other text changes needed, since the diagram/description already assume double-width.
 - **Keyboard support — confirmed as a requirement, no design.md change needed.** design.md's "Keyboard Support" section was already written as a required MVP capability, not a judgment call — CFL-13 simply deferred _when_ it ships, not _whether_ it's required. Checked Jira and confirmed there is no gap: Feature CFL-24 "Keyboard Support" already exists in Backlog (Epic CFL-5, owned by Gavi) with stories CFL-69 (core keyboard controls) and CFL-70 (scientific shortcuts/focus safety); CFL-51 (parentheses/expression keyboard entry) sits under CFL-14, whose own acceptance criteria already state "Keyboard expression input is supported at the level required by this release." Nothing new needs to be created.
+- Current Feature: CFL-13 — Basic Calculator Interaction — implementation and unit tests complete, PR #2 open (https://github.com/eldaduz/CalcFlow/pull/2), Jira in Code Review, **already mid-review**: Eldad left a non-blocking comment (2026-07-26 07:04 UTC) questioning whether the `prop-types` dependency is needed at all, suggesting it and the `react/prop-types` ESLint rule could both be dropped for a small internal JS app like this (with static types as the better long-term answer if CalcFlow adopts TypeScript later) — explicitly framed as "not a request for changes," asking for Gavi's preference. Full detail and verification evidence recorded on the `feature/CFL-13-basic-calculator-interaction` branch's SECOND_BRAIN.md (will land on `main` when PR #2 merges).
+- Next required action: Gavi decides on the `prop-types`/lint-rule question and replies to Eldad on PR #2; Eldad's formal review (approve/changes) is still pending. CFL-14 planning was intentionally paused pending CFL-12's PR (now resolved — merged and QA'd); can resume once CFL-13 clears review.
+- Required action: Wait until the Feature is explicitly selected
+- Human approval required: Yes
 
 ## Latest Verified Progress
 
