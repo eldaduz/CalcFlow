@@ -66,12 +66,12 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 - Jira Feature: CFL-12 — Basic Arithmetic (first of an approved run through CFL-13 and CFL-14)
 - Owner: Gavi
-- Work mode: Standard non-Foundation workflow (Feature branch per Feature); AI (Claude, in Cowork) implementing with Gavi's explicit authorization while Gavi is offline overnight
-- Current Work Item: CFL-12 — Basic Arithmetic, moving Backlog → Selected for Development → In Progress
-- Jira status: See live Jira for current state; this file updated at each milestone
-- Pull Request: None yet — Cowork sandbox has no GitHub network/API access (confirmed 2026-07-26: SSH port 22 and HTTPS 443 to github.com both blocked by sandbox allowlist), so branches are created and committed locally only; Gavi must push and open PRs himself
-- Blockers: None for CFL-12/13/14 specifically (see sequencing exception below); CFL-11 remains blocked on Eldad's own completion
-- Next required action: Gavi reviews local branches, pushes them, and opens PRs (commands recorded in Latest Handoff) when back online
+- Work mode: Standard non-Foundation workflow (Feature branch per Feature)
+- Current Work Item: CFL-12 — Basic Arithmetic, moved Backlog → Selected for Development → In Progress → Code Review
+- Jira status: CFL-12 is in Code Review (moved 2026-07-26 08:08 local time, per Jira comment)
+- Pull Request: **PR #1 opened** — `feature/CFL-12-basic-arithmetic` → `main`, head `4906f28`, opened by Gavi (via VS Code, once back online with real GitHub access), `eldaduz` requested as reviewer. Open, mergeable, no reviews submitted yet, no CI checks configured yet. (Supersedes the earlier note in this section claiming no PR existed — that reflected the overnight sandbox session only, before Gavi came back online and pushed/opened it himself.)
+- Blockers: None for CFL-12 itself; awaiting Eldad's review. CFL-11 (Eldad's Foundation Feature) has since reached Done in Jira, so the parallel-sequencing exception below is no longer strictly required to justify CFL-12/13/14, though it remains the approved authorization on record.
+- Next required action: Eldad reviews PR #1; meanwhile CFL-13 proceeds per the approved parallel-sequencing exception, branching off `feature/CFL-12-basic-arithmetic` (not yet-unmerged `main`) since it depends on `src/lib/arithmetic.js`, to be rebased onto `main` once PR #1 merges
 
 ### Gavi — approved parallel sequencing exception (2026-07-26)
 
