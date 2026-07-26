@@ -23,9 +23,15 @@ export const initialState = {
   error: null,
 };
 
+// CFL-12's arithmetic.js deliberately returns raw, unrounded JS results
+// (e.g. 0.1 + 0.2 === 0.30000000000000004) and leaves display rounding to
+// the UI layer. `toPrecision` (unlike scaling by 10**n) can never turn an
+// already-finite result into Infinity, so it can't reintroduce the
+// overflow bug CFL-12's review fixed.
+const DISPLAY_SIGNIFICANT_DIGITS = 12;
+
 function formatOperand(value) {
-  // Keeps trailing zeros/decimal points out of the operand history text.
-  return String(value);
+  return String(Number(value.toPrecision(DISPLAY_SIGNIFICANT_DIGITS)));
 }
 
 function inputDigit(state, digit) {

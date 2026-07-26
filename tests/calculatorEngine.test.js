@@ -64,6 +64,31 @@ test('chaining operators continues the calculation without pressing =', () => {
   expect(state.currentInput).toBe('9');
 });
 
+test('displays a clean result instead of raw IEEE-754 floating point noise', () => {
+  // arithmetic.js (CFL-12) intentionally returns the raw JS result here
+  // (0.1 + 0.2 === 0.30000000000000004); CFL-13 is responsible for
+  // rounding it for display.
+  const state = dispatchAll([digit('0'), decimal(), digit('1'), operator('+'), digit('0')]);
+  const withSecondOperand = calculatorReducer(state, decimal());
+  const final = calculatorReducer(calculatorReducer(withSecondOperand, digit('2')), equals());
+  expect(final.currentInput).toBe('0.3');
+});
+
+test('a legitimately large finite result displays without becoming Infinity', () => {
+  // Regression guard for the exact bug class Eldad's CFL-12 review caught:
+  // display rounding must never turn a valid finite result into Infinity.
+  const pending = {
+    ...initialState,
+    previousOperand: Number.MAX_VALUE,
+    operator: '/',
+    currentInput: '1',
+  };
+  const state = calculatorReducer(pending, equals());
+  expect(state.error).toBeNull();
+  expect(state.currentInput).not.toBe('Infinity');
+  expect(Number.isFinite(Number(state.currentInput))).toBe(true);
+});
+
 test('changing the operator before entering the next operand replaces it', () => {
   const state = dispatchAll([digit('8'), operator('+'), operator('-'), digit('3'), equals()]);
   expect(state.currentInput).toBe('5');
