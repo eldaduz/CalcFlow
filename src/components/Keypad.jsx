@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-
 const OPERATOR_LABELS = {
   '/': { symbol: '÷', ariaLabel: 'Divide' },
   '*': { symbol: '×', ariaLabel: 'Multiply' },
@@ -22,16 +20,6 @@ function OperatorButton({ operator, activeOperator, onOperator }) {
     </button>
   );
 }
-
-OperatorButton.propTypes = {
-  operator: PropTypes.oneOf(['+', '-', '*', '/']).isRequired,
-  activeOperator: PropTypes.string,
-  onOperator: PropTypes.func.isRequired,
-};
-
-OperatorButton.defaultProps = {
-  activeOperator: null,
-};
 
 export default function Keypad({
   activeOperator,
@@ -123,18 +111,3 @@ export default function Keypad({
     </div>
   );
 }
-
-Keypad.propTypes = {
-  activeOperator: PropTypes.string,
-  onDigit: PropTypes.func.isRequired,
-  onDecimal: PropTypes.func.isRequired,
-  onOperator: PropTypes.func.isRequired,
-  onEquals: PropTypes.func.isRequired,
-  onClear: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onToggleSign: PropTypes.func.isRequired,
-};
-
-Keypad.defaultProps = {
-  activeOperator: null,
-};

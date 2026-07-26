@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-
 const OPERATOR_SYMBOLS = {
   '+': '+',
   '-': '−',
@@ -29,19 +27,3 @@ export default function Display({ currentInput, previousOperand, operator, error
     </div>
   );
 }
-
-Display.propTypes = {
-  currentInput: PropTypes.string.isRequired,
-  previousOperand: PropTypes.number,
-  operator: PropTypes.string,
-  error: PropTypes.shape({
-    message: PropTypes.string.isRequired,
-    code: PropTypes.string.isRequired,
-  }),
-};
-
-Display.defaultProps = {
-  previousOperand: null,
-  operator: null,
-  error: null,
-};
