@@ -10,6 +10,8 @@ Every AI agent must read this file before planning, coding, changing Jira, openi
 
 The AI must verify all live information against Jira and GitHub before acting.
 
+**Standing rule (Gavi, 2026-07-26):** every Jira status must be updated as its own explicit action, every time — never skipped or assumed because another item's status "obviously" covers it. This applies even when building two related things at once, or when a child story's work is clearly delivered as a side effect of its parent Feature or a sibling story. Discovered after CFL-38/CFL-39 (children of CFL-12) and CFL-50 (a child of CFL-14) sat untouched in Backlog despite their work being fully done and shipped — check for and update every child item explicitly, don't rely on the parent's status as a proxy.
+
 ## Last Updated
 
 - Date: 2026-07-26
@@ -91,7 +93,16 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - PR #2 merged (`5e67c3c`, Eldad approved) after fixing a real review-caught bug: sign toggle was applying to the frozen first-operand display while awaiting the second operand, so `8 + ± 3 =` showed `-8` but evaluated as `8 + 3 = 11` — fixed by making toggle inert in that state (mirrors delete's existing behavior), plus removed `prop-types` per Eldad's non-blocking suggestion. QA passed on `main` with no defects (evidence on the Jira issue).
 - **Production smoke test performed and confirmed by Gavi (2026-07-26)** on https://calc-flow-fawn.vercel.app/ (Vercel auto-deploys on merge to `main`, no manual deploy step): addition/subtraction/multiplication/division/decimals/negative-sign/divide-by-zero-error-and-recovery all correct, no console errors. Full results on the Jira issue.
 - Design judgment calls CFL-13 flagged are resolved (Gavi/Eldad) — see "Design Decision Resolution" below. Note: design.md's item 4 ("0 button double width") can now be safely removed from "Open Design Decisions" whenever convenient, since both CFL-12 and CFL-13 have landed and shipped as double-width — not done yet, not requested.
-- Next required action: none for CFL-12/13. **CFL-14 — Expression Input and Editing is next** in the approved Gavi track; still in Backlog, planning not yet started.
+- Next required action: none for CFL-12/13 themselves — see the active CFL-14 entry below.
+
+### Gavi — CFL-14 / CFL-51 (active, 2026-07-26)
+
+- Jira Feature: CFL-14 — Expression Input and Editing, plus child story CFL-51 — both In Progress.
+- Branch: `feature/CFL-14-expression-input-editing`, off `feature/CFL-16-expression-evaluation` (PR #6, reviewed and approved by Gavi, not yet merged) — consumes `evaluateExpression(source)` directly per the approved early-integration exception. Will rebase onto `main` once PR #6 merges.
+- Architecture: new `src/lib/expressionEngine.js` builds a growing expression string (glyphs `×`/`÷`/`−` internally, normalized to ASCII only when calling the evaluator); `src/lib/calculatorEngine.js` (CFL-13) and its tests deleted as superseded dead code — a single calculator instance can only use one engine. `Keypad.jsx` gained the approved expression-controls row (`(` `)`) per design.md (PR #5); the old `is-active`-operator highlighting was removed since it has no coherent meaning once an expression can contain many operators.
+- Deliberate UX choices (discussed and approved with Gavi beforehand): an invalid expression keeps the expression on screen with the error shown inline rather than resetting everything (CFL-13's full-reset made sense for two operands, not for a potentially long expression); `)` is disabled/ignored client-side when there's no open `(` left to close; `±` toggles the trailing number token, correctly distinguishing a binary minus (kept) from a unary one (removed) so it never eats a real subtraction operator.
+- Verification (real pipeline): `npm ci`, lint, format:check all clean; `npm test` 84/84 passing; coverage 96.03% statements/93.79% branches; build succeeds. Live browser testing: click-through expression building with parentheses and correct precedence, error display + in-place recovery, and full keyboard entry (including `(`/`)`, `Enter`, `Backspace`, `Escape`) all confirmed with screenshots; only console message is the same pre-existing, unrelated `/favicon.ico` 404.
+- Next required action: open CFL-14's PR requesting Eldad as reviewer, move CFL-14/CFL-51 to Code Review.
 
 ### Design Decision Resolution (2026-07-26)
 
@@ -147,6 +158,7 @@ Resolves the two judgment calls CFL-13 flagged to Eldad (see above). Eldad repli
 
 ## Approved Operating Decisions
 
+- **Every Jira status must be updated explicitly, every time — never skipped or assumed because another item's status "obviously" covers it** (Gavi, 2026-07-26; see the standing rule at the top of this file for the incident that prompted it)
 - Foundation belongs to v0.1.0 — Basic Calculator MVP
 - CFL-2, CFL-9, CFL-10, and CFL-11 are performed directly on `main`
 - The four Foundation Features do not use a Feature branch, pull request, reviewer, or formal Code Review stage
