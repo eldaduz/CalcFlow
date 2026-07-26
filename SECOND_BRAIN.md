@@ -53,16 +53,17 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Blockers: None
 - Next required action: Complete any remaining CFL-11 child items, then move CFL-11 toward Ready for Deployment
 
-### Eldad — approved parallel preparation
+### Eldad — CFL-16 continuation
 
 - Jira Feature: CFL-16 — Expression Evaluation
 - Owner: Eldad
-- Jira status: In Progress
+- Jira status: Code Review
 - Work mode: Standard non-Foundation workflow under the approved temporary sequencing exception
-- Branch and Pull Request: `feature/CFL-16-expression-evaluation`; [PR #6](https://github.com/eldaduz/CalcFlow/pull/6) is ready for Gavi's human review
-- Current Work Items: CFL-52 is Done; CFL-53 is in Code Review with a committed, tested standalone evaluator; CFL-54 remains Backlog
-- Dependencies: CFL-14 and CFL-16 may proceed in parallel. CFL-54 integration will consume the CFL-14 expression-editor contract; CFL-16 blocks CFL-17, CFL-18, CFL-20, and CFL-21
-- Next required action: Gavi completes human review of PR #6. Preserve the standalone evaluator checkpoint while CFL-14/CFL-51 establish the approved expression editing contract; then complete CFL-54 in the existing Feature branch
+- Branch and Pull Request: `feature/CFL-16-expression-evaluation`; [PR #9](https://github.com/eldaduz/CalcFlow/pull/9) is open and ready for Gavi's review. PR #6 (evaluator core) is merged.
+- Current Work Items: CFL-52 is Done; CFL-53 is in QA with merged evaluator-core evidence; CFL-54 is in Code Review.
+- Dependencies: CFL-14/CFL-51 are merged and Ready for Deployment. Their editor already invokes `evaluateExpression`, displays expected controlled errors, and preserves normal in-place recovery. CFL-16 blocks CFL-17, CFL-18, CFL-20, and CFL-21.
+- CFL-54 scope: only unexpected evaluator-boundary containment and lightweight `console.error` observability. No duplicate editor, keypad, keyboard, normal parser-error UI, or persistent logging work (CFL-27 owns the latter).
+- Next required action: Gavi reviews PR #9. After direct verification of approval, no active change requests, and passing checks, prepare the Feature QA/regression plan for Eldad's approval before QA begins.
 
 ### Gavi
 
@@ -82,10 +83,10 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 ### Eldad
 
 - Current Foundation Feature: CFL-11 — Foundation Documentation and Verification (In Progress; blocked on Gavi's CFL-49 validation)
-- Selected parallel Feature: CFL-16 — Expression Evaluation (Selected for Development; no implementation started)
-- Work mode: CFL-11 stays direct on `main`; CFL-16 uses the standard branch-and-PR workflow after planning approval
-- Required action: For CFL-16, obtain Sol / High parser-planning approval before any branch or work-item transition; for CFL-11, wait for Gavi's CFL-49 evidence
-- Human approval required: Received for this temporary sequencing arrangement; required again for CFL-16 planning, implementation, branch creation, and all Feature-level commits
+- Active parallel Feature: CFL-16 — Expression Evaluation (Code Review; evaluator core and CFL-14 integration are merged)
+- Work mode: CFL-11 stays direct on `main`; CFL-16 uses the standard branch-and-PR workflow
+- Required action: Gavi reviews PR #9; for CFL-11, wait for Gavi's CFL-49 evidence
+- Human approval required: Gavi's peer-review approval is required before CFL-16 QA. Eldad must approve the QA plan before execution and approve again before merge.
 
 ### Gavi
 
@@ -140,12 +141,12 @@ Resolves the two judgment calls CFL-13 flagged to Eldad (see above). Eldad repli
 
 ## Open Reviews
 
-- Pull Request: [#6 — CFL-16: Expression evaluator core](https://github.com/eldaduz/CalcFlow/pull/6)
-- Feature: CFL-16 — Expression Evaluation (early core review; parent remains In Progress)
+- Pull Request: [#9 — CFL-16: Expression Evaluation](https://github.com/eldaduz/CalcFlow/pull/9)
+- Feature and work item: CFL-16 / CFL-54
 - Owner: Eldad
-- Reviewer: Gavi
-- Review status: Ready for human review; CFL-53 is in Jira Code Review
-- CI status: No repository CI workflow is configured; the Vercel pull-request preview check succeeded
+- Reviewer: Gavi (`GaviLazan`) requested
+- Review status: Open, ready for review, mergeable, and awaiting human approval
+- Check status: Vercel and Vercel Preview Comments succeeded; no repository GitHub Actions workflow is configured
 
 ## Open Bugs and Blockers
 
@@ -218,11 +219,11 @@ Update this file when:
 
 ## Latest Handoff
 
-- Work completed: The standalone CFL-16 evaluator was independently reviewed and hardened for non-string input; its early-core PR #6 was made ready for Gavi's review, and CFL-53 entered Code Review. The approved v0.2.0 parentheses controls remain documented in `design.md`.
-- Files or areas changed: `src/calculator/expression/evaluateExpression.js`, `tests/expression-evaluation.test.js`, `docs/decisions/CFL-52-expression-parser.md`, and SECOND_BRAIN.md
-- Verification performed: 73 tests passed; lint, formatting, coverage (97.87% evaluator statements), production build, and `git diff --check` passed. Live Jira and GitHub confirm CFL-53 Code Review and PR #6 ready for review.
-- Current risks: CFL-14 and CFL-51 remain Backlog; until their editing contract is implemented, CFL-54 UI integration remains pending. No repository CI workflow is configured, though the Vercel pull-request preview check succeeded.
-- Next safe action: Gavi performs the required human review of PR #6; separately, Gavi plans and implements CFL-14/CFL-51 against the approved expression-controls design. Eldad preserves CFL-16's standalone evaluator until CFL-54 integration can begin.
+- Work completed: CFL-54 now contains unexpected evaluator failures at the `expressionEngine` boundary. A thrown evaluator error becomes a friendly inline error, preserves the expression for correction or retry, and records the unexpected failure with `console.error`. Expected evaluator errors continue unchanged.
+- Files or areas changed: `src/lib/expressionEngine.js`, `tests/expressionEngineUnexpectedFailure.test.js`, and SECOND_BRAIN.md.
+- Verification performed: test-first failure observed, then the focused tests passed; full pipeline passed: lint, format check, 86 tests, coverage (96.07% statements), production build, and `git diff --check`.
+- Current risks: normal expression integration is already delivered by merged CFL-14/CFL-51. This continuation awaits Gavi's peer review; Vercel checks passed, but the repository still has no GitHub Actions workflow.
+- Next safe action: Gavi reviews PR #9. Do not enter QA until GitHub approval and checks are verified and Eldad approves the CFL-16 QA/regression plan.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
