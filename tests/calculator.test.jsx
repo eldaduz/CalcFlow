@@ -37,69 +37,170 @@ function clickButton(text) {
   });
 }
 
+function pressKey(key) {
+  act(() => {
+    window.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+  });
+}
+
 function currentValue() {
   return container.querySelector('.current-value').textContent;
+}
+
+function previousExpression() {
+  return container.querySelector('.previous-expression').textContent;
 }
 
 function errorText() {
   return container.querySelector('.calculator-error').textContent;
 }
 
-test('a full click-through addition flow shows the correct result', () => {
+test('a multi-operand expression with parentheses evaluates with correct precedence', () => {
   renderCalculator();
 
-  clickButton('7');
+  clickButton('(');
+  clickButton('5');
   clickButton('+');
-  clickButton('8');
+  clickButton('2');
+  clickButton(')');
+  clickButton('×');
+  clickButton('3');
   clickButton('=');
 
-  expect(currentValue()).toBe('15');
+  expect(currentValue()).toBe('21');
+  expect(previousExpression()).toBe('(5 + 2) × 3');
 });
 
-test('a decimal entry flow shows the correct result', () => {
+test('delete and clear work consistently while editing an expression', () => {
   renderCalculator();
 
   clickButton('1');
-  clickButton('.');
-  clickButton('5');
-  clickButton('÷');
   clickButton('2');
-  clickButton('=');
+  clickButton('+');
+  clickButton('(');
+  clickButton('3');
+  clickButton('⌫');
+  expect(currentValue()).toBe('12 + (');
 
-  expect(currentValue()).toBe('0.75');
+  clickButton('AC');
+  expect(currentValue()).toBe('0');
 });
 
-test('division by zero displays a controlled error message, not a crash', () => {
+test('an unclosed parenthesis shows a controlled error without losing the expression', () => {
   renderCalculator();
 
-  clickButton('9');
-  clickButton('÷');
-  clickButton('0');
+  clickButton('(');
+  clickButton('2');
+  clickButton('+');
+  clickButton('3');
   clickButton('=');
 
-  expect(errorText()).toMatch(/division by zero/i);
+  expect(errorText()).not.toBe('');
+  expect(currentValue()).toBe('(2 + 3');
 });
 
-test('the user recovers from an error by entering a new digit, without reloading', () => {
+test('the user recovers from an error by editing in place, without reloading', () => {
   renderCalculator();
 
-  clickButton('9');
-  clickButton('÷');
-  clickButton('0');
+  clickButton('(');
+  clickButton('2');
+  clickButton('+');
+  clickButton('3');
   clickButton('=');
-  clickButton('4');
+  expect(errorText()).not.toBe('');
+
+  clickButton(')');
+  clickButton('=');
 
   expect(errorText()).toBe('');
-  expect(currentValue()).toBe('4');
+  expect(currentValue()).toBe('5');
 });
 
-test('AC clears the display back to 0', () => {
+test('every digit, operator, decimal, and sign-toggle button works', () => {
   renderCalculator();
 
+  clickButton('9');
+  clickButton('6');
   clickButton('3');
-  clickButton('+');
+  clickButton('2');
+  clickButton('.');
+  clickButton('5');
+  clickButton('−');
   clickButton('4');
-  clickButton('AC');
+  clickButton('=');
+  expect(currentValue()).toBe('9628.5');
 
+  clickButton('AC');
+  clickButton('8');
+  clickButton('±');
+  expect(currentValue()).toBe('−8');
+});
+
+test('keyboard decimal and parenthesis keys match their button behavior', () => {
+  renderCalculator();
+
+  pressKey('0');
+  pressKey('.');
+  pressKey('5');
+  pressKey('/');
+  pressKey('(');
+  pressKey('2');
+  pressKey(')');
+  pressKey('Enter');
+
+  expect(currentValue()).toBe('0.25');
+});
+
+test('closing parenthesis button is ignored when nothing is open to close', () => {
+  renderCalculator();
+
+  clickButton('5');
+  clickButton(')');
+
+  expect(currentValue()).toBe('5');
+});
+
+test('keyboard input builds and evaluates an expression, including parentheses', () => {
+  renderCalculator();
+
+  pressKey('(');
+  pressKey('2');
+  pressKey('+');
+  pressKey('3');
+  pressKey(')');
+  pressKey('*');
+  pressKey('4');
+  pressKey('Enter');
+
+  expect(currentValue()).toBe('20');
+});
+
+test('the Backspace and Escape keys delete and clear like their buttons', () => {
+  renderCalculator();
+
+  pressKey('1');
+  pressKey('2');
+  pressKey('Backspace');
+  expect(currentValue()).toBe('1');
+
+  pressKey('Escape');
   expect(currentValue()).toBe('0');
+});
+
+test('a nested, incomplete parenthesis stays editable and shows a clear error only on calculate', () => {
+  renderCalculator();
+
+  clickButton('(');
+  clickButton('1');
+  clickButton('+');
+  clickButton('(');
+  clickButton('2');
+  clickButton('×');
+  clickButton('3');
+
+  expect(currentValue()).toBe('(1 + (2 × 3');
+  expect(errorText()).toBe('');
+
+  clickButton('=');
+  expect(errorText()).not.toBe('');
 });
