@@ -1,7 +1,10 @@
+import './styles/calculator.css';
+import Calculator from './components/Calculator.jsx';
+
 export default function App() {
   return (
-    <main>
-      <h1>CalcFlow</h1>
+    <main className="calculator-page">
+      <Calculator />
     </main>
   );
 }

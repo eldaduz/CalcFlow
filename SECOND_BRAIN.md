@@ -93,10 +93,25 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 ### Gavi
 
-- Current Feature: CFL-13 — Basic Calculator Interaction — implementation and unit tests complete, PR #2 open (https://github.com/eldaduz/CalcFlow/pull/2), Jira in Code Review, **already mid-review**: Eldad left a non-blocking comment (2026-07-26 07:04 UTC) questioning whether the `prop-types` dependency is needed at all, suggesting it and the `react/prop-types` ESLint rule could both be dropped for a small internal JS app like this (with static types as the better long-term answer if CalcFlow adopts TypeScript later) — explicitly framed as "not a request for changes," asking for Gavi's preference. Full detail and verification evidence recorded on the `feature/CFL-13-basic-calculator-interaction` branch's SECOND_BRAIN.md (will land on `main` when PR #2 merges).
-- Next required action: Gavi decides on the `prop-types`/lint-rule question and replies to Eldad on PR #2; Eldad's formal review (approve/changes) is still pending. CFL-14 planning was intentionally paused pending CFL-12's PR (now resolved — merged and QA'd); can resume once CFL-13 clears review.
-- Required action: Wait until the Feature is explicitly selected
-- Human approval required: Yes
+- Current Feature: CFL-13 — Basic Calculator Interaction — implementation and unit tests complete, rebased onto `main`, PR #2 open, **review comments addressed, awaiting re-review**
+- Branch: `feature/CFL-13-basic-calculator-interaction`, rebased onto `main` at `428de91` after PR #1 merged (was previously stacked on `feature/CFL-12-basic-arithmetic`; that stacking is now resolved).
+- Pull Request: **PR #2** — https://github.com/eldaduz/CalcFlow/pull/2, `feature/CFL-13-basic-calculator-interaction` → `main`, `eldaduz` requested as reviewer.
+- What was built: `src/lib/calculatorEngine.js` (pure reducer for digit/decimal entry, operator chaining, equals, AC, delete, sign toggle, controlled error/recovery), `src/components/Calculator.jsx`/`Display.jsx`/`Keypad.jsx`, `src/styles/calculator.css` (design.md tokens, placeholder values), `src/App.jsx` updated.
+- Post-rebase fix: CFL-12's review fix (commit `0320094`) removed all display rounding from `arithmetic.js`, explicitly deferring it to CFL-13/CFL-14 (raw results like `0.1 + 0.2 === 0.30000000000000004` now pass through unrounded). Updated `calculatorEngine.js`'s `formatOperand` to round for display via `toPrecision(12)` — chosen specifically because, unlike scaling by `10**n` (the approach CFL-12 just removed for this exact reason), it cannot turn an already-finite result into `Infinity`.
+- PR #2 review round (2026-07-26), both addressed in commit `926d5ff`:
+  1. **Spec gap, blocking ("please fix before approval"):** `toggleSign` operated on the frozen first-operand display echo while `awaitingOperand` was true, so `8 + ± 3 =` displayed `-8` but the next digit typed silently discarded it, evaluating as `8 + 3 = 11`. Fixed by making sign toggle inert in that state, mirroring delete's existing behavior there. Regression test added for the exact sequence; re-verified live in a browser.
+  2. **prop-types, non-blocking (Eldad asked for Gavi's preference):** Gavi chose to remove it. Dropped the `prop-types` dependency, its usage in `Display.jsx`/`Keypad.jsx`, and disabled `react/prop-types` in `eslint.config.js`.
+- Design judgment calls CFL-13 originally flagged are resolved by Gavi/Eldad — see "Design Decision Resolution" below. No code changes were needed as a result (both matched what was already implemented).
+- Verification (real pipeline, on Gavi's machine, latest at `926d5ff`): `npm ci` clean; `npm run lint` clean; `npm run format:check` clean; `npm test` 52/52 passing (no regressions in CFL-9/10/12 suites); `npm run coverage` ~92% statements/90% branches; `npm run build` succeeds; live browser smoke tests for both fixes (float-display rounding, sign-toggle sequence) confirmed, no app-caused console errors (one pre-existing, out-of-scope 404 for a missing `/favicon.ico` in Foundation's `index.html`).
+- Next required action: Eldad re-reviews PR #2. Once approved (no active Changes Requested, no unresolved review issue), move CFL-13 to QA per PROJECT_PLAN Step 6 with a presented QA plan.
+- Human approval required: Yes, at the standard PROJECT_PLAN control points (PR/reviewer, QA plan, merge, Done)
+
+### Design Decision Resolution (2026-07-26)
+
+Resolves the two judgment calls CFL-13 flagged to Eldad (see above). Eldad replied delegating both to Gavi ("fix the design.md as you fit"); Gavi then made the actual calls:
+
+- **`0` button double width — approved as double-width.** This matches the existing keypad diagram (design.md line ~93) and the permissive note at line ~108, and matches what CFL-13 already implemented. Action still pending: when design.md is next safely editable (i.e. after CFL-12/13 land, per Gavi's instruction to avoid touching it while in-flight work depends on it), remove item 4 from "Open Design Decisions" — no other text changes needed, since the diagram/description already assume double-width.
+- **Keyboard support — confirmed as a requirement, no design.md change needed.** design.md's "Keyboard Support" section was already written as a required MVP capability, not a judgment call — CFL-13 simply deferred _when_ it ships, not _whether_ it's required. Checked Jira and confirmed there is no gap: Feature CFL-24 "Keyboard Support" already exists in Backlog (Epic CFL-5, owned by Gavi) with stories CFL-69 (core keyboard controls) and CFL-70 (scientific shortcuts/focus safety); CFL-51 (parentheses/expression keyboard entry) sits under CFL-14, whose own acceptance criteria already state "Keyboard expression input is supported at the level required by this release." Nothing new needs to be created.
 
 ## Latest Verified Progress
 

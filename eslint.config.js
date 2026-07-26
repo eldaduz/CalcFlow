@@ -44,6 +44,10 @@ export default defineConfig([
       ...reactHooks.configs.recommended.rules,
       'react/react-in-jsx-scope': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      // Disabled per Eldad's PR #2 review: this is a small internal JS app
+      // with no plan to enforce runtime prop validation; static types via
+      // TypeScript would be the better long-term answer if adopted later.
+      'react/prop-types': 'off',
     },
   },
 
