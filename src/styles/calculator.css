@@ -1,0 +1,175 @@
+/*
+ * CalcFlow design tokens (design.md "Color System").
+ *
+ * PLACEHOLDER VALUES ONLY. Theme (light/dark), final palette, and font
+ * family are unresolved "Open Design Decisions" in design.md and require
+ * joint Gavi/Eldad approval. Do not treat these values as final; only the
+ * token *names* and the token-based approach are approved.
+ */
+:root {
+  --color-background: #f2f2f5;
+  --color-surface: #ffffff;
+  --color-display: #1c1c1e;
+  --color-text-primary: #1c1c1e;
+  --color-text-secondary: #6b6b70;
+  --color-number-button: #e4e4e8;
+  --color-operator-button: #d8dce6;
+  --color-action-button: #ececef;
+  --color-equals-button: #2d5bff;
+  --color-error: #c62828;
+  --color-focus: #2d5bff;
+
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+
+  --control-min-height: 48px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-base);
+}
+
+.calculator-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: var(--space-24) var(--space-16);
+}
+
+.calculator {
+  width: 100%;
+  max-width: 400px;
+  background: var(--color-surface);
+  border-radius: var(--space-12);
+  padding: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.calculator-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+}
+
+.calculator-header h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.calculator-header .subtitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.calculator-display {
+  background: var(--color-display);
+  border-radius: var(--space-8);
+  padding: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-4);
+  overflow-x: auto;
+}
+
+.calculator-display .previous-expression {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  min-height: 1.2em;
+}
+
+.calculator-display .current-value {
+  font-size: 40px;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.calculator-error {
+  min-height: 1.4em;
+  font-size: 14px;
+  color: var(--color-error);
+  padding: 0 var(--space-4);
+}
+
+.calculator-keypad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-8);
+}
+
+.calculator-button {
+  min-height: var(--control-min-height);
+  border: none;
+  border-radius: var(--space-8);
+  font-size: 20px;
+  font-family: inherit;
+  cursor: pointer;
+  background: var(--color-number-button);
+  color: var(--color-text-primary);
+}
+
+.calculator-button:hover {
+  filter: brightness(0.95);
+}
+
+.calculator-button:active {
+  filter: brightness(0.88);
+}
+
+.calculator-button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.calculator-button--operator {
+  background: var(--color-operator-button);
+}
+
+/* Open design decision: "whether the active operator is highlighted" is
+   unresolved. design.md's Button States section permits the active
+   operator to "remain visually active"; this class is provided so that
+   behaviour can be turned on without inventing a new color token. */
+.calculator-button--operator.is-active {
+  outline: 2px solid var(--color-focus);
+}
+
+.calculator-button--action {
+  background: var(--color-action-button);
+}
+
+.calculator-button--equals {
+  background: var(--color-equals-button);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Open design decision (design.md #4): whether "0" is double-width.
+   design.md's own MVP keypad diagram draws it double-width; implemented
+   that way behind this single class so it is trivial to flip once
+   Gavi/Eldad approve a final answer. */
+.calculator-button--zero-wide {
+  grid-column: span 2;
+}
+
+@media (max-width: 420px) {
+  .calculator {
+    max-width: none;
+  }
+}
