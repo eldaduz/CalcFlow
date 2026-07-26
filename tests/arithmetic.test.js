@@ -19,8 +19,12 @@ test('adds negative and positive numbers', () => {
   expect(add(-5, 3)).toBe(-2);
 });
 
-test('adds decimals without floating point noise', () => {
-  expect(add(0.1, 0.2)).toBe(0.3);
+test('adds decimals, preserving the actual JavaScript arithmetic result', () => {
+  // Intentionally not rounded: this module returns raw JS arithmetic.
+  // 0.1 + 0.2 is not exactly 0.3 in IEEE-754 -- display rounding, if any,
+  // is a UI-feature concern, not this module's.
+  expect(add(0.1, 0.2)).toBe(0.1 + 0.2);
+  expect(add(0.1, 0.2)).toBeCloseTo(0.3, 10);
 });
 
 // --- subtraction ---
@@ -33,8 +37,9 @@ test('subtracts producing a negative result', () => {
   expect(subtract(2, 5)).toBe(-3);
 });
 
-test('subtracts decimals', () => {
-  expect(subtract(1, 0.9)).toBe(0.1);
+test('subtracts decimals, preserving the actual JavaScript arithmetic result', () => {
+  expect(subtract(1, 0.9)).toBe(1 - 0.9);
+  expect(subtract(1, 0.9)).toBeCloseTo(0.1, 10);
 });
 
 // --- multiplication ---
@@ -51,8 +56,9 @@ test('multiplies negative numbers', () => {
   expect(multiply(-3, -4)).toBe(12);
 });
 
-test('multiplies decimals without floating point noise', () => {
-  expect(multiply(0.1, 3)).toBe(0.3);
+test('multiplies decimals, preserving the actual JavaScript arithmetic result', () => {
+  expect(multiply(0.1, 3)).toBe(0.1 * 3);
+  expect(multiply(0.1, 3)).toBeCloseTo(0.3, 10);
 });
 
 // --- division ---
@@ -67,6 +73,18 @@ test('divides producing a decimal result', () => {
 
 test('divides negative numbers', () => {
   expect(divide(-9, 3)).toBe(-3);
+});
+
+test('dividing a very large finite value by 1 remains finite and unchanged (no false-positive overflow)', () => {
+  expect(divide(Number.MAX_VALUE, 1)).toBe(Number.MAX_VALUE);
+  expect(Number.isFinite(divide(Number.MAX_VALUE, 1))).toBe(true);
+});
+
+test('preserves precision beyond 12 decimal places instead of truncating it', () => {
+  // 1/3 has far more than 12 significant decimal digits in IEEE-754.
+  // This module must not silently truncate that precision.
+  expect(divide(1, 3)).toBe(1 / 3);
+  expect(divide(1, 3).toString().replace('0.', '').length).toBeGreaterThan(12);
 });
 
 test('division by zero throws a controlled ArithmeticError, not Infinity/NaN', () => {

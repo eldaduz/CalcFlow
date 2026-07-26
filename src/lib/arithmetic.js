@@ -4,18 +4,18 @@
  * Pure, side-effect-free functions for the four basic operations.
  * No `eval` or dynamic code execution is used anywhere here.
  *
- * Floating point note: JavaScript's IEEE-754 numbers produce results like
- * 0.1 + 0.2 === 0.30000000000000004. For a calculator, results are rounded
- * to a fixed number of significant decimal places to avoid surfacing this
- * artifact to the user, while still supporting decimals and negative values.
+ * This module returns the raw JavaScript arithmetic result for every
+ * accepted finite input -- it does not round or truncate precision (e.g.
+ * 0.1 + 0.2 stays 0.30000000000000004). CFL-12 requires correct results,
+ * not a specific display precision; rounding/formatting for display is a
+ * UI-feature concern (CFL-13/CFL-14), not this module's.
  */
-
-const DECIMAL_PLACES = 12;
 
 /**
  * Thrown when an operation is mathematically undefined (e.g. division by
- * zero). Callers (UI layer) can catch this and show a controlled error
- * instead of letting the app crash or show NaN/Infinity.
+ * zero) or when a mathematically valid operation overflows the range of
+ * representable numbers. Callers (UI layer) can catch this and show a
+ * controlled error instead of letting the app crash or show NaN/Infinity.
  */
 export class ArithmeticError extends Error {
   constructor(message, code) {
@@ -32,34 +32,35 @@ function assertFiniteNumber(value, label) {
 }
 
 /**
- * Rounds away IEEE-754 floating point noise without turning the calculator
- * into a fixed-decimal system. Values with more precision than
- * DECIMAL_PLACES are truncated at that precision.
+ * Guards against genuine overflow (e.g. multiplying two very large finite
+ * numbers past Number.MAX_VALUE) without altering any result that is
+ * actually finite. Unlike the previous implementation, this never
+ * multiplies the value by a scaling factor, so it cannot itself introduce
+ * an overflow for otherwise-valid finite results.
  */
-function roundResult(value) {
+function assertFiniteResult(value) {
   if (!Number.isFinite(value)) {
     throw new ArithmeticError('Result is too large to represent', 'OVERFLOW');
   }
-  const factor = 10 ** DECIMAL_PLACES;
-  return Math.round((value + Number.EPSILON) * factor) / factor;
+  return value;
 }
 
 export function add(a, b) {
   assertFiniteNumber(a, 'First operand');
   assertFiniteNumber(b, 'Second operand');
-  return roundResult(a + b);
+  return assertFiniteResult(a + b);
 }
 
 export function subtract(a, b) {
   assertFiniteNumber(a, 'First operand');
   assertFiniteNumber(b, 'Second operand');
-  return roundResult(a - b);
+  return assertFiniteResult(a - b);
 }
 
 export function multiply(a, b) {
   assertFiniteNumber(a, 'First operand');
   assertFiniteNumber(b, 'Second operand');
-  return roundResult(a * b);
+  return assertFiniteResult(a * b);
 }
 
 export function divide(a, b) {
@@ -68,7 +69,7 @@ export function divide(a, b) {
   if (b === 0) {
     throw new ArithmeticError('Division by zero is undefined', 'DIVIDE_BY_ZERO');
   }
-  return roundResult(a / b);
+  return assertFiniteResult(a / b);
 }
 
 /**
