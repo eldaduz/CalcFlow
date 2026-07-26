@@ -123,7 +123,7 @@ Resolves the two judgment calls CFL-13 flagged to Eldad (see above). Eldad repli
 - Unit tests: Vitest 4 with jsdom is configured; the App shell has one meaningful render test and both test and coverage commands pass
 - QA: CFL-9/CFL-10 feature-level QA passed: clean `npm ci`, dependency check, entry verification, lint, formatting, test, coverage, build, diff, and dev/preview HTTP 200 smoke checks
 - Regression: CFL-15/CFL-34 combined regression passed
-- Deployment: Not configured
+- Deployment: Vercel preview deployments are configured; the current CFL-16 pull-request preview check succeeded
 - Smoke test: Local development server returned HTTP 200
 
 ## Open Reviews
@@ -133,7 +133,7 @@ Resolves the two judgment calls CFL-13 flagged to Eldad (see above). Eldad repli
 - Owner: Eldad
 - Reviewer: Gavi
 - Review status: Ready for human review; CFL-53 is in Jira Code Review
-- CI status: Not configured
+- CI status: No repository CI workflow is configured; the Vercel pull-request preview check succeeded
 
 ## Open Bugs and Blockers
 
@@ -208,7 +208,7 @@ Update this file when:
 - Work completed: The standalone CFL-16 evaluator was independently reviewed and hardened for non-string input; its early-core PR #6 was made ready for Gavi's review, and CFL-53 entered Code Review. The approved v0.2.0 parentheses controls remain documented in `design.md`.
 - Files or areas changed: `src/calculator/expression/evaluateExpression.js`, `tests/expression-evaluation.test.js`, `docs/decisions/CFL-52-expression-parser.md`, and SECOND_BRAIN.md
 - Verification performed: 73 tests passed; lint, formatting, coverage (97.87% evaluator statements), production build, and `git diff --check` passed. Live Jira and GitHub confirm CFL-53 Code Review and PR #6 ready for review.
-- Current risks: CFL-14 and CFL-51 remain Backlog; until their editing contract is implemented, CFL-54 UI integration remains pending. CI and deployment are not configured.
+- Current risks: CFL-14 and CFL-51 remain Backlog; until their editing contract is implemented, CFL-54 UI integration remains pending. No repository CI workflow is configured, though the Vercel pull-request preview check succeeded.
 - Next safe action: Gavi performs the required human review of PR #6; separately, Gavi plans and implements CFL-14/CFL-51 against the approved expression-controls design. Eldad preserves CFL-16's standalone evaluator until CFL-54 integration can begin.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
