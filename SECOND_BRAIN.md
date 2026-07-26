@@ -67,12 +67,12 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Jira Feature: CFL-12 — Basic Arithmetic (first of an approved run through CFL-13 and CFL-14)
 - Owner: Gavi
 - Work mode: Standard non-Foundation workflow (Feature branch per Feature)
-- Current Work Item: CFL-12 — Basic Arithmetic, moved Backlog → Selected for Development → In Progress → Code Review → **merged**
-- Jira status: Jira still shows Code Review as of this writing; needs syncing to reflect the merge (see Next required action)
+- Current Work Item: CFL-12 — Basic Arithmetic, moved Backlog → Selected for Development → In Progress → Code Review → **merged** → **QA**
+- Jira status: QA (synced from Code Review after confirming the merge on GitHub). Not advanced further without a presented/approved QA plan — see comment on the Jira issue.
 - Pull Request: **PR #1 merged** — `feature/CFL-12-basic-arithmetic` → `main`, merge commit `428de91`, merged 2026-07-26 06:31 UTC.
 - PR #1 review history: Eldad requested changes. Addressed in commit `0320094` — removed the calculation-layer rounding in `roundResult()` (renamed `assertFiniteResult()`) that could overflow otherwise-valid finite results (e.g. `divide(Number.MAX_VALUE, 1)`) or silently truncate valid precision (e.g. `1/3`); the module now returns the raw JS arithmetic result and only guards against genuine overflow, explicitly deferring display rounding/formatting to CFL-13/CFL-14. Full real pipeline (`npm ci`/lint/format/test/coverage/build) was run against the branch tip and reported on the PR before Eldad approved and it was merged.
 - Blockers: None. CFL-11 (Eldad's Foundation Feature) reached Done in Jira before this merged.
-- Next required action: sync CFL-12's Jira status to reflect the merge (Done requires a production smoke test, which isn't available yet since deployment isn't configured — same open gap as CFL-2; consider Ready for Deployment in the meantime). CFL-13 has been rebased onto the new `main` tip (`428de91`) and needs its `calculatorEngine.js` display formatting updated to round for display now that `arithmetic.js` no longer does it (see CFL-13 section below).
+- Next required action: Gavi to direct CFL-12's QA plan and remaining lifecycle (Ready for Deployment/Done are gated on a production smoke test, which isn't available yet since deployment isn't configured — same open gap as CFL-2).
 
 ### Gavi — approved parallel sequencing exception (2026-07-26)
 
@@ -93,13 +93,14 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 ### Gavi
 
-- Current Feature: CFL-13 — Basic Calculator Interaction — implementation and unit tests complete, rebased cleanly onto `main` (PR #1 merged), about to open its own PR
+- Current Feature: CFL-13 — Basic Calculator Interaction — implementation and unit tests complete, rebased onto `main`, **PR #2 opened, Code Review**
 - Branch: `feature/CFL-13-basic-calculator-interaction`, rebased onto `main` at `428de91` after PR #1 merged (was previously stacked on `feature/CFL-12-basic-arithmetic`; that stacking is now resolved).
+- Pull Request: **PR #2 opened** — https://github.com/eldaduz/CalcFlow/pull/2, `feature/CFL-13-basic-calculator-interaction` → `main`, `eldaduz` requested as reviewer.
 - What was built: `src/lib/calculatorEngine.js` (pure reducer for digit/decimal entry, operator chaining, equals, AC, delete, sign toggle, controlled error/recovery), `src/components/Calculator.jsx`/`Display.jsx`/`Keypad.jsx`, `src/styles/calculator.css` (design.md tokens, placeholder values), `src/App.jsx` updated. Added `prop-types` as a direct dependency to satisfy the existing `react/prop-types` lint rule (no lint config changes).
 - Post-rebase fix: CFL-12's review fix (commit `0320094`) removed all display rounding from `arithmetic.js`, explicitly deferring it to CFL-13/CFL-14 (raw results like `0.1 + 0.2 === 0.30000000000000004` now pass through unrounded). Updated `calculatorEngine.js`'s `formatOperand` to round for display via `toPrecision(12)` — chosen specifically because, unlike scaling by `10**n` (the approach CFL-12 just removed for this exact reason), it cannot turn an already-finite result into `Infinity`. Added tests for both the floating-point-noise case and the large-finite-value regression case Eldad's review caught.
 - Design judgment calls CFL-13 flagged are now resolved by Gavi/Eldad — see "Design Decision Resolution" above. No code changes were needed as a result (both matched what was already implemented).
 - Verification (real pipeline, on Gavi's machine, post-rebase): `npm ci` clean; `npm run lint` clean; `npm run format:check` clean; `npm test` 51/51 passing (no regressions in CFL-9/10/12 suites); `npm run coverage` 92.12% statements/90% branches; `npm run build` succeeds; live dev-server browser smoke test via a Playwright driver against system Chrome — including a targeted re-check that `0.1 + 0.2` now displays `0.3` — with no app-caused console errors (one pre-existing, out-of-scope 404 for a missing `/favicon.ico` in Foundation's `index.html`).
-- Next required action: push the rebased branch, open CFL-13's PR to `main` requesting Eldad as reviewer, move CFL-13 to Code Review
+- Next required action: Eldad reviews PR #2. Once approved (no active Changes Requested, no unresolved review issue), move CFL-13 to QA per PROJECT_PLAN Step 6 with a presented QA plan.
 - Human approval required: Yes, at the standard PROJECT_PLAN control points (PR/reviewer, QA plan, merge, Done)
 
 ### Design Decision Resolution (2026-07-26)
