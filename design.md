@@ -78,7 +78,33 @@ Error messages must be:
 
 Do not use `alert()` for normal calculator errors.
 
-## MVP Keypad Layout
+## Keypad Layout
+
+### Expression Controls Row
+
+For v0.2.0 — Expressions and Parentheses, a dedicated expression-controls
+row appears directly above the approved four-column calculator keypad:
+
+```text
+┌────┬────┐
+│ (  │ )  │
+└────┴────┘
+```
+
+- `(` and `)` are adjacent, standard-size controls aligned with the first two
+  keypad columns;
+- this row adds expression controls without replacing, shrinking, or
+  reordering any control in the existing keypad grid;
+- the controls use the same spacing, button height, focus treatment, and
+  responsive behavior as the keypad;
+- an expression may be temporarily incomplete while it is being edited;
+  attempting to calculate an incomplete or unbalanced expression uses the
+  existing inline error area and recovery behavior.
+
+The controls are part of the v0.2.0 expression workflow, not a future
+scientific-mode feature.
+
+### Base Keypad
 
 ```text
 ┌────┬────┬────┬────┐
@@ -96,10 +122,19 @@ Do not use `alert()` for normal calculator errors.
 
 ### Button Groups
 
-1. Numeric buttons
-2. Arithmetic operators
-3. System actions
-4. Equals action
+1. Expression controls
+2. Numeric buttons
+3. Arithmetic operators
+4. System actions
+5. Equals action
+
+### Expression Controls
+
+- `(` — open parenthesis;
+- `)` — close parenthesis.
+
+Both controls append to the expression being edited. They do not calculate the
+expression themselves.
 
 ### Numeric Buttons
 
@@ -259,6 +294,8 @@ Supported keys:
 *
 /
 .
+(
+)
 Enter
 =
 Backspace
@@ -272,6 +309,7 @@ Mapping:
 - `Backspace` — delete the last digit;
 - `*` is displayed as `×`;
 - `/` is displayed as `÷`.
+- `(` and `)` enter the corresponding parenthesis in the expression.
 
 Keyboard interaction should provide visual feedback similar to button interaction.
 
@@ -297,6 +335,8 @@ Suggested labels:
 ± → Toggle positive or negative
 ÷ → Divide
 × → Multiply
+( → Open parenthesis
+) → Close parenthesis
 ```
 
 ## Motion and Feedback
@@ -354,7 +394,7 @@ unless the change is approved by both team members and documented here.
 Codex and Claude must:
 
 - use the same design tokens;
-- preserve the approved keypad grid;
+- preserve the approved base keypad grid and expression-controls row;
 - use consistent naming;
 - avoid unnecessary inline styles;
 - avoid unapproved UI libraries;
