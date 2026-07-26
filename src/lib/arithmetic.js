@@ -37,7 +37,9 @@ function assertFiniteNumber(value, label) {
  * DECIMAL_PLACES are truncated at that precision.
  */
 function roundResult(value) {
-  if (!Number.isFinite(value)) return value;
+  if (!Number.isFinite(value)) {
+    throw new ArithmeticError('Result is too large to represent', 'OVERFLOW');
+  }
   const factor = 10 ** DECIMAL_PLACES;
   return Math.round((value + Number.EPSILON) * factor) / factor;
 }

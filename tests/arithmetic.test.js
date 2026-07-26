@@ -1,6 +1,13 @@
 import { expect, test } from 'vitest';
 
-import { ArithmeticError, add, applyOperation, divide, multiply, subtract } from '../src/lib/arithmetic.js';
+import {
+  ArithmeticError,
+  add,
+  applyOperation,
+  divide,
+  multiply,
+  subtract,
+} from '../src/lib/arithmetic.js';
 
 // --- addition ---
 
@@ -94,4 +101,15 @@ test('applyOperation dispatches to the correct operation', () => {
 
 test('applyOperation rejects an unsupported operator', () => {
   expect(() => applyOperation('%', 5, 2)).toThrow(ArithmeticError);
+});
+
+// --- overflow ---
+
+test('multiplication overflow throws a controlled OVERFLOW error instead of returning Infinity', () => {
+  expect(() => multiply(Number.MAX_VALUE, 2)).toThrow(ArithmeticError);
+  try {
+    multiply(Number.MAX_VALUE, 2);
+  } catch (error) {
+    expect(error.code).toBe('OVERFLOW');
+  }
 });
