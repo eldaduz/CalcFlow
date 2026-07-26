@@ -13,9 +13,9 @@ The AI must verify all live information against Jira and GitHub before acting.
 ## Last Updated
 
 - Date: 2026-07-26
-- Updated by: Gavi / Claude
-- Human owner: Gavi
-- AI used: Claude
+- Updated by: Eldad / Codex
+- Human owner: Eldad
+- AI used: Codex
 
 ## Current Release
 
@@ -55,12 +55,12 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 - Jira Feature: CFL-16 — Expression Evaluation
 - Owner: Eldad
-- Jira status: Selected for Development
-- Work mode: Standard non-Foundation workflow; preparation only under the approved temporary sequencing exception
-- Branch and Pull Request: None yet; create `feature/CFL-16-expression-evaluation` only after the planning approval
-- First Work Item: CFL-52 — Select and Document the Expression Parser Approach (Backlog)
-- Dependencies: CFL-14 is independent and may proceed in parallel; CFL-16 blocks CFL-17, CFL-18, CFL-20, and CFL-21
-- Next required action: Switch to GPT-5.6 Sol / High for the parser-planning decision, present the plan, and obtain human approval before creating a branch or moving CFL-52 to In Progress
+- Jira status: In Progress
+- Work mode: Standard non-Foundation workflow under the approved temporary sequencing exception
+- Branch and Pull Request: `feature/CFL-16-expression-evaluation` is published; no pull request yet
+- Current Work Items: CFL-52 is Done; CFL-53 is In Progress with a committed, tested standalone evaluator; CFL-54 remains Backlog
+- Dependencies: CFL-14 and CFL-16 may proceed in parallel. CFL-54 integration will consume the CFL-14 expression-editor contract; CFL-16 blocks CFL-17, CFL-18, CFL-20, and CFL-21
+- Next required action: Preserve the standalone evaluator checkpoint while CFL-14/CFL-51 establish the approved expression editing contract; then complete CFL-54 in the existing Feature branch
 
 ### Gavi
 
@@ -99,6 +99,7 @@ Resolves the two judgment calls CFL-13 flagged to Eldad (see above). Eldad repli
 
 - **`0` button double width — approved as double-width.** This matches the existing keypad diagram (design.md line ~93) and the permissive note at line ~108, and matches what CFL-13 already implemented. Action still pending: when design.md is next safely editable (i.e. after CFL-12/13 land, per Gavi's instruction to avoid touching it while in-flight work depends on it), remove item 4 from "Open Design Decisions" — no other text changes needed, since the diagram/description already assume double-width.
 - **Keyboard support — confirmed as a requirement, no design.md change needed.** design.md's "Keyboard Support" section was already written as a required MVP capability, not a judgment call — CFL-13 simply deferred _when_ it ships, not _whether_ it's required. Checked Jira and confirmed there is no gap: Feature CFL-24 "Keyboard Support" already exists in Backlog (Epic CFL-5, owned by Gavi) with stories CFL-69 (core keyboard controls) and CFL-70 (scientific shortcuts/focus safety); CFL-51 (parentheses/expression keyboard entry) sits under CFL-14, whose own acceptance criteria already state "Keyboard expression input is supported at the level required by this release." Nothing new needs to be created.
+- **Expression controls — approved for v0.2.0.** Eldad and Gavi approved a dedicated `(` / `)` row above the existing base keypad, plus matching keyboard input. The row preserves the base four-column keypad. `design.md` and the expression-controls design record define the shared UI contract; CFL-14/CFL-51 own editing and input, and CFL-54 connects that contract to CFL-16 evaluation.
 
 ## Latest Verified Progress
 
@@ -204,11 +205,11 @@ Update this file when:
 
 ## Latest Handoff
 
-- Work completed: CFL-49 environment validation performed by Gavi on `main` at `4cbd443`; evidence recorded as a Jira comment, CFL-49 moved In Progress → QA with human approval; SECOND_BRAIN.md update committed to `main` in `0171a1e`; initial diagnosis (Corepack workaround, apparent npm/npx hang) corrected on 2026-07-26 after finding the real cause was an `nvm`-managed Node 24.18.0/npm 11.16.0 install not being picked up by non-interactive shells
-- Files or areas changed: SECOND_BRAIN.md only, commit `0171a1e` (plus this correction)
-- Verification performed, using nvm-managed Node 24.18.0/npm 11.16.0 (matches documented toolchain exactly): clean `npm ci`; lint; format:check; test; coverage (100%); build; dev server HTTP 200; preview server HTTP 200; `git commit` with the `lint-staged` pre-commit hook completed successfully
-- Current risks: CI and deployment are not configured; no other open risks from CFL-49
-- Next safe action: Push `main` to `origin` if desired; human owner selects Gavi's first Feature (CFL-12 — Basic Arithmetic) per the approved sequence once CFL-11 completes; if working in a non-interactive/AI-driven shell on Gavi's machine, remember to put `~/.nvm/versions/node/v24.18.0/bin` on `PATH` first
+- Work completed: Eldad and Gavi approved v0.2.0 expression controls; `design.md` now records the dedicated parentheses row and keyboard mappings. CFL-16 operational state was reconciled from live Jira and GitHub.
+- Files or areas changed: design.md, docs/superpowers/specs/2026-07-26-expression-controls-design.md, and SECOND_BRAIN.md
+- Verification performed: full design document and project process documents reviewed; live Jira checked for CFL-14/CFL-16/CFL-51/CFL-52/CFL-53/CFL-54; GitHub confirmed the published CFL-16 branch and no Feature pull request
+- Current risks: CFL-14 and CFL-51 remain Backlog; until their editing contract is implemented, CFL-54 UI integration remains pending. CI and deployment are not configured.
+- Next safe action: Gavi plans and implements CFL-14/CFL-51 against the approved expression-controls design; Eldad preserves CFL-16's standalone evaluator until CFL-54 integration can begin
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
