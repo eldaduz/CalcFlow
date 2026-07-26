@@ -94,10 +94,13 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 ### Gavi
 
-- Next Feature: To be selected according to PROJECT_PLAN.md, Jira dependencies, and approved ownership
-- First Work Item: Not yet approved
-- Required action: Wait until the Feature is explicitly selected
-- Human approval required: Yes
+- Current Feature: CFL-13 — Basic Calculator Interaction (Selected for Development → In Progress, approved plan, implementation started 2026-07-26)
+- Branch: `feature/CFL-13-basic-calculator-interaction`, created off `feature/CFL-12-basic-arithmetic` (tip `278919c`) — approved exception, since CFL-13 depends on `src/lib/arithmetic.js` which only exists on that unmerged branch (PR #1). Will be rebased onto `main` before CFL-13's own PR is opened, once PR #1 merges.
+- Flagged design.md judgment calls (for Eldad's visibility, not permanent decisions — also recorded as a CFL-13 Jira comment):
+  1. design.md's approved MVP keypad diagram already draws `0` double-width, but "Open Design Decisions" #4 separately lists 0's width as unapproved — the two parts of design.md contradict each other. Implemented double-width for now (matching the diagram), behind a single CSS var/class so it's trivial to flip.
+  2. CFL-13's Jira acceptance criteria say nothing about keyboard input (unlike CFL-14's AC and the separate future "Keyboard Support" Feature, v0.6.0). CFL-13 is scoped to click/tap interaction only; keyboard entry is deferred to CFL-14 and the dedicated Keyboard Support feature.
+- Next Feature after CFL-13: CFL-14 — Expression Input and Editing, per the approved Gavi track (CFL-12 → CFL-13 → CFL-14)
+- Human approval required: Yes, at the standard PROJECT_PLAN control points (PR/reviewer, QA plan, merge, Done)
 
 ## Latest Verified Progress
 
