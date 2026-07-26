@@ -108,6 +108,18 @@ body {
   padding: 0 var(--space-4);
 }
 
+.calculator-keypad-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.calculator-expression-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-8);
+}
+
 .calculator-keypad {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -140,14 +152,6 @@ body {
 
 .calculator-button--operator {
   background: var(--color-operator-button);
-}
-
-/* Open design decision: "whether the active operator is highlighted" is
-   unresolved. design.md's Button States section permits the active
-   operator to "remain visually active"; this class is provided so that
-   behaviour can be turned on without inventing a new color token. */
-.calculator-button--operator.is-active {
-  outline: 2px solid var(--color-focus);
 }
 
 .calculator-button--action {
