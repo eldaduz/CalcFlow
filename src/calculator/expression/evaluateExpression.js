@@ -164,6 +164,16 @@ function parse(tokens) {
 }
 
 export function evaluateExpression(source) {
+  if (typeof source !== 'string') {
+    return {
+      ok: false,
+      error: {
+        code: 'INVALID_EXPRESSION',
+        message: errorMessages.INVALID_EXPRESSION,
+      },
+    };
+  }
+
   if (source.length > maximumExpressionLength) {
     return {
       ok: false,

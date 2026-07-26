@@ -44,6 +44,16 @@ test('returns a controlled error for empty input', () => {
   });
 });
 
+test('returns a controlled error for a non-string source', () => {
+  expect(evaluateExpression(null)).toEqual({
+    ok: false,
+    error: {
+      code: 'INVALID_EXPRESSION',
+      message: 'Check the expression and try again.',
+    },
+  });
+});
+
 test('returns a controlled error for division by zero', () => {
   expect(evaluateExpression('1 / 0')).toEqual({
     ok: false,
@@ -131,6 +141,12 @@ test('returns a controlled error for nesting deeper than 32 levels', () => {
       message: 'The expression is nested too deeply.',
     },
   });
+});
+
+test('evaluates an expression nested exactly 32 levels deep', () => {
+  const expression = `${'('.repeat(32)}1${')'.repeat(32)}`;
+
+  expect(evaluateExpression(expression)).toEqual({ ok: true, value: 1 });
 });
 
 test('returns a controlled error for a non-finite result', () => {
