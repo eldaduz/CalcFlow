@@ -122,7 +122,21 @@ function formatResultForExpression(value) {
 }
 
 function evaluateCurrentExpression(state) {
-  const result = evaluateExpression(toAsciiExpression(state.expression));
+  let result;
+
+  try {
+    result = evaluateExpression(toAsciiExpression(state.expression));
+  } catch (error) {
+    console.error('Unexpected expression evaluation failure', error);
+    return {
+      ...state,
+      error: {
+        code: 'UNEXPECTED_EVALUATION_ERROR',
+        message:
+          'Something went wrong while evaluating the expression. Please edit it and try again.',
+      },
+    };
+  }
 
   if (result.ok) {
     return {
