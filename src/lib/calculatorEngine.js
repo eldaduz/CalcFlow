@@ -156,6 +156,14 @@ function toggleSign(state) {
   if (state.error) {
     return state;
   }
+  // While awaiting a new operand (an operator was just chosen), the
+  // displayed value is only an echo of the previous operand and is about
+  // to be replaced by the next digit typed -- toggling its sign here would
+  // look like it worked but be silently discarded, exactly like the
+  // display-vs-delete inconsistency this mirrors below.
+  if (state.awaitingOperand) {
+    return state;
+  }
   if (state.currentInput === '0') {
     return state;
   }

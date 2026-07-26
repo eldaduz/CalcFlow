@@ -132,6 +132,21 @@ test('sign toggle on zero has no effect', () => {
   expect(state.currentInput).toBe('0');
 });
 
+test('sign toggle is inert while awaiting the next operand (regression: "8 + ± 3 =" must not silently evaluate as 8 + 3)', () => {
+  // Previously, toggling sign right after choosing an operator flipped the
+  // displayed first-operand echo (showing "-8") without touching
+  // previousOperand or clearing awaitingOperand, so the next digit typed
+  // silently discarded it and "8 + ± 3 =" evaluated as 8 + 3 = 11
+  // while having visually shown "-8" a moment earlier.
+  const afterOperator = dispatchAll([digit('8'), operator('+')]);
+  const afterToggle = calculatorReducer(afterOperator, toggleSign());
+  expect(afterToggle.currentInput).toBe('8');
+  expect(afterToggle.awaitingOperand).toBe(true);
+
+  const final = calculatorReducer(calculatorReducer(afterToggle, digit('3')), equals());
+  expect(final.currentInput).toBe('11');
+});
+
 test('delete does nothing while awaiting a new operand after choosing an operator', () => {
   const state = dispatchAll([digit('8'), operator('+'), del()]);
   expect(state.currentInput).toBe('8');
