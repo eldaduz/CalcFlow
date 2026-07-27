@@ -21,9 +21,9 @@
 
 ## Next safe action
 
-1. Request the required Terra/Medium configuration for Code Review.
-2. Self-review the CFL-19 diff; do not open a PR, begin QA, commit, or change Jira status without approval.
+1. PR #19 is open for Code Review: https://github.com/eldaduz/CalcFlow/pull/19.
+2. Request Gavi review, then wait for approval. Do not begin QA, merge, or change Jira status beyond Code Review.
 
 ## Restart prompt
 
-Continue CalcFlow CFL-19/CFL-60 from `C:\tmp\calcflow-cfl19`. Read `AGENTS.md`, `PROJECT_PLAN.md`, `SECOND_BRAIN.md`, `CODEX_MODEL_GUIDE.md`, `design.md`, and this file. CFL-60 is locally verified; change to GPT-5.6 Terra / Medium before Code Review. Preserve existing CFL-59 work. Do not open a PR, start QA, commit, or move Jira status without approval.
+Continue CalcFlow CFL-19/CFL-60 from `C:\tmp\calcflow-cfl19`. Read `AGENTS.md`, `PROJECT_PLAN.md`, `SECOND_BRAIN.md`, `CODEX_MODEL_GUIDE.md`, `design.md`, and this file. PR #19 is open; use GPT-5.6 Terra / Medium for review. Preserve CFL-19 scope. Do not begin QA, merge, or move Jira status beyond Code Review without approval.

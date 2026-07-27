@@ -42,6 +42,7 @@ The Foundation sequence below is historical context, not current active work.
 - Owner and release: Eldad; v0.4.0 — Scientific Functions.
 - Branch and worktree: `feature/CFL-19-trigonometric-functions`; `C:\tmp\calcflow-cfl19`.
 - Jira status: CFL-19, CFL-59, and CFL-60 are In Progress.
+- Pull Request: [PR #19](https://github.com/eldaduz/CalcFlow/pull/19) is open against `main` for Code Review.
 - CFL-59: Scientific `sin` and `cos` controls insert editable expressions; evaluator supports both functions with explicit DEG/RAD context and RAD default.
 - CFL-60: Scientific `tan` control inserts an editable expression. `tan(45°)` normalizes to `1`; `tan(90°)` returns a controlled error when cosine magnitude is below `1e-12`. CFL-20 UI and persistence remain excluded.
 - Approved boundary: CFL-19 establishes evaluator-level DEG/RAD context and RAD-default UI behavior. CFL-20 exclusively owns visible DEG/RAD selection, forwarding that selection through the calculator UI, and session persistence.
@@ -245,7 +246,7 @@ Update this file when:
 - Scope: Scientific `sin`, `cos`, and `tan` controls insert editable expressions. Evaluator supports all three functions, explicit DEG/RAD context, RAD default, common-angle normalization, and a controlled near-right-angle tangent error. Visible DEG/RAD selection, calculator UI forwarding, session persistence, and scientific keyboard shortcuts remain CFL-20 scope.
 - Verification: focused RED/GREEN cycles, lint, format check, 132 tests, 94.92% statement coverage, production build, and `git diff --check` passed. Baseline was 119 tests.
 - Current risks: repository still has no GitHub Actions workflow. PR #16 resolved previous `npm audit` findings (0 vulnerabilities); CFL-32 records that work.
-- Next safe action: request Terra/Medium for Code Review, then self-review. Do not open a PR, start QA, commit, or move Jira status without approval.
+- Next safe action: await Gavi review on PR #19. Do not begin QA, merge, or move Jira status beyond Code Review without approval.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
