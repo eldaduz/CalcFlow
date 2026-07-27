@@ -1,17 +1,22 @@
-# CalcFlow handoff — 2026-07-27
+# CalcFlow handoff
 
-## State
+## Verified state
 
-- Branch: `codex/cfl-17-powers-and-roots`, clean and pushed.
-- PR: https://github.com/eldaduz/CalcFlow/pull/13, ready for review.
-- Jira: CFL-17, CFL-55, and CFL-56 are Code Review.
-- Verification: lint, format, build, diff check; 103 tests; 95.28% statement coverage.
-- CFL-18 contract: `log` / `ln` insert expression functions; CFL-18 owns parser grammar. Jira comment 10313.
+- CFL-17, CFL-55, CFL-56: Done; PR #13 merged; Vercel and production smoke passed.
+- PR #14: draft, `chore/cfl17-done-docs`; updates `SECOND_BRAIN.md`.
+- CFL-18: Gavi-owned, Code Review; PR #10 open.
+- CFL-19: Eldad-owned, Backlog; blocks CFL-20.
+
+## Current decision
+
+- User approved CFL-19 task-level model escalation: Terra / Medium by default; Terra / High only for tangent tolerance, angle-mode contract, or cross-feature failure.
+- `CODEX_MODEL_GUIDE.md` still conflicts: CFL-19 default is Terra / High.
 
 ## Next action
 
-Request Gavi as PR reviewer once his GitHub username is known. Then wait for review; no QA or merge without approval.
+1. Create a separate CFL-19 guide-update branch from `main`; update its matrix to Terra / Medium with the approved High escalation triggers; open PR and merge it.
+2. Re-read required project documents, verify Jira/GitHub, present CFL-19 plan, and begin after approval.
 
 ## Restart prompt
 
-Continue CalcFlow from `C:\tmp\calcflow-cfl-17`. Read `CODEX_HANDSHAKE.md`, `AGENTS.md`, `PROJECT_PLAN.md`, `SECOND_BRAIN.md`, `CODEX_MODEL_GUIDE.md`, and `design.md`; verify live Jira/GitHub before changes. CFL-17 is in Code Review on PR #13. Request Gavi's review if his GitHub username is available; otherwise wait for it. Do not start QA or merge without the required approval.
+Continue CalcFlow CFL-19. Read `AGENTS.md`, `PROJECT_PLAN.md`, `SECOND_BRAIN.md`, `CODEX_MODEL_GUIDE.md`, and `design.md`. Verify live Jira/GitHub. Preserve PR #14 scope. Use Caveman and Ponytail. Update the CFL-19 model matrix before starting Feature work.
