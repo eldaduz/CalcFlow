@@ -308,6 +308,69 @@ test('log and ln buttons insert inline expression functions and are hidden in Ba
   expect(currentValue()).toBe('0');
 });
 
+test('absolute value, factorial, and constant buttons are hidden in Basic mode', () => {
+  renderCalculator();
+
+  expect(() => clickButton('|x|')).toThrow('No button found');
+  expect(() => clickButton('x!')).toThrow('No button found');
+  expect(() => clickButton('π')).toThrow('No button found');
+  expect(() => clickButton('e')).toThrow('No button found');
+});
+
+test('absolute value wraps a negative operand using the shared expression flow', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('|x|');
+  clickButton('−');
+  clickButton('5');
+  clickButton('|x|');
+  clickButton('=');
+
+  expect(currentValue()).toBe('5');
+  expect(previousExpression()).toBe('|−5|');
+});
+
+test('factorial applies to the preceding operand and combines with power', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('5');
+  clickButton('x!');
+  clickButton('=');
+
+  expect(currentValue()).toBe('120');
+});
+
+test('factorial reports a controlled domain error for a negative operand', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('(');
+  clickButton('−');
+  clickButton('1');
+  clickButton(')');
+  clickButton('x!');
+  clickButton('=');
+
+  expect(errorText()).not.toBe('');
+  expect(currentValue()).toBe('(−1)!');
+});
+
+test('pi and e constants evaluate to their known values', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('π');
+  clickButton('=');
+  expect(currentValue()).toBe('3.14159265359');
+
+  clickButton('AC');
+  clickButton('e');
+  clickButton('=');
+  expect(currentValue()).toBe('2.71828182846');
+});
+
 test('log recovers from a domain error by editing the argument in place', () => {
   renderCalculator();
 

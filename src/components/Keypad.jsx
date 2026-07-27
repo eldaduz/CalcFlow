@@ -34,6 +34,9 @@ export default function Keypad({
   onSquareRoot,
   onNthRoot,
   onFunction,
+  onFactorial,
+  onAbs,
+  onConstant,
 }) {
   return (
     <div className="calculator-keypad-section">
@@ -86,6 +89,38 @@ export default function Keypad({
             onClick={() => onFunction('ln')}
           >
             ln
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Absolute value"
+            onClick={onAbs}
+          >
+            |x|
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Factorial"
+            onClick={onFactorial}
+          >
+            x!
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Pi"
+            onClick={() => onConstant('π')}
+          >
+            π
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Euler's number"
+            onClick={() => onConstant('e')}
+          >
+            e
           </button>
         </div>
       )}
