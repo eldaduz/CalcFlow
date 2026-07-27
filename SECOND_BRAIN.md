@@ -237,7 +237,7 @@ Update this file when:
 
 - Work completed: CFL-17 and child items CFL-55/CFL-56 are Done. PR #13 was Gavi-approved and merged to `main` as `e5c0ed2`.
 - Verification performed: lint, format check, 105 tests, coverage (95.66% statements), production build, `git diff --check`, Vercel deployment, and production smoke all passed.
-- Current risks: `npm audit` reported 10 high-severity dependency findings; track dependency follow-up under CFL-32 rather than reopening CFL-17.
+- Current risks: repository still has no GitHub Actions workflow; Vercel checks passed. PR #16 resolved previous `npm audit` findings (0 vulnerabilities); CFL-32 records that work.
 - Next safe action: wait for human selection and approval of the next Feature.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
