@@ -1,15 +1,20 @@
+import { ln, log10, LogarithmError } from '../../lib/logarithm.js';
+
 const errorMessages = {
   DIVISION_BY_ZERO: 'Cannot divide by zero.',
   EMPTY_EXPRESSION: 'Enter an expression.',
   EXPRESSION_TOO_LONG: 'The expression is too long.',
   INVALID_CHARACTER: 'Use only numbers and calculator operators.',
   INVALID_EXPRESSION: 'Check the expression and try again.',
+  LOG_DOMAIN_ERROR: 'Logarithm is only defined for positive numbers.',
   NESTING_LIMIT_EXCEEDED: 'The expression is nested too deeply.',
   NON_FINITE_RESULT: 'The result is outside the supported range.',
   POWER_DOMAIN_ERROR: 'This power is undefined in the real numbers.',
   ROOT_DOMAIN_ERROR: 'This root is undefined in the real numbers.',
   UNMATCHED_PARENTHESIS: 'Check the parentheses in the expression.',
 };
+
+const functionsByName = { log: log10, ln };
 
 const maximumExpressionLength = 512;
 const maximumNestingDepth = 32;
@@ -56,6 +61,21 @@ function tokenize(source) {
     if ('+-*/^√()'.includes(character)) {
       tokens.push({ type: character, value: character });
       index += 1;
+      continue;
+    }
+
+    if (/[a-z]/i.test(character)) {
+      const start = index;
+      while (/[a-z]/i.test(source[index] ?? '')) {
+        index += 1;
+      }
+
+      const name = source.slice(start, index);
+      if (!Object.hasOwn(functionsByName, name)) {
+        throw new ExpressionError('INVALID_CHARACTER');
+      }
+
+      tokens.push({ type: 'function', value: name });
       continue;
     }
 
@@ -147,9 +167,43 @@ function parse(tokens) {
     return left;
   }
 
+  function parseFunctionCall(name) {
+    if (!consume('(')) {
+      throw new ExpressionError('INVALID_EXPRESSION');
+    }
+
+    nestingDepth += 1;
+    if (nestingDepth > maximumNestingDepth) {
+      throw new ExpressionError('NESTING_LIMIT_EXCEEDED');
+    }
+
+    const argument = parseExpression();
+    if (!consume(')')) {
+      throw new ExpressionError('UNMATCHED_PARENTHESIS');
+    }
+    nestingDepth -= 1;
+
+    try {
+      return functionsByName[name](argument);
+    } catch (error) {
+      if (error instanceof LogarithmError) {
+        throw new ExpressionError(
+          error.code === 'LOG_DOMAIN_ERROR' ? 'LOG_DOMAIN_ERROR' : 'NON_FINITE_RESULT',
+        );
+      }
+      throw error;
+    }
+  }
+
   function parsePrimary() {
     if (consume('√')) {
       return evaluateRoot(2, parseUnary());
+    }
+
+    if (current()?.type === 'function') {
+      const name = current().value;
+      index += 1;
+      return parseFunctionCall(name);
     }
 
     if (current()?.type === 'number') {

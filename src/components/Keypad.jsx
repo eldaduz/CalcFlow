@@ -33,6 +33,7 @@ export default function Keypad({
   onPower,
   onSquareRoot,
   onNthRoot,
+  onFunction,
 }) {
   return (
     <div className="calculator-keypad-section">
@@ -69,6 +70,22 @@ export default function Keypad({
             onClick={onNthRoot}
           >
             ⁿ√
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Base-10 logarithm"
+            onClick={() => onFunction('log')}
+          >
+            log
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Natural logarithm"
+            onClick={() => onFunction('ln')}
+          >
+            ln
           </button>
         </div>
       )}
