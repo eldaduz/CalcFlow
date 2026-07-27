@@ -129,6 +129,7 @@ palette, or fixed-position layout is authorized.
 Resolved:
 
 - `0` is double width.
+- The calculator has a visible header.
 - Scientific mode is the approved Basic / Scientific toggle on one shared
   calculator surface.
 - Active-operator highlighting is obsolete.
@@ -137,6 +138,7 @@ Still open and not to be guessed:
 
 - primary theme, final palette, and font family;
 - final header/subtitle presentation;
+- whether the previous-expression line is always displayed when empty;
 - exact scientific control grid/order beyond preserving the shared surface;
 - feature-owned scientific keyboard shortcuts.
 

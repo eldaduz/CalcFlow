@@ -132,7 +132,12 @@ function parse(tokens) {
         throw new ExpressionError('POWER_DOMAIN_ERROR');
       }
 
-      return left ** right;
+      const result = left ** right;
+      if (Number.isNaN(result)) {
+        throw new ExpressionError('POWER_DOMAIN_ERROR');
+      }
+
+      return result;
     }
 
     if (consume('√')) {

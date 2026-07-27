@@ -256,6 +256,12 @@ test('an operator after "=" continues the calculation from the result', () => {
   expect(next.expression).toBe('20');
 });
 
+test('square root after "=" starts a fresh prefix expression', () => {
+  const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
+  const next = expressionReducer(evaluated, squareRoot());
+  expect(next).toEqual({ ...initialState, expression: '√' });
+});
+
 // --- sign toggle ---
 
 test('sign toggle flips a plain trailing number', () => {

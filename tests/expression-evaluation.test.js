@@ -106,6 +106,16 @@ test('returns a controlled error for zero to a negative power', () => {
   });
 });
 
+test('returns a power-domain error for a negative base with a fractional exponent', () => {
+  expect(evaluateExpression('(-4)^0.5')).toEqual({
+    ok: false,
+    error: {
+      code: 'POWER_DOMAIN_ERROR',
+      message: 'This power is undefined in the real numbers.',
+    },
+  });
+});
+
 test('returns a controlled error for empty input', () => {
   expect(evaluateExpression('   ')).toEqual({
     ok: false,
