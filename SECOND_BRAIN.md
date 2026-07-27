@@ -73,8 +73,9 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - Approved UI decision: Basic / Scientific toggle on one shared calculator surface. `design.md` now records future UI contracts without implementing future Feature behavior. CFL-18 received this decision in Jira comment 10280.
 - CFL-17 expression contract: `^` is exponentiation; `x²` appends `^2`; prefix `√` is square root; infix `√` is nth root (`degree√radicand`). Controlled real-domain errors preserve expression editing and use the existing inline error path.
 - Baseline: `npm ci` completed; 86 tests passed before CFL-17 changes. Sandbox test-cache permission requires elevated execution in this worktree.
-- Implementation: powers, roots, Basic/Scientific toggle, and CFL-17 controls are implemented through TDD and task review. No CFL-18+ behavior is implemented.
-- Next safe action: full verification, Feature self-review, then Code Review preparation.
+- Implementation: powers, roots, Basic/Scientific toggle, and CFL-17 controls are implemented through TDD and internal review. No CFL-18+ behavior is implemented.
+- Verification: final lint and format checks passed; 103 tests passed; coverage was 95.28% statements and 92.47% branches; production build and diff check passed. Internal review found and fixed prefix-root exponent entry; scoped re-review was clean.
+- Next safe action: push the Feature branch, open the primary PR, then move CFL-17/CFL-55/CFL-56 to Code Review and request Gavi's review.
 
 ### Gavi
 
