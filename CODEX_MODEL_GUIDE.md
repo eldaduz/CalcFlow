@@ -66,9 +66,10 @@ Actual usage still depends on context size, cached input, output length, tool ca
 Selection policy:
 
 - Prefer **GPT-5.4 Mini** for narrow documentation, repetitive checks, simple configuration, release administration, and report generation.
+- Use the lowest sufficient model and reasoning for routine GitHub, Jira, status, and documentation work; a Feature's delivery stage alone does not increase that requirement.
 - Prefer **GPT-5.6 Luna** for well-defined implementation with limited architectural risk.
 - Prefer **GPT-5.6 Terra** for normal engineering work, moderate state logic, integration, testing, QA, and debugging.
-- Prefer **GPT-5.6 Sol** only for genuinely complex parser architecture, cross-Feature reasoning, high-risk logic, difficult debugging, or high-risk review.
+- Prefer **GPT-5.6 Sol** only for genuinely high-complexity parser architecture, cross-Feature reasoning, high-risk logic, difficult debugging, or high-risk review.
 - **GPT-5.4** is not the default because it costs the same as Terra; use it only after explicit human approval for a demonstrated compatibility or quality reason.
 - **GPT-5.5** is not the default because it costs the same as Sol; use it only after explicit human approval for a demonstrated task-specific advantage.
 - Use **Medium** reasoning by default.
@@ -131,7 +132,7 @@ For Gavi-owned Features, Codex will normally use the **Review / QA** configurati
 | CFL-12 — Basic Arithmetic                          | Gavi  | GPT-5.6 Luna / Medium                                                                         | GPT-5.6 Luna / Medium  | Precision, rounding, or numeric edge cases remain unresolved → Terra / High                                     |
 | CFL-13 — Basic Calculator Interaction              | Gavi  | GPT-5.6 Luna / Medium                                                                         | GPT-5.6 Terra / Medium | State transitions interact incorrectly across multiple actions → Terra / High                                   |
 | CFL-14 — Expression Input and Editing              | Gavi  | GPT-5.6 Terra / Medium                                                                        | GPT-5.6 Terra / High   | Expression-state design becomes coupled to parser architecture → Sol / High                                     |
-| CFL-16 — Expression Evaluation                     | Eldad | Planning and parser decision: GPT-5.6 Sol / High. Implementation and UT: GPT-5.6 Terra / High | GPT-5.6 Sol / High     | Nested precedence, parser safety, or cross-Feature failures remain unresolved → Sol / Extra High after approval |
+| CFL-16 — Expression Evaluation                     | Eldad | Planning, implementation, and unit tests: GPT-5.6 Terra / Medium; normal parser work included | GPT-5.6 Terra / Medium | Complex parser-safety or cross-Feature review and QA → Terra / High; Sol / High only for genuinely complex risk |
 | CFL-17 — Powers and Roots                          | Eldad | GPT-5.6 Terra / Medium                                                                        | GPT-5.6 Terra / Medium | Domain, precision, or nth-root edge cases remain unresolved → Terra / High                                      |
 | CFL-18 — Logarithmic Functions                     | Gavi  | GPT-5.6 Luna / Medium                                                                         | GPT-5.6 Terra / Medium | Domain or parser-integration failures → Terra / High                                                            |
 | CFL-19 — Trigonometric Functions                   | Eldad | GPT-5.6 Terra / High                                                                          | GPT-5.6 Terra / High   | Undefined-angle tolerance or DEG/RAD cross-feature failure → Sol / High                                         |
@@ -167,7 +168,7 @@ After the difficult step is resolved and verified, request a downgrade to the Fe
 
 ## 8. Review Rule
 
-The reviewer must use the Review / QA column, not automatically the implementation configuration.
+Substantive review and QA must use the Review / QA column, not automatically the implementation configuration. Routine GitHub, Jira, status, and documentation work uses the lowest sufficient configuration instead.
 
 A review must verify:
 

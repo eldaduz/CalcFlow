@@ -57,13 +57,13 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 - Jira Feature: CFL-16 — Expression Evaluation
 - Owner: Eldad
-- Jira status: Code Review
+- Jira status: Done (2026-07-26)
 - Work mode: Standard non-Foundation workflow under the approved temporary sequencing exception
-- Branch and Pull Request: `feature/CFL-16-expression-evaluation`; [PR #9](https://github.com/eldaduz/CalcFlow/pull/9) is open and ready for Gavi's review. PR #6 (evaluator core) is merged.
-- Current Work Items: CFL-52 is Done; CFL-53 is in QA with merged evaluator-core evidence; CFL-54 is in Code Review.
+- Branch and Pull Request: `feature/CFL-16-expression-evaluation`; [PR #9](https://github.com/eldaduz/CalcFlow/pull/9) was approved by Gavi and merged to `main` as `a3eea0d`. PR #6 (evaluator core) is merged.
+- Current Work Items: CFL-52, CFL-53, and CFL-54 are Done.
 - Dependencies: CFL-14/CFL-51 are merged and Ready for Deployment. Their editor already invokes `evaluateExpression`, displays expected controlled errors, and preserves normal in-place recovery. CFL-16 blocks CFL-17, CFL-18, CFL-20, and CFL-21.
 - CFL-54 scope: only unexpected evaluator-boundary containment and lightweight `console.error` observability. No duplicate editor, keypad, keyboard, normal parser-error UI, or persistent logging work (CFL-27 owns the latter).
-- Next required action: Gavi reviews PR #9. After direct verification of approval, no active change requests, and passing checks, prepare the Feature QA/regression plan for Eldad's approval before QA begins.
+- Completion evidence: Gavi approved PR #9 with no blocking issues; Vercel checks passed; QA passed (lint, formatting, 86 tests, 96.07% statement coverage, build, and diff check); production smoke passed, including precedence, parentheses, controlled division-by-zero recovery, and no console errors.
 
 ### Gavi
 
@@ -83,10 +83,8 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 ### Eldad
 
 - Current Foundation Feature: CFL-11 — Foundation Documentation and Verification (In Progress; blocked on Gavi's CFL-49 validation)
-- Active parallel Feature: CFL-16 — Expression Evaluation (Code Review; evaluator core and CFL-14 integration are merged)
-- Work mode: CFL-11 stays direct on `main`; CFL-16 uses the standard branch-and-PR workflow
-- Required action: Gavi reviews PR #9; for CFL-11, wait for Gavi's CFL-49 evidence
-- Human approval required: Gavi's peer-review approval is required before CFL-16 QA. Eldad must approve the QA plan before execution and approve again before merge.
+- Completed parallel Feature: CFL-16 — Expression Evaluation (Done; evaluator core and CFL-14 integration are merged)
+- Required action: for CFL-11, wait for Gavi's CFL-49 evidence
 
 ### Gavi
 
@@ -136,17 +134,12 @@ Resolves the two judgment calls CFL-13 flagged to Eldad (see above). Eldad repli
 - Unit tests: Vitest 4 with jsdom is configured; the App shell has one meaningful render test and both test and coverage commands pass
 - QA: CFL-9/CFL-10 feature-level QA passed: clean `npm ci`, dependency check, entry verification, lint, formatting, test, coverage, build, diff, and dev/preview HTTP 200 smoke checks
 - Regression: CFL-15/CFL-34 combined regression passed
-- Deployment: Vercel preview deployments are configured; the current CFL-16 pull-request preview check succeeded
-- Smoke test: Local development server returned HTTP 200
+- Deployment: Vercel preview checks succeeded for PR #9; production smoke passed after merge
+- Smoke test: Production verification passed for precedence, parentheses, controlled division-by-zero recovery, and a clean browser console
 
 ## Open Reviews
 
-- Pull Request: [#9 — CFL-16: Expression Evaluation](https://github.com/eldaduz/CalcFlow/pull/9)
-- Feature and work item: CFL-16 / CFL-54
-- Owner: Eldad
-- Reviewer: Gavi (`GaviLazan`) requested
-- Review status: Open, ready for review, mergeable, and awaiting human approval
-- Check status: Vercel and Vercel Preview Comments succeeded; no repository GitHub Actions workflow is configured
+- None for CFL-16: [PR #9](https://github.com/eldaduz/CalcFlow/pull/9) was approved by Gavi, checks passed, and it is merged to `main`.
 
 ## Open Bugs and Blockers
 
@@ -219,11 +212,11 @@ Update this file when:
 
 ## Latest Handoff
 
-- Work completed: CFL-54 now contains unexpected evaluator failures at the `expressionEngine` boundary. A thrown evaluator error becomes a friendly inline error, preserves the expression for correction or retry, and records the unexpected failure with `console.error`. Expected evaluator errors continue unchanged.
-- Files or areas changed: `src/lib/expressionEngine.js`, `tests/expressionEngineUnexpectedFailure.test.js`, and SECOND_BRAIN.md.
-- Verification performed: test-first failure observed, then the focused tests passed; full pipeline passed: lint, format check, 86 tests, coverage (96.07% statements), production build, and `git diff --check`.
-- Current risks: normal expression integration is already delivered by merged CFL-14/CFL-51. This continuation awaits Gavi's peer review; Vercel checks passed, but the repository still has no GitHub Actions workflow.
-- Next safe action: Gavi reviews PR #9. Do not enter QA until GitHub approval and checks are verified and Eldad approves the CFL-16 QA/regression plan.
+- Work completed: CFL-16 and child items CFL-52/CFL-53/CFL-54 are Done. PR #9 was Gavi-approved and merged to `main` as `a3eea0d`.
+- Verification performed: lint, format check, 86 tests, coverage (96.07% statements), production build, `git diff --check`, Vercel checks, and production browser smoke all passed.
+- Production smoke: `2 + 3 × 4 = 14`; `(2 + 3) × 4 = 20`; division-by-zero error appears and recovers to `2 ÷ 2 = 1`; browser console had no errors.
+- Current risks: repository still has no GitHub Actions workflow; Vercel checks passed.
+- Next safe action: wait for human selection and approval of the next Feature; CFL-11 remains blocked on Gavi's CFL-49 validation.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
