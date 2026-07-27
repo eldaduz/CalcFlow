@@ -8,11 +8,18 @@ const errorMessages = {
   NON_FINITE_RESULT: 'The result is outside the supported range.',
   POWER_DOMAIN_ERROR: 'This power is undefined in the real numbers.',
   ROOT_DOMAIN_ERROR: 'This root is undefined in the real numbers.',
+  TANGENT_UNDEFINED: 'Tangent is undefined for this angle.',
   UNMATCHED_PARENTHESIS: 'Check the parentheses in the expression.',
 };
 
 const maximumExpressionLength = 512;
 const maximumNestingDepth = 32;
+const trigonometricTolerance = 1e-12;
+
+function normalizeTrigonometricResult(result) {
+  const nearestInteger = Math.round(result);
+  return Math.abs(result - nearestInteger) < trigonometricTolerance ? nearestInteger : result;
+}
 
 class ExpressionError extends Error {
   constructor(code) {
@@ -53,6 +60,21 @@ function tokenize(source) {
       continue;
     }
 
+    if (/[a-z]/i.test(character)) {
+      const start = index;
+      while (/[a-z]/i.test(source[index] ?? '')) {
+        index += 1;
+      }
+
+      const value = source.slice(start, index);
+      if (value !== 'sin' && value !== 'cos' && value !== 'tan') {
+        throw new ExpressionError('INVALID_CHARACTER');
+      }
+
+      tokens.push({ type: 'function', value });
+      continue;
+    }
+
     if ('+-*/^√()'.includes(character)) {
       tokens.push({ type: character, value: character });
       index += 1;
@@ -65,7 +87,7 @@ function tokenize(source) {
   return tokens;
 }
 
-function parse(tokens) {
+function parse(tokens, angleMode) {
   let index = 0;
   let nestingDepth = 0;
 
@@ -148,6 +170,37 @@ function parse(tokens) {
   }
 
   function parsePrimary() {
+    if (current()?.type === 'function') {
+      const functionName = current().value;
+      index += 1;
+      if (!consume('(')) {
+        throw new ExpressionError('INVALID_EXPRESSION');
+      }
+
+      nestingDepth += 1;
+      if (nestingDepth > maximumNestingDepth) {
+        throw new ExpressionError('NESTING_LIMIT_EXCEEDED');
+      }
+
+      const value = parseExpression();
+      if (!consume(')')) {
+        throw new ExpressionError('UNMATCHED_PARENTHESIS');
+      }
+      nestingDepth -= 1;
+
+      const angle = angleMode === 'deg' ? (value * Math.PI) / 180 : value;
+      if (functionName === 'tan' && Math.abs(Math.cos(angle)) < trigonometricTolerance) {
+        throw new ExpressionError('TANGENT_UNDEFINED');
+      }
+      const result =
+        functionName === 'sin'
+          ? Math.sin(angle)
+          : functionName === 'cos'
+            ? Math.cos(angle)
+            : Math.tan(angle);
+      return normalizeTrigonometricResult(result);
+    }
+
     if (consume('√')) {
       return evaluateRoot(2, parseUnary());
     }
@@ -207,7 +260,7 @@ function evaluateRoot(degree, radicand) {
   return radicand ** (1 / degree);
 }
 
-export function evaluateExpression(source) {
+export function evaluateExpression(source, options = {}) {
   if (typeof source !== 'string') {
     return {
       ok: false,
@@ -239,7 +292,7 @@ export function evaluateExpression(source) {
   }
 
   try {
-    const value = parse(tokenize(source));
+    const value = parse(tokenize(source), options.angleMode);
     if (!Number.isFinite(value)) {
       throw new ExpressionError('NON_FINITE_RESULT');
     }

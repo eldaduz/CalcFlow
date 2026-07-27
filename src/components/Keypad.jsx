@@ -33,11 +33,23 @@ export default function Keypad({
   onPower,
   onSquareRoot,
   onNthRoot,
+  onSine,
+  onCosine,
+  onTangent,
 }) {
   return (
     <div className="calculator-keypad-section">
       {scientific && (
         <div className="calculator-scientific-row">
+          <button type="button" className="calculator-button" onClick={onSine}>
+            sin
+          </button>
+          <button type="button" className="calculator-button" onClick={onCosine}>
+            cos
+          </button>
+          <button type="button" className="calculator-button" onClick={onTangent}>
+            tan
+          </button>
           <button
             type="button"
             className="calculator-button"

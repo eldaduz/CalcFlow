@@ -29,6 +29,53 @@ test('evaluates decimal numbers', () => {
   expect(evaluateExpression('.5 * 8')).toEqual({ ok: true, value: 4 });
 });
 
+test('evaluates sine in degree mode', () => {
+  expect(evaluateExpression('sin(90)', { angleMode: 'deg' })).toEqual({ ok: true, value: 1 });
+});
+
+test('evaluates cosine in degree mode', () => {
+  expect(evaluateExpression('cos(180)', { angleMode: 'deg' })).toEqual({ ok: true, value: -1 });
+});
+
+test('normalizes cosine of a right angle to zero', () => {
+  expect(evaluateExpression('cos(90)', { angleMode: 'deg' })).toEqual({ ok: true, value: 0 });
+});
+
+test('evaluates tangent in degree mode', () => {
+  expect(evaluateExpression('tan(45)', { angleMode: 'deg' })).toEqual({ ok: true, value: 1 });
+});
+
+test('returns a controlled error for tangent of a right angle', () => {
+  expect(evaluateExpression('tan(90)', { angleMode: 'deg' })).toEqual({
+    ok: false,
+    error: {
+      code: 'TANGENT_UNDEFINED',
+      message: 'Tangent is undefined for this angle.',
+    },
+  });
+});
+
+test('treats angles within tangent tolerance of a right angle as undefined', () => {
+  expect(evaluateExpression('tan(90.00000000001)', { angleMode: 'deg' })).toEqual({
+    ok: false,
+    error: {
+      code: 'TANGENT_UNDEFINED',
+      message: 'Tangent is undefined for this angle.',
+    },
+  });
+});
+
+test('defaults trigonometry to radians for decimal values', () => {
+  expect(evaluateExpression('sin(0.5)')).toEqual({ ok: true, value: 0.479425538604203 });
+});
+
+test('evaluates trigonometric functions inside expressions', () => {
+  expect(evaluateExpression('2 + sin(90) + cos(180)', { angleMode: 'deg' })).toEqual({
+    ok: true,
+    value: 2,
+  });
+});
+
 test('evaluates a unary negative operand', () => {
   expect(evaluateExpression('4 * -2')).toEqual({ ok: true, value: -8 });
 });

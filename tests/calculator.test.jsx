@@ -268,6 +268,67 @@ test('scientific power and root controls use the shared expression and error rec
   expect(currentValue()).toBe('2');
 });
 
+test('sine control inserts an editable function expression', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('sin');
+
+  expect(currentValue()).toBe('sin(');
+});
+
+test('cosine control inserts an editable function expression', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('cos');
+
+  expect(currentValue()).toBe('cos(');
+});
+
+test('tangent control inserts an editable function expression', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('tan');
+
+  expect(currentValue()).toBe('tan(');
+});
+
+test('tangent error remains editable and recovers through the shared expression flow', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('tan');
+  for (const character of '1.5707963267948966') {
+    clickButton(character);
+  }
+  clickButton(')');
+  clickButton('=');
+
+  expect(errorText()).toBe('Tangent is undefined for this angle.');
+  clickButton('⌫');
+  for (let index = 0; index < 5; index += 1) {
+    clickButton('⌫');
+  }
+  clickButton(')');
+  clickButton('=');
+
+  expect(errorText()).toBe('');
+});
+
+test('sine control evaluates through the shared expression flow', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('sin');
+  clickButton('0');
+  clickButton(')');
+  clickButton('=');
+
+  expect(currentValue()).toBe('0');
+});
+
 test('scientific controls support a square-root exponent', () => {
   renderCalculator();
 

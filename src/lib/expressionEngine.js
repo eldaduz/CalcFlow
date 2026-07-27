@@ -85,6 +85,10 @@ function appendSquareRoot(expression) {
   return expression === '' || /[+−×÷(^√]$/.test(expression) ? `${expression}√` : expression;
 }
 
+function appendFunction(expression, name) {
+  return expression === '' || /[+−×÷(^√]$/.test(expression) ? `${expression}${name}(` : expression;
+}
+
 function appendOpenParen(expression) {
   return `${expression}(`;
 }
@@ -209,6 +213,24 @@ export function expressionReducer(state, action) {
         return { ...initialState, expression: '√' };
       }
       return { ...state, error: null, expression: appendSquareRoot(state.expression) };
+    }
+    case 'SINE': {
+      if (state.justEvaluated) {
+        return { ...initialState, expression: 'sin(' };
+      }
+      return { ...state, error: null, expression: appendFunction(state.expression, 'sin') };
+    }
+    case 'COSINE': {
+      if (state.justEvaluated) {
+        return { ...initialState, expression: 'cos(' };
+      }
+      return { ...state, error: null, expression: appendFunction(state.expression, 'cos') };
+    }
+    case 'TANGENT': {
+      if (state.justEvaluated) {
+        return { ...initialState, expression: 'tan(' };
+      }
+      return { ...state, error: null, expression: appendFunction(state.expression, 'tan') };
     }
     case 'NTH_ROOT': {
       const expression = appendNthRoot(state.expression);
