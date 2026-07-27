@@ -4,7 +4,7 @@
 
 - CFL-17, CFL-55, CFL-56: Done; PR #13 merged; Vercel and production smoke passed.
 - PR #14: draft, `chore/cfl17-done-docs`; updates `SECOND_BRAIN.md`.
-- CFL-18: Gavi-owned, Code Review; PR #10 open.
+- CFL-18: Gavi-owned, Code Review; PR #10 merged.
 - CFL-19: Eldad-owned, Backlog; blocks CFL-20.
 
 ## Current decision
