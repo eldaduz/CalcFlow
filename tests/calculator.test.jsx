@@ -280,3 +280,51 @@ test('scientific controls support a square-root exponent', () => {
 
   expect(currentValue()).toBe('8');
 });
+
+test('log and ln buttons insert inline expression functions and are hidden in Basic mode', () => {
+  renderCalculator();
+
+  expect(() => clickButton('log')).toThrow('No button found');
+  expect(() => clickButton('ln')).toThrow('No button found');
+
+  clickButton('Scientific');
+  clickButton('log');
+  clickButton('1');
+  clickButton('0');
+  clickButton('0');
+  clickButton(')');
+  clickButton('+');
+  clickButton('5');
+  clickButton('=');
+
+  expect(currentValue()).toBe('7');
+  expect(previousExpression()).toBe('log(100) + 5');
+
+  clickButton('AC');
+  clickButton('ln');
+  clickButton('1');
+  clickButton(')');
+  clickButton('=');
+  expect(currentValue()).toBe('0');
+});
+
+test('log recovers from a domain error by editing the argument in place', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('log');
+  clickButton('0');
+  clickButton(')');
+  clickButton('=');
+  expect(errorText()).not.toBe('');
+
+  clickButton('⌫');
+  clickButton('⌫');
+  clickButton('1');
+  clickButton('0');
+  clickButton(')');
+  clickButton('=');
+
+  expect(errorText()).toBe('');
+  expect(currentValue()).toBe('1');
+});

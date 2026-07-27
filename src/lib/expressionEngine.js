@@ -85,6 +85,10 @@ function appendSquareRoot(expression) {
   return expression === '' || /[+−×÷(^√]$/.test(expression) ? `${expression}√` : expression;
 }
 
+function appendFunction(expression, name) {
+  return `${expression}${name}(`;
+}
+
 function appendOpenParen(expression) {
   return `${expression}(`;
 }
@@ -216,6 +220,12 @@ export function expressionReducer(state, action) {
         return { expression, previousExpression: '', justEvaluated: false, error: null };
       }
       return { ...state, error: null, expression };
+    }
+    case 'FUNCTION': {
+      if (state.justEvaluated) {
+        return { ...initialState, expression: appendFunction('', action.name) };
+      }
+      return { ...state, error: null, expression: appendFunction(state.expression, action.name) };
     }
     case 'OPEN_PAREN': {
       if (state.justEvaluated) {
