@@ -1,9 +1,12 @@
+import { ln, log10, LogarithmError } from '../../lib/logarithm.js';
+
 const errorMessages = {
   DIVISION_BY_ZERO: 'Cannot divide by zero.',
   EMPTY_EXPRESSION: 'Enter an expression.',
   EXPRESSION_TOO_LONG: 'The expression is too long.',
   INVALID_CHARACTER: 'Use only numbers and calculator operators.',
   INVALID_EXPRESSION: 'Check the expression and try again.',
+  LOG_DOMAIN_ERROR: 'Logarithm is only defined for positive numbers.',
   NESTING_LIMIT_EXCEEDED: 'The expression is nested too deeply.',
   NON_FINITE_RESULT: 'The result is outside the supported range.',
   POWER_DOMAIN_ERROR: 'This power is undefined in the real numbers.',
@@ -15,11 +18,6 @@ const errorMessages = {
 const maximumExpressionLength = 512;
 const maximumNestingDepth = 32;
 const trigonometricTolerance = 1e-12;
-
-function normalizeTrigonometricResult(result) {
-  const nearestInteger = Math.round(result);
-  return Math.abs(result - nearestInteger) < trigonometricTolerance ? nearestInteger : result;
-}
 
 class ExpressionError extends Error {
   constructor(code) {
@@ -67,7 +65,7 @@ function tokenize(source) {
       }
 
       const value = source.slice(start, index);
-      if (value !== 'sin' && value !== 'cos' && value !== 'tan') {
+      if (!['sin', 'cos', 'tan', 'log', 'ln'].includes(value)) {
         throw new ExpressionError('INVALID_CHARACTER');
       }
 
@@ -85,6 +83,31 @@ function tokenize(source) {
   }
 
   return tokens;
+}
+
+function normalizeTrigonometricResult(result) {
+  const nearestInteger = Math.round(result);
+  return Math.abs(result - nearestInteger) < trigonometricTolerance ? nearestInteger : result;
+}
+
+function evaluateFunctionCall(name, value, angleMode) {
+  if (name === 'log') {
+    return log10(value);
+  }
+
+  if (name === 'ln') {
+    return ln(value);
+  }
+
+  const angle = angleMode === 'deg' ? (value * Math.PI) / 180 : value;
+
+  if (name === 'tan' && Math.abs(Math.cos(angle)) < trigonometricTolerance) {
+    throw new ExpressionError('TANGENT_UNDEFINED');
+  }
+
+  const result =
+    name === 'sin' ? Math.sin(angle) : name === 'cos' ? Math.cos(angle) : Math.tan(angle);
+  return normalizeTrigonometricResult(result);
 }
 
 function parse(tokens, angleMode) {
@@ -148,6 +171,7 @@ function parse(tokens, angleMode) {
 
   function parsePower() {
     const left = parsePrimary();
+
     if (consume('^')) {
       const right = parseUnary();
       if (left === 0 && right <= 0) {
@@ -170,9 +194,20 @@ function parse(tokens, angleMode) {
   }
 
   function parsePrimary() {
+    if (consume('√')) {
+      return evaluateRoot(2, parseUnary());
+    }
+
+    if (current()?.type === 'number') {
+      const value = current().value;
+      index += 1;
+      return value;
+    }
+
     if (current()?.type === 'function') {
       const functionName = current().value;
       index += 1;
+
       if (!consume('(')) {
         throw new ExpressionError('INVALID_EXPRESSION');
       }
@@ -188,27 +223,7 @@ function parse(tokens, angleMode) {
       }
       nestingDepth -= 1;
 
-      const angle = angleMode === 'deg' ? (value * Math.PI) / 180 : value;
-      if (functionName === 'tan' && Math.abs(Math.cos(angle)) < trigonometricTolerance) {
-        throw new ExpressionError('TANGENT_UNDEFINED');
-      }
-      const result =
-        functionName === 'sin'
-          ? Math.sin(angle)
-          : functionName === 'cos'
-            ? Math.cos(angle)
-            : Math.tan(angle);
-      return normalizeTrigonometricResult(result);
-    }
-
-    if (consume('√')) {
-      return evaluateRoot(2, parseUnary());
-    }
-
-    if (current()?.type === 'number') {
-      const value = current().value;
-      index += 1;
-      return value;
+      return evaluateFunctionCall(functionName, value, angleMode);
     }
 
     if (consume('(')) {
@@ -291,15 +306,27 @@ export function evaluateExpression(source, options = {}) {
     };
   }
 
+  const angleMode = options?.angleMode === 'deg' ? 'deg' : 'rad';
+
   try {
-    const value = parse(tokenize(source), options.angleMode);
+    const value = parse(tokenize(source), angleMode);
     if (!Number.isFinite(value)) {
       throw new ExpressionError('NON_FINITE_RESULT');
     }
 
     return { ok: true, value };
   } catch (error) {
-    if (error instanceof ExpressionError) {
+    if (error instanceof ExpressionError || error instanceof LogarithmError) {
+      if (error instanceof LogarithmError && error.code === 'INVALID_OPERAND') {
+        return {
+          ok: false,
+          error: {
+            code: 'NON_FINITE_RESULT',
+            message: errorMessages.NON_FINITE_RESULT,
+          },
+        };
+      }
+
       return {
         ok: false,
         error: { code: error.code, message: error.message },

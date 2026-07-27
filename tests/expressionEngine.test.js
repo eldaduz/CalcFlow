@@ -23,6 +23,7 @@ const power = () => ({ type: 'POWER' });
 const square = () => ({ type: 'POWER', square: true });
 const squareRoot = () => ({ type: 'SQUARE_ROOT' });
 const nthRoot = () => ({ type: 'NTH_ROOT' });
+const func = (name) => ({ type: 'FUNCTION', name });
 
 // --- entering multiple operands and operators ---
 
@@ -294,6 +295,27 @@ test('sign toggle on a result continues editing rather than starting fresh', () 
   expect(toggled.justEvaluated).toBe(false);
   const next = expressionReducer(toggled, digit('5'));
   expect(next.expression).toBe('−105');
+});
+
+// --- log/ln expression functions ---
+
+test('function entry appends the function name and an opening parenthesis', () => {
+  const state = dispatchAll([func('log'), digit('1'), digit('0'), digit('0')]);
+  expect(state.expression).toBe('log(100');
+});
+
+test('function entry after "=" starts a fresh expression rather than continuing the result', () => {
+  const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
+  const next = expressionReducer(evaluated, func('ln'));
+  expect(next).toEqual({ ...initialState, expression: 'ln(' });
+});
+
+test('function entry clears an existing error and keeps editing in place', () => {
+  const errored = dispatchAll([openParen(), digit('2'), operator('+'), equals()]);
+  expect(errored.error).not.toBe(null);
+  const next = expressionReducer(errored, func('log'));
+  expect(next.error).toBe(null);
+  expect(next.expression).toBe('(2+log(');
 });
 
 // --- display formatting ---

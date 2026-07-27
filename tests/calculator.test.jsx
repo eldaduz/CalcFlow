@@ -218,6 +218,8 @@ test('the mode toggle exposes its selected state and preserves the current expre
   expect(basic.getAttribute('aria-pressed')).toBe('true');
   expect(scientific.getAttribute('aria-pressed')).toBe('false');
   expect(() => clickButton('x²')).toThrow('No button found');
+  expect(() => clickButton('log')).toThrow('No button found');
+  expect(() => clickButton('ln')).toThrow('No button found');
 
   clickButton('2');
   clickButton('Scientific');
@@ -266,6 +268,18 @@ test('scientific power and root controls use the shared expression and error rec
   clickButton('=');
   expect(errorText()).toBe('');
   expect(currentValue()).toBe('2');
+});
+
+test('log and ln controls insert editable function expressions', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('log');
+  expect(currentValue()).toBe('log(');
+
+  clickButton('AC');
+  clickButton('ln');
+  expect(currentValue()).toBe('ln(');
 });
 
 test('sine control inserts an editable function expression', () => {
@@ -340,4 +354,52 @@ test('scientific controls support a square-root exponent', () => {
   clickButton('=');
 
   expect(currentValue()).toBe('8');
+});
+
+test('log and ln buttons insert inline expression functions and are hidden in Basic mode', () => {
+  renderCalculator();
+
+  expect(() => clickButton('log')).toThrow('No button found');
+  expect(() => clickButton('ln')).toThrow('No button found');
+
+  clickButton('Scientific');
+  clickButton('log');
+  clickButton('1');
+  clickButton('0');
+  clickButton('0');
+  clickButton(')');
+  clickButton('+');
+  clickButton('5');
+  clickButton('=');
+
+  expect(currentValue()).toBe('7');
+  expect(previousExpression()).toBe('log(100) + 5');
+
+  clickButton('AC');
+  clickButton('ln');
+  clickButton('1');
+  clickButton(')');
+  clickButton('=');
+  expect(currentValue()).toBe('0');
+});
+
+test('log recovers from a domain error by editing the argument in place', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('log');
+  clickButton('0');
+  clickButton(')');
+  clickButton('=');
+  expect(errorText()).not.toBe('');
+
+  clickButton('⌫');
+  clickButton('⌫');
+  clickButton('1');
+  clickButton('0');
+  clickButton(')');
+  clickButton('=');
+
+  expect(errorText()).toBe('');
+  expect(currentValue()).toBe('1');
 });

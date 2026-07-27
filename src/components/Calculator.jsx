@@ -86,9 +86,7 @@ export default function Calculator() {
         onPower={(square) => dispatch({ type: 'POWER', square })}
         onSquareRoot={() => dispatch({ type: 'SQUARE_ROOT' })}
         onNthRoot={() => dispatch({ type: 'NTH_ROOT' })}
-        onSine={() => dispatch({ type: 'SINE' })}
-        onCosine={() => dispatch({ type: 'COSINE' })}
-        onTangent={() => dispatch({ type: 'TANGENT' })}
+        onFunction={(name) => dispatch({ type: 'FUNCTION', name })}
       />
     </div>
   );

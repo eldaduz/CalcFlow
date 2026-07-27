@@ -76,6 +76,13 @@ test('evaluates trigonometric functions inside expressions', () => {
   });
 });
 
+test('evaluates trigonometric and logarithmic functions together', () => {
+  expect(evaluateExpression('log(100) + sin(90)', { angleMode: 'deg' })).toEqual({
+    ok: true,
+    value: 3,
+  });
+});
+
 test('evaluates a unary negative operand', () => {
   expect(evaluateExpression('4 * -2')).toEqual({ ok: true, value: -8 });
 });
@@ -283,6 +290,107 @@ test('returns a controlled error for a non-finite result', () => {
     error: {
       code: 'NON_FINITE_RESULT',
       message: 'The result is outside the supported range.',
+    },
+  });
+});
+
+test('evaluates log and ln as inline expression functions', () => {
+  expect(evaluateExpression('log(100)')).toEqual({ ok: true, value: 2 });
+  expect(evaluateExpression('log(100)+5')).toEqual({ ok: true, value: 7 });
+  expect(evaluateExpression('ln(1)')).toEqual({ ok: true, value: 0 });
+});
+
+test('evaluates nested and combined log/ln expressions', () => {
+  const nested = evaluateExpression('log(log(100))');
+  expect(nested.ok).toBe(true);
+  expect(nested.value).toBeCloseTo(Math.log10(2), 12);
+
+  expect(evaluateExpression('log(100)^2')).toEqual({ ok: true, value: 4 });
+  expect(evaluateExpression('2^log(100)')).toEqual({ ok: true, value: 4 });
+});
+
+test('returns a controlled domain error for log and ln of non-positive values', () => {
+  const expectedError = {
+    ok: false,
+    error: {
+      code: 'LOG_DOMAIN_ERROR',
+      message: 'Logarithm is only defined for positive numbers',
+    },
+  };
+
+  expect(evaluateExpression('log(-1)')).toEqual(expectedError);
+  expect(evaluateExpression('log(0)')).toEqual(expectedError);
+  expect(evaluateExpression('ln(-5)')).toEqual(expectedError);
+});
+
+test('returns a controlled error for a non-finite log argument', () => {
+  const largeNumber = '9'.repeat(400);
+
+  expect(evaluateExpression(`log(${largeNumber})`)).toEqual({
+    ok: false,
+    error: {
+      code: 'NON_FINITE_RESULT',
+      message: 'The result is outside the supported range.',
+    },
+  });
+});
+
+test('returns controlled errors for malformed log/ln syntax', () => {
+  expect(evaluateExpression('log(')).toEqual({
+    ok: false,
+    error: {
+      code: 'INVALID_EXPRESSION',
+      message: 'Check the expression and try again.',
+    },
+  });
+  expect(evaluateExpression('log)')).toEqual({
+    ok: false,
+    error: {
+      code: 'INVALID_EXPRESSION',
+      message: 'Check the expression and try again.',
+    },
+  });
+  expect(evaluateExpression('log 5')).toEqual({
+    ok: false,
+    error: {
+      code: 'INVALID_EXPRESSION',
+      message: 'Check the expression and try again.',
+    },
+  });
+  expect(evaluateExpression('log()')).toEqual({
+    ok: false,
+    error: {
+      code: 'UNMATCHED_PARENTHESIS',
+      message: 'Check the parentheses in the expression.',
+    },
+  });
+  expect(evaluateExpression('log(5')).toEqual({
+    ok: false,
+    error: {
+      code: 'UNMATCHED_PARENTHESIS',
+      message: 'Check the parentheses in the expression.',
+    },
+  });
+});
+
+test('log/ln function-call parentheses share the expression nesting limit', () => {
+  const nested = `${'log('.repeat(33)}1${')'.repeat(33)}`;
+
+  expect(evaluateExpression(nested)).toEqual({
+    ok: false,
+    error: {
+      code: 'NESTING_LIMIT_EXCEEDED',
+      message: 'The expression is nested too deeply.',
+    },
+  });
+});
+
+test('still rejects unsupported identifiers as invalid characters', () => {
+  expect(evaluateExpression('sinh(1)')).toEqual({
+    ok: false,
+    error: {
+      code: 'INVALID_CHARACTER',
+      message: 'Use only numbers and calculator operators.',
     },
   });
 });

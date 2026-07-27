@@ -33,22 +33,36 @@ export default function Keypad({
   onPower,
   onSquareRoot,
   onNthRoot,
-  onSine,
-  onCosine,
-  onTangent,
+  onFunction,
 }) {
   return (
     <div className="calculator-keypad-section">
       {scientific && (
         <div className="calculator-scientific-row">
-          <button type="button" className="calculator-button" onClick={onSine}>
+          <button type="button" className="calculator-button" onClick={() => onFunction('sin')}>
             sin
           </button>
-          <button type="button" className="calculator-button" onClick={onCosine}>
+          <button type="button" className="calculator-button" onClick={() => onFunction('cos')}>
             cos
           </button>
-          <button type="button" className="calculator-button" onClick={onTangent}>
+          <button type="button" className="calculator-button" onClick={() => onFunction('tan')}>
             tan
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Base-10 logarithm"
+            onClick={() => onFunction('log')}
+          >
+            log
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Natural logarithm"
+            onClick={() => onFunction('ln')}
+          >
+            ln
           </button>
           <button
             type="button"
