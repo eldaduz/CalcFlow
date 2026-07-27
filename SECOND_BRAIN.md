@@ -67,16 +67,16 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 
 ### Eldad — CFL-17 Powers and Roots
 
-- Jira Feature: CFL-17 — Powers and Roots; Code Review (2026-07-27). CFL-55 — Calculate Powers and CFL-56 — Calculate Roots and Validate Domains are Code Review.
+- Jira Feature: CFL-17 — Powers and Roots; **Done** (2026-07-27). CFL-55 — Calculate Powers and CFL-56 — Calculate Roots and Validate Domains are **Done**.
 - Owner and release: Eldad; v0.3.0 — Powers and Roots. CFL-16 is Done.
 - Branch: `codex/cfl-17-powers-and-roots` in isolated worktree `C:\tmp\calcflow-cfl-17`, based on `92f5409`.
 - Approved UI decisions: Basic / Scientific toggle on one shared calculator surface; CFL-18 `log` / `ln` controls insert editable expression functions (`log(` / `ln(`), never apply to the current evaluated value. `design.md` records these future UI contracts without implementing future Feature behavior. CFL-18 received the shared-surface decision in Jira comment 10280.
 - CFL-17 expression contract: `^` is exponentiation; `x²` appends `^2`; prefix `√` is square root; infix `√` is nth root (`degree√radicand`). Controlled real-domain errors preserve expression editing and use the existing inline error path.
 - Baseline: `npm ci` completed; 86 tests passed before CFL-17 changes. Sandbox test-cache permission requires elevated execution in this worktree.
 - Implementation: powers, roots, Basic/Scientific toggle, and CFL-17 controls are implemented through TDD and internal review. No CFL-18+ behavior is implemented.
-- Verification: final lint and format checks passed; 103 tests passed; coverage was 95.28% statements and 92.47% branches; production build and diff check passed. Internal review found and fixed prefix-root exponent entry; scoped re-review was clean.
-- Pull Request: [PR #13](https://github.com/eldaduz/CalcFlow/pull/13) is open and ready for Gavi's review.
-- Next safe action: request Gavi as reviewer when his GitHub username is confirmed; then wait for review feedback. Do not begin QA or merge without the required approval.
+- Verification: lint, format check, 105 tests, 95.66% statement coverage, production build, and diff check passed after review fixes. Vercel deployment passed and production smoke was confirmed.
+- Pull Request: [PR #13](https://github.com/eldaduz/CalcFlow/pull/13) was approved, merged to `main` as `e5c0ed2`, and its branch was deleted.
+- Next safe action: CFL-17 is complete; do not reopen it without a new Jira Bug.
 
 ### Gavi
 
@@ -235,11 +235,10 @@ Update this file when:
 
 ## Latest Handoff
 
-- Work completed: CFL-16 and child items CFL-52/CFL-53/CFL-54 are Done. PR #9 was Gavi-approved and merged to `main` as `a3eea0d`.
-- Verification performed: lint, format check, 86 tests, coverage (96.07% statements), production build, `git diff --check`, Vercel checks, and production browser smoke all passed.
-- Production smoke: `2 + 3 × 4 = 14`; `(2 + 3) × 4 = 20`; division-by-zero error appears and recovers to `2 ÷ 2 = 1`; browser console had no errors.
-- Current risks: repository still has no GitHub Actions workflow; Vercel checks passed.
-- Next safe action: wait for human selection and approval of the next Feature; CFL-11 remains blocked on Gavi's CFL-49 validation.
+- Work completed: CFL-17 and child items CFL-55/CFL-56 are Done. PR #13 was Gavi-approved and merged to `main` as `e5c0ed2`.
+- Verification performed: lint, format check, 105 tests, coverage (95.66% statements), production build, `git diff --check`, Vercel deployment, and production smoke all passed.
+- Current risks: `npm audit` reported 10 high-severity dependency findings; track dependency follow-up under CFL-32 rather than reopening CFL-17.
+- Next safe action: wait for human selection and approval of the next Feature.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
