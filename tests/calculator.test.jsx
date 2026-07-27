@@ -229,8 +229,15 @@ test('the mode toggle exposes its selected state and preserves the current expre
   clickButton('=');
   expect(currentValue()).toBe('4');
 
+  clickButton('AC');
+  clickButton('2');
+  clickButton('xʸ');
+  clickButton('3');
+  clickButton('=');
+  expect(currentValue()).toBe('8');
+
   clickButton('Basic');
-  expect(currentValue()).toBe('4');
+  expect(currentValue()).toBe('8');
   expect(() => clickButton('x²')).toThrow('No button found');
 });
 

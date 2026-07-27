@@ -79,7 +79,7 @@ body {
 }
 
 .calculator-mode-button {
-  min-height: 32px;
+  min-height: var(--control-min-height);
   border: 1px solid var(--color-text-secondary);
   border-radius: var(--space-4);
   background: var(--color-surface);
