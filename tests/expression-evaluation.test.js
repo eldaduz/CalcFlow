@@ -55,6 +55,37 @@ test('evaluates decimal, zero, and negative exponents', () => {
   expect(evaluateExpression('2^-2')).toEqual({ ok: true, value: 0.25 });
 });
 
+test('evaluates square and nth roots', () => {
+  expect(evaluateExpression('√9')).toEqual({ ok: true, value: 3 });
+  expect(evaluateExpression('3√8')).toEqual({ ok: true, value: 2 });
+  expect(evaluateExpression('3√-8')).toEqual({ ok: true, value: -2 });
+  expect(evaluateExpression('2.5√32')).toEqual({ ok: true, value: 4 });
+});
+
+test('returns controlled errors for roots outside the real domain', () => {
+  expect(evaluateExpression('2√-9')).toEqual({
+    ok: false,
+    error: {
+      code: 'ROOT_DOMAIN_ERROR',
+      message: 'This root is undefined in the real numbers.',
+    },
+  });
+  expect(evaluateExpression('0√9')).toEqual({
+    ok: false,
+    error: {
+      code: 'ROOT_DOMAIN_ERROR',
+      message: 'This root is undefined in the real numbers.',
+    },
+  });
+  expect(evaluateExpression('2.5√-32')).toEqual({
+    ok: false,
+    error: {
+      code: 'ROOT_DOMAIN_ERROR',
+      message: 'This root is undefined in the real numbers.',
+    },
+  });
+});
+
 test('returns a controlled error for zero to the zero power', () => {
   expect(evaluateExpression('0^0')).toEqual({
     ok: false,

@@ -21,6 +21,8 @@ const del = () => ({ type: 'DELETE' });
 const toggleSign = () => ({ type: 'TOGGLE_SIGN' });
 const power = () => ({ type: 'POWER' });
 const square = () => ({ type: 'POWER', square: true });
+const squareRoot = () => ({ type: 'SQUARE_ROOT' });
+const nthRoot = () => ({ type: 'NTH_ROOT' });
 
 // --- entering multiple operands and operators ---
 
@@ -78,6 +80,21 @@ test('power entry appends an exponent operator after an operand', () => {
 test('square entry appends a squared exponent', () => {
   const state = dispatchAll([digit('2'), square()]);
   expect(state.expression).toBe('2^2');
+});
+
+test('square-root entry starts a root operand', () => {
+  const state = dispatchAll([squareRoot(), digit('9')]);
+  expect(state.expression).toBe('√9');
+});
+
+test('square-root entry does not turn an entered degree into an nth root', () => {
+  const state = dispatchAll([digit('3'), squareRoot()]);
+  expect(state.expression).toBe('3');
+});
+
+test('nth-root entry follows a degree with a root operator', () => {
+  const state = dispatchAll([digit('3'), nthRoot(), digit('8')]);
+  expect(state.expression).toBe('3√8');
 });
 
 // --- parentheses entered and displayed ---

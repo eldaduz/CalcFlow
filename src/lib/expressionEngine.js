@@ -77,6 +77,14 @@ function appendPower(expression, square) {
   return `${expression}^${square ? '2' : ''}`;
 }
 
+function appendNthRoot(expression) {
+  return /[\d)]$/.test(expression) ? `${expression}√` : expression;
+}
+
+function appendSquareRoot(expression) {
+  return expression === '' || /[+−×÷(√]$/.test(expression) ? `${expression}√` : expression;
+}
+
 function appendOpenParen(expression) {
   return `${expression}(`;
 }
@@ -191,6 +199,19 @@ export function expressionReducer(state, action) {
     }
     case 'POWER': {
       const expression = appendPower(state.expression, action.square);
+      if (state.justEvaluated) {
+        return { expression, previousExpression: '', justEvaluated: false, error: null };
+      }
+      return { ...state, error: null, expression };
+    }
+    case 'SQUARE_ROOT': {
+      if (state.justEvaluated) {
+        return { ...initialState, expression: '√' };
+      }
+      return { ...state, error: null, expression: appendSquareRoot(state.expression) };
+    }
+    case 'NTH_ROOT': {
+      const expression = appendNthRoot(state.expression);
       if (state.justEvaluated) {
         return { expression, previousExpression: '', justEvaluated: false, error: null };
       }
