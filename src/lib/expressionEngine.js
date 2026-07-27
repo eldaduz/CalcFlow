@@ -82,7 +82,7 @@ function appendNthRoot(expression) {
 }
 
 function appendSquareRoot(expression) {
-  return expression === '' || /[+−×÷(√]$/.test(expression) ? `${expression}√` : expression;
+  return expression === '' || /[+−×÷(^√]$/.test(expression) ? `${expression}√` : expression;
 }
 
 function appendOpenParen(expression) {

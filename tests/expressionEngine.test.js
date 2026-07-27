@@ -87,6 +87,11 @@ test('square-root entry starts a root operand', () => {
   expect(state.expression).toBe('√9');
 });
 
+test('square-root entry starts a root exponent after power', () => {
+  const state = dispatchAll([digit('2'), power(), squareRoot(), digit('9'), equals()]);
+  expect(state.expression).toBe('8');
+});
+
 test('square-root entry does not turn an entered degree into an nth root', () => {
   const state = dispatchAll([digit('3'), squareRoot()]);
   expect(state.expression).toBe('3');

@@ -267,3 +267,16 @@ test('scientific power and root controls use the shared expression and error rec
   expect(errorText()).toBe('');
   expect(currentValue()).toBe('2');
 });
+
+test('scientific controls support a square-root exponent', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('2');
+  clickButton('xʸ');
+  clickButton('√');
+  clickButton('9');
+  clickButton('=');
+
+  expect(currentValue()).toBe('8');
+});

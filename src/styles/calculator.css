@@ -93,6 +93,11 @@ body {
   color: var(--color-text-primary);
 }
 
+.calculator-mode-button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
 .calculator-display {
   background: var(--color-display);
   border-radius: var(--space-8);
