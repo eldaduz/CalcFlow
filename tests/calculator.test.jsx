@@ -204,3 +204,59 @@ test('a nested, incomplete parenthesis stays editable and shows a clear error on
   clickButton('=');
   expect(errorText()).not.toBe('');
 });
+
+test('the mode toggle exposes its selected state and preserves the current expression', () => {
+  renderCalculator();
+
+  const basic = Array.from(container.querySelectorAll('button')).find(
+    (button) => button.textContent === 'Basic',
+  );
+  const scientific = Array.from(container.querySelectorAll('button')).find(
+    (button) => button.textContent === 'Scientific',
+  );
+
+  expect(basic.getAttribute('aria-pressed')).toBe('true');
+  expect(scientific.getAttribute('aria-pressed')).toBe('false');
+  expect(() => clickButton('x²')).toThrow('No button found');
+
+  clickButton('2');
+  clickButton('Scientific');
+
+  expect(basic.getAttribute('aria-pressed')).toBe('false');
+  expect(scientific.getAttribute('aria-pressed')).toBe('true');
+  expect(currentValue()).toBe('2');
+  clickButton('x²');
+  clickButton('=');
+  expect(currentValue()).toBe('4');
+
+  clickButton('Basic');
+  expect(currentValue()).toBe('4');
+  expect(() => clickButton('x²')).toThrow('No button found');
+});
+
+test('scientific power and root controls use the shared expression and error recovery flow', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('√');
+  clickButton('9');
+  clickButton('=');
+  expect(currentValue()).toBe('3');
+  expect(previousExpression()).toBe('√9');
+
+  clickButton('AC');
+  clickButton('2');
+  clickButton('ⁿ√');
+  clickButton('−');
+  clickButton('9');
+  clickButton('=');
+  expect(errorText()).not.toBe('');
+  expect(currentValue()).toBe('2√−9');
+
+  clickButton('⌫');
+  clickButton('⌫');
+  clickButton('4');
+  clickButton('=');
+  expect(errorText()).toBe('');
+  expect(currentValue()).toBe('2');
+});

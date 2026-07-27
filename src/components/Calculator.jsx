@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 
 import {
   expressionReducer,
@@ -12,6 +12,7 @@ const OPERATOR_KEYS = new Set(['+', '-', '*', '/']);
 
 export default function Calculator() {
   const [state, dispatch] = useReducer(expressionReducer, initialState);
+  const [mode, setMode] = useState('basic');
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -52,7 +53,19 @@ export default function Calculator() {
     <div className="calculator">
       <div className="calculator-header">
         <h1>CalcFlow</h1>
-        <span className="subtitle">Basic Calculator</span>
+        <div className="calculator-mode-toggle" aria-label="Calculator mode">
+          {['basic', 'scientific'].map((option) => (
+            <button
+              key={option}
+              type="button"
+              className="calculator-mode-button"
+              aria-pressed={mode === option}
+              onClick={() => setMode(option)}
+            >
+              {option === 'basic' ? 'Basic' : 'Scientific'}
+            </button>
+          ))}
+        </div>
       </div>
       <Display
         currentValue={formatExpressionForDisplay(state.expression) || '0'}
@@ -69,6 +82,10 @@ export default function Calculator() {
         onClear={() => dispatch({ type: 'CLEAR' })}
         onDelete={() => dispatch({ type: 'DELETE' })}
         onToggleSign={() => dispatch({ type: 'TOGGLE_SIGN' })}
+        scientific={mode === 'scientific'}
+        onPower={(square) => dispatch({ type: 'POWER', square })}
+        onSquareRoot={() => dispatch({ type: 'SQUARE_ROOT' })}
+        onNthRoot={() => dispatch({ type: 'NTH_ROOT' })}
       />
     </div>
   );
