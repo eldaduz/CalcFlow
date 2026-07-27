@@ -5,4 +5,5 @@ coverage
 .next
 out
 .cache
+.superpowers
 package-lock.json
