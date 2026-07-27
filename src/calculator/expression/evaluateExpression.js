@@ -1,9 +1,16 @@
 import { ln, log10, LogarithmError } from '../../lib/logarithm.js';
+import {
+  ScientificOperationError,
+  absoluteValue,
+  factorial,
+} from '../../lib/scientificOperations.js';
 
 const errorMessages = {
   DIVISION_BY_ZERO: 'Cannot divide by zero.',
   EMPTY_EXPRESSION: 'Enter an expression.',
   EXPRESSION_TOO_LONG: 'The expression is too long.',
+  FACTORIAL_DOMAIN_ERROR: 'Factorial is only defined for non-negative integers.',
+  FACTORIAL_LIMIT_EXCEEDED: 'Factorial is only supported up to 170!.',
   INVALID_CHARACTER: 'Use only numbers and calculator operators.',
   INVALID_EXPRESSION: 'Check the expression and try again.',
   LOG_DOMAIN_ERROR: 'Logarithm is only defined for positive numbers.',
@@ -15,6 +22,7 @@ const errorMessages = {
 };
 
 const functionsByName = { log: log10, ln };
+const constantsByName = { e: Math.E };
 
 const maximumExpressionLength = 512;
 const maximumNestingDepth = 32;
@@ -58,7 +66,13 @@ function tokenize(source) {
       continue;
     }
 
-    if ('+-*/^√()'.includes(character)) {
+    if (character === 'π') {
+      tokens.push({ type: 'number', value: Math.PI });
+      index += 1;
+      continue;
+    }
+
+    if ('+-*/^√()!|'.includes(character)) {
       tokens.push({ type: character, value: character });
       index += 1;
       continue;
@@ -71,12 +85,17 @@ function tokenize(source) {
       }
 
       const name = source.slice(start, index);
-      if (!Object.hasOwn(functionsByName, name)) {
-        throw new ExpressionError('INVALID_CHARACTER');
+      if (Object.hasOwn(functionsByName, name)) {
+        tokens.push({ type: 'function', value: name });
+        continue;
       }
 
-      tokens.push({ type: 'function', value: name });
-      continue;
+      if (Object.hasOwn(constantsByName, name)) {
+        tokens.push({ type: 'number', value: constantsByName[name] });
+        continue;
+      }
+
+      throw new ExpressionError('INVALID_CHARACTER');
     }
 
     throw new ExpressionError('INVALID_CHARACTER');
@@ -145,7 +164,7 @@ function parse(tokens) {
   }
 
   function parsePower() {
-    const left = parsePrimary();
+    const left = parsePostfix();
     if (consume('^')) {
       const right = parseUnary();
       if (left === 0 && right <= 0) {
@@ -165,6 +184,28 @@ function parse(tokens) {
     }
 
     return left;
+  }
+
+  function parsePostfix() {
+    let value = parsePrimary();
+
+    while (current()?.type === '!') {
+      index += 1;
+      try {
+        value = factorial(value);
+      } catch (error) {
+        if (error instanceof ScientificOperationError) {
+          throw new ExpressionError(
+            error.code === 'FACTORIAL_LIMIT_EXCEEDED'
+              ? 'FACTORIAL_LIMIT_EXCEEDED'
+              : 'FACTORIAL_DOMAIN_ERROR',
+          );
+        }
+        throw error;
+      }
+    }
+
+    return value;
   }
 
   function parseFunctionCall(name) {
@@ -224,6 +265,20 @@ function parse(tokens) {
       }
       nestingDepth -= 1;
       return value;
+    }
+
+    if (consume('|')) {
+      nestingDepth += 1;
+      if (nestingDepth > maximumNestingDepth) {
+        throw new ExpressionError('NESTING_LIMIT_EXCEEDED');
+      }
+
+      const value = parseExpression();
+      if (!consume('|')) {
+        throw new ExpressionError('UNMATCHED_PARENTHESIS');
+      }
+      nestingDepth -= 1;
+      return absoluteValue(value);
     }
 
     if (current()?.type === ')') {

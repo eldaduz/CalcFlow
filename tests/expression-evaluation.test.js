@@ -148,6 +148,13 @@ test('returns a controlled error for an invalid character', () => {
       message: 'Use only numbers and calculator operators.',
     },
   });
+  expect(evaluateExpression('2 @ 3')).toEqual({
+    ok: false,
+    error: {
+      code: 'INVALID_CHARACTER',
+      message: 'Use only numbers and calculator operators.',
+    },
+  });
 });
 
 test('returns a controlled error for unbalanced parentheses', () => {
@@ -338,4 +345,71 @@ test('still rejects unsupported identifiers as invalid characters', () => {
       message: 'Use only numbers and calculator operators.',
     },
   });
+});
+
+test('evaluates absolute value, including a nested case', () => {
+  expect(evaluateExpression('|5|')).toEqual({ ok: true, value: 5 });
+  expect(evaluateExpression('|-5|')).toEqual({ ok: true, value: 5 });
+  expect(evaluateExpression('|3-8|')).toEqual({ ok: true, value: 5 });
+  expect(evaluateExpression('|1-|2-5||')).toEqual({ ok: true, value: 2 });
+});
+
+test('absolute-value bars share the expression nesting limit', () => {
+  const nested = `${'|'.repeat(33)}1${'|'.repeat(33)}`;
+
+  expect(evaluateExpression(nested)).toEqual({
+    ok: false,
+    error: {
+      code: 'NESTING_LIMIT_EXCEEDED',
+      message: 'The expression is nested too deeply.',
+    },
+  });
+});
+
+test('returns a controlled error for an unclosed absolute-value bar', () => {
+  expect(evaluateExpression('|3')).toEqual({
+    ok: false,
+    error: {
+      code: 'UNMATCHED_PARENTHESIS',
+      message: 'Check the parentheses in the expression.',
+    },
+  });
+});
+
+test('evaluates factorial, including combined with power', () => {
+  expect(evaluateExpression('5!')).toEqual({ ok: true, value: 120 });
+  expect(evaluateExpression('0!')).toEqual({ ok: true, value: 1 });
+  expect(evaluateExpression('2^3!')).toEqual({ ok: true, value: 64 });
+});
+
+test('returns a controlled domain error for negative or fractional factorial', () => {
+  const expectedError = {
+    ok: false,
+    error: {
+      code: 'FACTORIAL_DOMAIN_ERROR',
+      message: 'Factorial is only defined for non-negative integers.',
+    },
+  };
+
+  expect(evaluateExpression('(-1)!')).toEqual(expectedError);
+  expect(evaluateExpression('2.5!')).toEqual(expectedError);
+});
+
+test('returns a controlled error for a factorial past the practical limit', () => {
+  expect(evaluateExpression('171!')).toEqual({
+    ok: false,
+    error: {
+      code: 'FACTORIAL_LIMIT_EXCEEDED',
+      message: 'Factorial is only supported up to 170!.',
+    },
+  });
+});
+
+test('evaluates the pi and e constants in expressions', () => {
+  expect(evaluateExpression('π')).toEqual({ ok: true, value: Math.PI });
+  expect(evaluateExpression('e')).toEqual({ ok: true, value: Math.E });
+  expect(evaluateExpression('2*π')).toEqual({ ok: true, value: 2 * Math.PI });
+  const sum = evaluateExpression('π+e');
+  expect(sum.ok).toBe(true);
+  expect(sum.value).toBeCloseTo(Math.PI + Math.E, 12);
 });

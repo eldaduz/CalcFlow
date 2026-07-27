@@ -87,6 +87,9 @@ export default function Calculator() {
         onSquareRoot={() => dispatch({ type: 'SQUARE_ROOT' })}
         onNthRoot={() => dispatch({ type: 'NTH_ROOT' })}
         onFunction={(name) => dispatch({ type: 'FUNCTION', name })}
+        onFactorial={() => dispatch({ type: 'FACTORIAL' })}
+        onAbs={() => dispatch({ type: 'ABS' })}
+        onConstant={(symbol) => dispatch({ type: 'CONSTANT', symbol })}
       />
     </div>
   );
