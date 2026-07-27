@@ -22,7 +22,7 @@
 ## Next safe action
 
 1. PR #19 is open for Code Review: https://github.com/eldaduz/CalcFlow/pull/19.
-2. Request Gavi review, then wait for approval. Do not begin QA, merge, or change Jira status beyond Code Review.
+2. Request `GaviLazan` review manually, then wait for approval. Codex GitHub reviewer-request action is unavailable in this session. Do not begin QA, merge, or change Jira status beyond Code Review.
 
 ## Restart prompt
 

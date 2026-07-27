@@ -42,7 +42,7 @@ The Foundation sequence below is historical context, not current active work.
 - Owner and release: Eldad; v0.4.0 — Scientific Functions.
 - Branch and worktree: `feature/CFL-19-trigonometric-functions`; `C:\tmp\calcflow-cfl19`.
 - Jira status: CFL-19, CFL-59, and CFL-60 are In Progress.
-- Pull Request: [PR #19](https://github.com/eldaduz/CalcFlow/pull/19) is open against `main` for Code Review.
+- Pull Request: [PR #19](https://github.com/eldaduz/CalcFlow/pull/19) is open against `main` for Code Review. Reviewer request for `GaviLazan` is pending because Codex cannot submit that GitHub action in this session.
 - CFL-59: Scientific `sin` and `cos` controls insert editable expressions; evaluator supports both functions with explicit DEG/RAD context and RAD default.
 - CFL-60: Scientific `tan` control inserts an editable expression. `tan(45°)` normalizes to `1`; `tan(90°)` returns a controlled error when cosine magnitude is below `1e-12`. CFL-20 UI and persistence remain excluded.
 - Approved boundary: CFL-19 establishes evaluator-level DEG/RAD context and RAD-default UI behavior. CFL-20 exclusively owns visible DEG/RAD selection, forwarding that selection through the calculator UI, and session persistence.
