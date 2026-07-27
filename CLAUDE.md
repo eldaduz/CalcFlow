@@ -14,6 +14,8 @@ Before planning, editing code, changing Jira, creating or reviewing a pull reque
 8. Follow the Jira workflow, branch policy, review rules, QA, regression, deployment, and smoke-test rules defined in `PROJECT_PLAN.md`.
 9. Update Jira and `SECOND_BRAIN.md` at every required milestone.
 10. Never bypass a required human approval or claim completion without evidence.
+11. At the start of a new Feature, before planning, and again immediately after any merge, QA pass, or status change, verify that every relevant Jira item's status matches the real GitHub PR/branch state. Correct any mismatch immediately rather than leaving it for a future session to discover.
+12. When reporting on blockers, next steps, or outstanding work, proactively surface structural risks in addition to direct blockers — including concurrent branches or pull requests that touch overlapping code and may conflict, even if nobody has hit the conflict yet and even if the human chooses to accept the risk rather than act on it.
 
 Sources of truth:
 
