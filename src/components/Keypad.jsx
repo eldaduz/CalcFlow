@@ -29,9 +29,49 @@ export default function Keypad({
   onClear,
   onDelete,
   onToggleSign,
+  scientific,
+  onPower,
+  onSquareRoot,
+  onNthRoot,
 }) {
   return (
     <div className="calculator-keypad-section">
+      {scientific && (
+        <div className="calculator-scientific-row">
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Square"
+            onClick={() => onPower(true)}
+          >
+            x²
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Power"
+            onClick={() => onPower(false)}
+          >
+            xʸ
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Square root"
+            onClick={onSquareRoot}
+          >
+            √
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Nth root"
+            onClick={onNthRoot}
+          >
+            ⁿ√
+          </button>
+        </div>
+      )}
       <div className="calculator-expression-row">
         <button
           type="button"

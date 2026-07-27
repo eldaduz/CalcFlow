@@ -65,6 +65,19 @@ Do not begin another Foundation Feature before the current sequence and Jira dep
 - CFL-54 scope: only unexpected evaluator-boundary containment and lightweight `console.error` observability. No duplicate editor, keypad, keyboard, normal parser-error UI, or persistent logging work (CFL-27 owns the latter).
 - Completion evidence: Gavi approved PR #9 with no blocking issues; Vercel checks passed; QA passed (lint, formatting, 86 tests, 96.07% statement coverage, build, and diff check); production smoke passed, including precedence, parentheses, controlled division-by-zero recovery, and no console errors.
 
+### Eldad — CFL-17 Powers and Roots
+
+- Jira Feature: CFL-17 — Powers and Roots; Code Review (2026-07-27). CFL-55 — Calculate Powers and CFL-56 — Calculate Roots and Validate Domains are Code Review.
+- Owner and release: Eldad; v0.3.0 — Powers and Roots. CFL-16 is Done.
+- Branch: `codex/cfl-17-powers-and-roots` in isolated worktree `C:\tmp\calcflow-cfl-17`, based on `92f5409`.
+- Approved UI decisions: Basic / Scientific toggle on one shared calculator surface; CFL-18 `log` / `ln` controls insert editable expression functions (`log(` / `ln(`), never apply to the current evaluated value. `design.md` records these future UI contracts without implementing future Feature behavior. CFL-18 received the shared-surface decision in Jira comment 10280.
+- CFL-17 expression contract: `^` is exponentiation; `x²` appends `^2`; prefix `√` is square root; infix `√` is nth root (`degree√radicand`). Controlled real-domain errors preserve expression editing and use the existing inline error path.
+- Baseline: `npm ci` completed; 86 tests passed before CFL-17 changes. Sandbox test-cache permission requires elevated execution in this worktree.
+- Implementation: powers, roots, Basic/Scientific toggle, and CFL-17 controls are implemented through TDD and internal review. No CFL-18+ behavior is implemented.
+- Verification: final lint and format checks passed; 103 tests passed; coverage was 95.28% statements and 92.47% branches; production build and diff check passed. Internal review found and fixed prefix-root exponent entry; scoped re-review was clean.
+- Pull Request: [PR #13](https://github.com/eldaduz/CalcFlow/pull/13) is open and ready for Gavi's review.
+- Next safe action: request Gavi as reviewer when his GitHub username is confirmed; then wait for review feedback. Do not begin QA or merge without the required approval.
+
 ### Gavi
 
 - Jira Feature: CFL-12 — Basic Arithmetic — **Done** (2026-07-26)

@@ -2,6 +2,10 @@
 
 These instructions are mandatory for Codex and any other AI agent working in this repository.
 
+## Mandatory Token Discipline
+
+Use tokens and context window deliberately. Prefer concise tool output, focused file reads and searches, and targeted verification. Do not repeatedly dump complete documents, Jira issues, GitHub pages, diffs, or test output unless the full content is necessary for a safe decision.
+
 Before planning, editing code, changing Jira, creating or reviewing a pull request, merging, deploying, or updating project status:
 
 1. Read `PROJECT_PLAN.md` completely.

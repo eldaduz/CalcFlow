@@ -19,6 +19,10 @@ const equals = () => ({ type: 'EQUALS' });
 const clear = () => ({ type: 'CLEAR' });
 const del = () => ({ type: 'DELETE' });
 const toggleSign = () => ({ type: 'TOGGLE_SIGN' });
+const power = () => ({ type: 'POWER' });
+const square = () => ({ type: 'POWER', square: true });
+const squareRoot = () => ({ type: 'SQUARE_ROOT' });
+const nthRoot = () => ({ type: 'NTH_ROOT' });
 
 // --- entering multiple operands and operators ---
 
@@ -66,6 +70,36 @@ test('starting a number with a decimal point produces "0."', () => {
 test('a decimal after an operator starts a fresh "0." for the next operand', () => {
   const state = dispatchAll([digit('1'), operator('+'), decimal(), digit('5')]);
   expect(state.expression).toBe('1+0.5');
+});
+
+test('power entry appends an exponent operator after an operand', () => {
+  const state = dispatchAll([digit('2'), power(), digit('3')]);
+  expect(state.expression).toBe('2^3');
+});
+
+test('square entry appends a squared exponent', () => {
+  const state = dispatchAll([digit('2'), square()]);
+  expect(state.expression).toBe('2^2');
+});
+
+test('square-root entry starts a root operand', () => {
+  const state = dispatchAll([squareRoot(), digit('9')]);
+  expect(state.expression).toBe('√9');
+});
+
+test('square-root entry starts a root exponent after power', () => {
+  const state = dispatchAll([digit('2'), power(), squareRoot(), digit('9'), equals()]);
+  expect(state.expression).toBe('8');
+});
+
+test('square-root entry does not turn an entered degree into an nth root', () => {
+  const state = dispatchAll([digit('3'), squareRoot()]);
+  expect(state.expression).toBe('3');
+});
+
+test('nth-root entry follows a degree with a root operator', () => {
+  const state = dispatchAll([digit('3'), nthRoot(), digit('8')]);
+  expect(state.expression).toBe('3√8');
 });
 
 // --- parentheses entered and displayed ---
@@ -220,6 +254,12 @@ test('an operator after "=" continues the calculation from the result', () => {
   const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
   const next = [operator('*'), digit('2'), equals()].reduce(expressionReducer, evaluated);
   expect(next.expression).toBe('20');
+});
+
+test('square root after "=" starts a fresh prefix expression', () => {
+  const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
+  const next = expressionReducer(evaluated, squareRoot());
+  expect(next).toEqual({ ...initialState, expression: '√' });
 });
 
 // --- sign toggle ---

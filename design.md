@@ -2,186 +2,109 @@
 
 ## Purpose
 
-This document is the shared source of truth for the CalcFlow user interface and user experience. Codex and Claude must read this file before making any UI change.
+This document is the shared UI and UX contract for CalcFlow. It preserves one
+calculator workflow as features are added; it does not authorize future
+implementation before its Jira Feature begins.
 
-The goal is to ensure that both AI-assisted development streams implement one consistent interface rather than introducing separate visual systems, layouts, or interaction patterns.
+## Product Surface
 
-## Design Principles
+CalcFlow has one calculator surface with a `Basic` / `Scientific` mode toggle
+in the header.
 
-CalcFlow should feel modern, clean, professional, and easy to understand.
+- Basic mode shows the approved expression-controls row and unchanged
+  four-column base keypad.
+- Scientific mode reveals a scientific-controls section above those controls.
+- Scientific mode never replaces, shrinks, or reorders the base keypad.
+- Mode is presentation state only: both modes use the same editable expression,
+  display, equals action, inline errors, and recovery behavior.
+- The toggle uses semantic buttons, exposes its selected state, and does not
+  reset a calculation.
 
-The interface must be:
+No separate scientific calculator layout is approved.
 
-- simple and uncluttered;
-- visually consistent;
-- comfortable to use with a mouse or keyboard;
-- responsive on desktop and mobile;
-- clear without requiring instructions;
-- focused on usability rather than decorative effects.
-
-The calculator should not imitate an old physical calculator and should not introduce visual effects that do not improve usability.
-
-## MVP Screen Structure
+## Shared Screen Structure
 
 ```text
 Calculator Container
-├── Header
-├── Display
-│   ├── Previous Expression
-│   └── Current Input / Result
-├── Error Message Area
-└── Keypad
+├── Header: CalcFlow and Basic / Scientific toggle
+├── Display: previous expression and current input/result
+├── Inline error / status area
+├── Scientific controls (Scientific mode only)
+├── Expression controls row
+└── Base keypad
 ```
 
-### Header
+The display remains the primary visual element. Numeric content is right
+aligned and handles long values through controlled sizing or horizontal
+scrolling. Errors stay near the display, use `aria-live`, preserve the
+editable expression, and clear after valid editing or reset.
 
-The header includes:
+## Base Keypad and Expression Workflow
 
-- product name: `CalcFlow`;
-- optional short label: `Basic Calculator`;
-- no complex navigation.
-
-### Display
-
-The display is the primary visual element.
-
-It shows:
-
-- the previous expression or selected operation on the upper line;
-- the current input or result on the main line;
-- right-aligned numeric content;
-- horizontal scrolling or controlled text sizing for long values.
-
-Example:
+The base keypad is permanent:
 
 ```text
-12 × 4
-48
+AC  ±  ⌫  ÷
+7   8  9  ×
+4   5  6  −
+1   2  3  +
+0      .  =
 ```
 
-### Error Area
+- `0` is double width.
+- `(` and `)` remain in the expression-controls row directly above the base
+  keypad.
+- `AC`, delete, sign toggle, keyboard entry, and equals retain their existing
+  expression behavior.
+- The expression may be incomplete while being edited; calculation reports the
+  existing inline controlled error rather than blocking entry.
+- Do not restore active-operator highlighting: multi-operator expressions make
+  it misleading.
 
-Errors appear close to the display and not in a popup.
+## Scientific Control Contracts
 
-Example:
+Controls append to or edit the same expression. They never calculate by
+themselves unless their Feature explicitly approves an immediate operation.
 
-```text
-Division by zero is not allowed
-```
+| Feature                                     | Controls and behavior contract                                                                                                                                                                                                                                                   |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CFL-17 Powers and Roots                     | `x²`, `xʸ`, `√`, and `ⁿ√` support expression entry. `x²` appends `^2`; `xʸ` appends `^`; prefix `√` starts a square-root operand; infix `√` follows a degree and starts an nth-root radicand. Power and root domains report controlled real-number errors inline.                |
+| CFL-18 Logarithms                           | `log` and `ln` are Scientific expression functions: each control inserts `log(` or `ln(` at the cursor for continued editable entry (for example, `log(100)`). They never replace the expression with its current evaluated value. Evaluator serialization remains CFL-18 scope. |
+| CFL-19 / CFL-20 Trigonometry and angle mode | `sin`, `cos`, `tan` use the shared expression. A visible `DEG` / `RAD` mode control makes the active mode unambiguous and keeps it for the current session.                                                                                                                      |
+| CFL-21 Additional operations                | `%`, `&#124;x&#124;`, `x!`, `π`, and `e` use the same scientific-controls section and expression flow.                                                                                                                                                                           |
 
-Error messages must be:
+Keyboard support invokes the same actions as controls. Existing basic keys stay
+supported. Scientific shortcuts must not be added until their owning Feature
+documents them; controls remain discoverable without hidden shortcuts.
 
-- concise;
-- understandable;
-- accessible through `aria-live`;
-- cleared after new valid input or a reset action.
+## Future Information Controls
 
-Do not use `alert()` for normal calculator errors.
+History and memory add no permanently reserved blank space.
 
-## Keypad Layout
+- CFL-22 history is a collapsible region below the keypad. Each entry displays
+  an expression and result, can be reused, and clears independently.
+- CFL-23 memory controls (`MC`, `MR`, `M+`, `M−`) live in Scientific mode. Any
+  visible memory state is accessible; errors and `AC` do not silently erase it.
+- CFL-27 logging adds no click-by-click UI.
+- CFL-28 adds an `Export Logs` control that downloads JSON. Export success or
+  failure uses inline status feedback and never exposes sensitive data.
 
-### Expression Controls Row
+## Accessibility and Responsive Rules
 
-For v0.2.0 — Expressions and Parentheses, a dedicated expression-controls
-row appears directly above the approved four-column calculator keypad:
+- Use semantic `button` elements, logical focus order, visible focus, and
+  descriptive labels for symbols.
+- Keep the display, error, status, toggle, angle mode, history, and memory
+  state programmatically available to assistive technology.
+- Communicate state with text or semantics, not color alone.
+- Desktop keeps one constrained calculator surface. Mobile stacks or wraps
+  scientific controls without horizontal page scrolling, clipping, or
+  undersized targets.
+- Keep touch targets approximately 48px high and preserve reduced-motion
+  support if motion is introduced.
 
-```text
-┌────┬────┐
-│ (  │ )  │
-└────┴────┘
-```
+## Visual System
 
-- `(` and `)` are adjacent, standard-size controls aligned with the first two
-  keypad columns;
-- this row adds expression controls without replacing, shrinking, or
-  reordering any control in the existing keypad grid;
-- the controls use the same spacing, button height, focus treatment, and
-  responsive behavior as the keypad;
-- an expression may be temporarily incomplete while it is being edited;
-  attempting to calculate an incomplete or unbalanced expression uses the
-  existing inline error area and recovery behavior.
-
-The controls are part of the v0.2.0 expression workflow, not a future
-scientific-mode feature.
-
-### Base Keypad
-
-```text
-┌────┬────┬────┬────┐
-│ AC │ ±  │ ⌫  │ ÷  │
-├────┼────┼────┼────┤
-│ 7  │ 8  │ 9  │ ×  │
-├────┼────┼────┼────┤
-│ 4  │ 5  │ 6  │ −  │
-├────┼────┼────┼────┤
-│ 1  │ 2  │ 3  │ +  │
-├────┼────┼────┼────┤
-│ 0       │ .  │ =  │
-└────┴────┴────┴────┘
-```
-
-### Button Groups
-
-1. Expression controls
-2. Numeric buttons
-3. Arithmetic operators
-4. System actions
-5. Equals action
-
-### Expression Controls
-
-- `(` — open parenthesis;
-- `)` — close parenthesis.
-
-Both controls append to the expression being edited. They do not calculate the
-expression themselves.
-
-### Numeric Buttons
-
-- digits `0–9`;
-- decimal separator `.`;
-- `0` may occupy double width.
-
-### Arithmetic Operators
-
-- `+`
-- `−`
-- `×`
-- `÷`
-
-### System Actions
-
-- `AC` — clear the complete calculation;
-- `⌫` — delete the last digit;
-- `±` — toggle positive or negative value.
-
-### Equals
-
-- `=` must be more visually prominent than numeric buttons.
-
-## Visual Hierarchy
-
-The visual priority is:
-
-1. current result;
-2. previous expression;
-3. equals button;
-4. arithmetic operators;
-5. numeric buttons;
-6. clear and delete actions.
-
-The user must immediately understand:
-
-- where input and results appear;
-- which operation is active;
-- how to calculate;
-- how to clear or correct input.
-
-## Color System
-
-Final color values are not yet approved. Use centralized design tokens rather than hardcoded component colors.
-
-Required tokens:
+Use centralized tokens only:
 
 ```css
 --color-background;
@@ -197,220 +120,31 @@ Required tokens:
 --color-focus;
 ```
 
-Rules:
+Use the existing spacing scale: 4px, 8px, 12px, 16px, 24px, and 32px. Keep
+equals visually prominent. No UI library, animation system, component-specific
+palette, or fixed-position layout is authorized.
 
-- use a calm page background;
-- separate the calculator surface from the page background;
-- visually distinguish operator buttons from numeric buttons;
-- make the equals button the strongest action;
-- do not communicate errors by color alone;
-- maintain sufficient contrast;
-- do not introduce component-specific random colors.
+## Decisions
 
-## Typography
+Resolved:
 
-Use one clear and readable font family unless another is explicitly approved.
+- `0` is double width.
+- The calculator has a visible header.
+- Scientific mode is the approved Basic / Scientific toggle on one shared
+  calculator surface.
+- Active-operator highlighting is obsolete.
 
-Suggested hierarchy:
+Still open and not to be guessed:
 
-```text
-Product title: 20–24px
-Previous expression: 16–18px
-Current result: 36–48px
-Button labels: 18–22px
-Error message: 14–16px
-```
+- primary theme, final palette, and font family;
+- final header/subtitle presentation;
+- whether the previous-expression line is always displayed when empty;
+- exact scientific control grid/order beyond preserving the shared surface;
+- feature-owned scientific keyboard shortcuts.
 
-The numeric display must make digits easy to distinguish.
+## AI Rules
 
-## Spacing and Sizing
-
-Use the following spacing scale:
-
-```text
-4px
-8px
-12px
-16px
-24px
-32px
-```
-
-Rules:
-
-- use consistent gaps between keypad buttons;
-- use consistent internal padding;
-- keep button heights uniform;
-- avoid arbitrary spacing values;
-- maintain a minimum interactive height of approximately `48px`.
-
-## Button States
-
-Every button must support:
-
-- default;
-- hover;
-- active / pressed;
-- focus;
-- disabled, when relevant.
-
-The keyboard focus indicator must remain clearly visible. Do not remove `outline` without providing an accessible replacement.
-
-The currently selected arithmetic operation may remain visually active until the next operand is entered.
-
-## Responsive Design
-
-### Desktop
-
-- center the calculator on the page;
-- use a constrained width;
-- keep the complete keypad visible without scrolling.
-
-### Mobile
-
-- fit the calculator within the viewport;
-- preserve page padding;
-- keep buttons large enough for touch;
-- prevent horizontal page scrolling;
-- handle long display values gracefully.
-
-Recommended sizing:
-
-```text
-Maximum calculator width: approximately 380–440px
-Mobile width: calc(100% - page padding)
-```
-
-Do not build the entire layout using fixed pixel positioning.
-
-## Keyboard Support
-
-Supported keys:
-
-```text
-0–9
-+
--
-*
-/
-.
-(
-)
-Enter
-=
-Backspace
-Escape
-```
-
-Mapping:
-
-- `Enter` or `=` — calculate;
-- `Escape` — clear all;
-- `Backspace` — delete the last digit;
-- `*` is displayed as `×`;
-- `/` is displayed as `÷`.
-- `(` and `)` enter the corresponding parenthesis in the expression.
-
-Keyboard interaction should provide visual feedback similar to button interaction.
-
-## Accessibility
-
-All controls must use semantic `button` elements. Do not implement clickable controls with `div` elements.
-
-Requirements:
-
-- full keyboard navigation;
-- logical focus order;
-- visible focus state;
-- `aria-label` for symbols that may be unclear;
-- error message region using `aria-live`;
-- sufficient contrast;
-- no information communicated by color alone;
-- reduced-motion support if animations are introduced.
-
-Suggested labels:
-
-```text
-⌫ → Delete last digit
-± → Toggle positive or negative
-÷ → Divide
-× → Multiply
-( → Open parenthesis
-) → Close parenthesis
-```
-
-## Motion and Feedback
-
-Animations must be short and subtle.
-
-Allowed examples:
-
-- small pressed-state feedback;
-- short color transition;
-- subtle state change.
-
-Avoid large movement, glow, glass effects, or 3D effects unless both team members explicitly approve them.
-
-## Error and Recovery Behaviour
-
-For errors such as division by zero:
-
-- show a clear inline message;
-- do not crash the application;
-- allow the user to begin a new calculation;
-- allow `AC` to restore the initial state.
-
-## Future Scientific Expansion
-
-The MVP includes only the basic calculator interface, but the design should not prevent future scientific expansion.
-
-Possible later additions:
-
-- Basic / Scientific mode switch;
-- a wider desktop keypad;
-- `sin`, `cos`, `tan`;
-- `log`, `ln`;
-- powers and roots;
-- degree / radian mode.
-
-Do not reserve empty visual space for future features when it harms the MVP experience.
-
-## AI Implementation Rules
-
-Before changing any UI, read this file completely.
-
-Do not:
-
-- introduce a new color system;
-- change the keypad layout;
-- add visual effects;
-- replace approved typography;
-- add a UI library;
-- change responsive behaviour;
-- add new interface features;
-
-unless the change is approved by both team members and documented here.
-
-Codex and Claude must:
-
-- use the same design tokens;
-- preserve the approved base keypad grid and expression-controls row;
-- use consistent naming;
-- avoid unnecessary inline styles;
-- avoid unapproved UI libraries;
-- avoid unsolicited visual redesigns.
-
-## Open Design Decisions
-
-The following decisions remain open and require joint approval before implementation:
-
-1. primary theme: light or dark;
-2. final color palette;
-3. font family;
-4. whether the `0` button uses double width;
-5. whether the previous expression is always displayed;
-6. whether the active operator is highlighted;
-7. whether the calculator includes a visible header;
-8. whether future Scientific Mode uses a toggle or a separate layout.
-
-Until approved, AI tools must not make permanent assumptions about these items.
+Before a UI change, read this document. Preserve the base keypad and
+expression-controls row. Do not add a new layout, design system, library,
+palette, typography choice, or future Feature behavior without the required
+approval and owning Jira scope.
