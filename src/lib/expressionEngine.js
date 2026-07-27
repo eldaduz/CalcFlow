@@ -70,6 +70,13 @@ function appendOperator(expression, operator) {
   return expression + glyph;
 }
 
+function appendPower(expression, square) {
+  if (!/[\d)]$/.test(expression)) {
+    return expression;
+  }
+  return `${expression}^${square ? '2' : ''}`;
+}
+
 function appendOpenParen(expression) {
   return `${expression}(`;
 }
@@ -181,6 +188,13 @@ export function expressionReducer(state, action) {
         error: null,
         expression: appendOperator(state.expression, action.operator),
       };
+    }
+    case 'POWER': {
+      const expression = appendPower(state.expression, action.square);
+      if (state.justEvaluated) {
+        return { expression, previousExpression: '', justEvaluated: false, error: null };
+      }
+      return { ...state, error: null, expression };
     }
     case 'OPEN_PAREN': {
       if (state.justEvaluated) {

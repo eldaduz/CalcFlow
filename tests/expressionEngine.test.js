@@ -19,6 +19,8 @@ const equals = () => ({ type: 'EQUALS' });
 const clear = () => ({ type: 'CLEAR' });
 const del = () => ({ type: 'DELETE' });
 const toggleSign = () => ({ type: 'TOGGLE_SIGN' });
+const power = () => ({ type: 'POWER' });
+const square = () => ({ type: 'POWER', square: true });
 
 // --- entering multiple operands and operators ---
 
@@ -66,6 +68,16 @@ test('starting a number with a decimal point produces "0."', () => {
 test('a decimal after an operator starts a fresh "0." for the next operand', () => {
   const state = dispatchAll([digit('1'), operator('+'), decimal(), digit('5')]);
   expect(state.expression).toBe('1+0.5');
+});
+
+test('power entry appends an exponent operator after an operand', () => {
+  const state = dispatchAll([digit('2'), power(), digit('3')]);
+  expect(state.expression).toBe('2^3');
+});
+
+test('square entry appends a squared exponent', () => {
+  const state = dispatchAll([digit('2'), square()]);
+  expect(state.expression).toBe('2^2');
 });
 
 // --- parentheses entered and displayed ---

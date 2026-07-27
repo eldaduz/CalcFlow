@@ -37,6 +37,44 @@ test('evaluates a unary positive operand', () => {
   expect(evaluateExpression('4 * +2')).toEqual({ ok: true, value: 8 });
 });
 
+test('evaluates powers', () => {
+  expect(evaluateExpression('2^3')).toEqual({ ok: true, value: 8 });
+});
+
+test('evaluates powers from right to left', () => {
+  expect(evaluateExpression('2^3^2')).toEqual({ ok: true, value: 512 });
+});
+
+test('evaluates a parenthesized negative base raised to a power', () => {
+  expect(evaluateExpression('(-2)^3')).toEqual({ ok: true, value: -8 });
+});
+
+test('evaluates decimal, zero, and negative exponents', () => {
+  expect(evaluateExpression('9^0.5')).toEqual({ ok: true, value: 3 });
+  expect(evaluateExpression('5^0')).toEqual({ ok: true, value: 1 });
+  expect(evaluateExpression('2^-2')).toEqual({ ok: true, value: 0.25 });
+});
+
+test('returns a controlled error for zero to the zero power', () => {
+  expect(evaluateExpression('0^0')).toEqual({
+    ok: false,
+    error: {
+      code: 'POWER_DOMAIN_ERROR',
+      message: 'This power is undefined in the real numbers.',
+    },
+  });
+});
+
+test('returns a controlled error for zero to a negative power', () => {
+  expect(evaluateExpression('0^-1')).toEqual({
+    ok: false,
+    error: {
+      code: 'POWER_DOMAIN_ERROR',
+      message: 'This power is undefined in the real numbers.',
+    },
+  });
+});
+
 test('returns a controlled error for empty input', () => {
   expect(evaluateExpression('   ')).toEqual({
     ok: false,

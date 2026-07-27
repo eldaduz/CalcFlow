@@ -6,6 +6,7 @@ const errorMessages = {
   INVALID_EXPRESSION: 'Check the expression and try again.',
   NESTING_LIMIT_EXCEEDED: 'The expression is nested too deeply.',
   NON_FINITE_RESULT: 'The result is outside the supported range.',
+  POWER_DOMAIN_ERROR: 'This power is undefined in the real numbers.',
   UNMATCHED_PARENTHESIS: 'Check the parentheses in the expression.',
 };
 
@@ -51,7 +52,7 @@ function tokenize(source) {
       continue;
     }
 
-    if ('+-*/()'.includes(character)) {
+    if ('+-*/^()'.includes(character)) {
       tokens.push({ type: character, value: character });
       index += 1;
       continue;
@@ -119,7 +120,21 @@ function parse(tokens) {
       return parseUnary();
     }
 
-    return parsePrimary();
+    return parsePower();
+  }
+
+  function parsePower() {
+    const left = parsePrimary();
+    if (!consume('^')) {
+      return left;
+    }
+
+    const right = parseUnary();
+    if (left === 0 && right <= 0) {
+      throw new ExpressionError('POWER_DOMAIN_ERROR');
+    }
+
+    return left ** right;
   }
 
   function parsePrimary() {
