@@ -40,12 +40,12 @@ The Foundation sequence below is historical context, not current active work.
 
 - Owner and release: Eldad; v0.4.0 — Scientific Functions.
 - Branch and worktree: `feature/CFL-20-angle-mode`
-- Jira status: CFL-20, CFL-61, and CFL-62 are in QA.
+- Jira status: CFL-20, CFL-61, and CFL-62 are in Ready for Deployment.
 - Pull Request: [PR #28](https://github.com/eldaduz/CalcFlow/pull/28) is open.
 - Scope: Keypad DEG/RAD toggle button, Display active mode label, sessionStorage persistence, immediate re-evaluation of current expression, and automated TDD testing.
 - Blockers: None.
 - Verification: Tests planned in `tests/expressionEngine.test.js` and `tests/calculator.test.jsx`.
-- Next required action: Run QA plan and verify regression.
+- Next required action: Merge and deploy.
 
 ### Eldad — CFL-19 Trigonometric Functions
 
