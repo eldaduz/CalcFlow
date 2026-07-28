@@ -213,6 +213,13 @@ body {
   grid-column: span 2;
 }
 
+.calculator-memory-indicator {
+  grid-column: span 4;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  font-weight: bold;
+}
+
 @media (max-width: 420px) {
   .calculator {
     max-width: none;

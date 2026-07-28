@@ -40,6 +40,11 @@ export default function Keypad({
   onPercent,
   onAbs,
   onConstant,
+  memory,
+  onMemoryAdd,
+  onMemorySubtract,
+  onMemoryRecall,
+  onMemoryClear,
 }) {
   return (
     <div className="calculator-keypad-section">
@@ -165,6 +170,41 @@ export default function Keypad({
           >
             e
           </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Memory clear"
+            onClick={onMemoryClear}
+          >
+            MC
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Memory recall"
+            onClick={onMemoryRecall}
+          >
+            MR
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Memory add"
+            onClick={onMemoryAdd}
+          >
+            M+
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Memory subtract"
+            onClick={onMemorySubtract}
+          >
+            M−
+          </button>
+          <div className="calculator-memory-indicator" aria-live="polite">
+            M: {memory}
+          </div>
         </div>
       )}
       <div className="calculator-expression-row">

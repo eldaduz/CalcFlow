@@ -23,6 +23,7 @@ export const initialState = {
   justEvaluated: false,
   error: null,
   angleMode: 'rad',
+  memory: 0,
 };
 
 const OPERATOR_GLYPHS = { '+': '+', '-': '−', '*': '×', '/': '÷' };
@@ -153,9 +154,30 @@ function toggleTrailingSign(expression) {
   return `${before}−${number}`;
 }
 
-function formatResultForExpression(value) {
+export function formatResultForExpression(value) {
   const rounded = Number(value.toPrecision(12));
   return String(rounded).replace('-', '−');
+}
+
+/**
+ * Evaluates the current expression for a memory operation (M+ / M-)
+ * without altering the displayed expression or logging a calculation
+ * event. Returns the numeric value, or null if the expression is
+ * currently empty or does not evaluate cleanly -- callers must leave
+ * memory untouched in that case.
+ */
+function evaluateCurrentValue(state) {
+  if (state.expression === '') {
+    return null;
+  }
+  try {
+    const result = evaluateExpression(toAsciiExpression(state.expression), {
+      angleMode: state.angleMode,
+    });
+    return result.ok ? result.value : null;
+  } catch {
+    return null;
+  }
 }
 
 function evaluateCurrentExpression(state) {
@@ -216,13 +238,13 @@ export function expressionReducer(state, action) {
   switch (action.type) {
     case 'DIGIT': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: appendDigit('', action.digit) };
+        return { ...initialState, memory: state.memory, expression: appendDigit('', action.digit) };
       }
       return { ...state, error: null, expression: appendDigit(state.expression, action.digit) };
     }
     case 'DECIMAL': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: appendDecimal('') };
+        return { ...initialState, memory: state.memory, expression: appendDecimal('') };
       }
       return { ...state, error: null, expression: appendDecimal(state.expression) };
     }
@@ -233,6 +255,7 @@ export function expressionReducer(state, action) {
           previousExpression: '',
           justEvaluated: false,
           error: null,
+          memory: state.memory,
         };
       }
       return {
@@ -244,58 +267,90 @@ export function expressionReducer(state, action) {
     case 'POWER': {
       const expression = appendPower(state.expression, action.square);
       if (state.justEvaluated) {
-        return { expression, previousExpression: '', justEvaluated: false, error: null };
+        return {
+          expression,
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
+          memory: state.memory,
+        };
       }
       return { ...state, error: null, expression };
     }
     case 'SQUARE_ROOT': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: '√' };
+        return { ...initialState, memory: state.memory, expression: '√' };
       }
       return { ...state, error: null, expression: appendSquareRoot(state.expression) };
     }
     case 'NTH_ROOT': {
       const expression = appendNthRoot(state.expression);
       if (state.justEvaluated) {
-        return { expression, previousExpression: '', justEvaluated: false, error: null };
+        return {
+          expression,
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
+          memory: state.memory,
+        };
       }
       return { ...state, error: null, expression };
     }
     case 'FUNCTION': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: appendFunction('', action.name) };
+        return {
+          ...initialState,
+          memory: state.memory,
+          expression: appendFunction('', action.name),
+        };
       }
       return { ...state, error: null, expression: appendFunction(state.expression, action.name) };
     }
     case 'FACTORIAL': {
       const expression = appendFactorial(state.expression);
       if (state.justEvaluated) {
-        return { expression, previousExpression: '', justEvaluated: false, error: null };
+        return {
+          expression,
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
+          memory: state.memory,
+        };
       }
       return { ...state, error: null, expression };
     }
     case 'PERCENT': {
       const expression = appendPercent(state.expression);
       if (state.justEvaluated) {
-        return { expression, previousExpression: '', justEvaluated: false, error: null };
+        return {
+          expression,
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
+          memory: state.memory,
+        };
       }
       return { ...state, error: null, expression };
     }
     case 'ABS': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: appendAbsBar('') };
+        return { ...initialState, memory: state.memory, expression: appendAbsBar('') };
       }
       return { ...state, error: null, expression: appendAbsBar(state.expression) };
     }
     case 'CONSTANT': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: appendConstant('', action.symbol) };
+        return {
+          ...initialState,
+          memory: state.memory,
+          expression: appendConstant('', action.symbol),
+        };
       }
       return { ...state, error: null, expression: appendConstant(state.expression, action.symbol) };
     }
     case 'OPEN_PAREN': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: '(' };
+        return { ...initialState, memory: state.memory, expression: '(' };
       }
       return { ...state, error: null, expression: appendOpenParen(state.expression) };
     }
@@ -308,7 +363,25 @@ export function expressionReducer(state, action) {
     case 'EQUALS':
       return evaluateCurrentExpression(state);
     case 'CLEAR':
-      return { ...initialState };
+      return { ...initialState, memory: state.memory };
+    case 'MEMORY_ADD':
+    case 'MEMORY_SUBTRACT': {
+      const value = evaluateCurrentValue(state);
+      if (value === null) {
+        return state;
+      }
+      const signedValue = action.type === 'MEMORY_SUBTRACT' ? -value : value;
+      return { ...state, memory: Number((state.memory + signedValue).toPrecision(12)) };
+    }
+    case 'MEMORY_RECALL': {
+      const token = formatResultForExpression(state.memory);
+      if (state.justEvaluated) {
+        return { ...initialState, memory: state.memory, expression: token };
+      }
+      return { ...state, error: null, expression: appendConstant(state.expression, token) };
+    }
+    case 'MEMORY_CLEAR':
+      return { ...state, memory: 0 };
     case 'DELETE': {
       if (state.justEvaluated) {
         return state;

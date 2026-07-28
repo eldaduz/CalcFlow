@@ -458,3 +458,142 @@ test('TOGGLE_ANGLE_MODE mid-edit does not re-evaluate', () => {
   expect(state.justEvaluated).toBe(false);
   expect(state.angleMode).toBe('deg');
 });
+
+// --- memory operations (CFL-67 / CFL-68) ---
+
+const memoryAdd = () => ({ type: 'MEMORY_ADD' });
+const memorySubtract = () => ({ type: 'MEMORY_SUBTRACT' });
+const memoryRecall = () => ({ type: 'MEMORY_RECALL' });
+const memoryClear = () => ({ type: 'MEMORY_CLEAR' });
+
+test('initialState starts with empty (zero) memory', () => {
+  expect(initialState.memory).toBe(0);
+});
+
+test('M+ stores the current value into empty memory', () => {
+  const state = dispatchAll([digit('7'), memoryAdd()]);
+  expect(state.memory).toBe(7);
+});
+
+test('M+ evaluates the current expression rather than storing raw text', () => {
+  const state = dispatchAll([digit('2'), operator('+'), digit('3'), memoryAdd()]);
+  expect(state.memory).toBe(5);
+});
+
+test('M+ accumulates across repeated presses', () => {
+  const state = dispatchAll([digit('5'), memoryAdd(), clear(), digit('3'), memoryAdd()]);
+  expect(state.memory).toBe(8);
+});
+
+test('M- subtracts the current value from memory, allowing negatives', () => {
+  const state = dispatchAll([digit('4'), memoryAdd(), clear(), digit('9'), memorySubtract()]);
+  expect(state.memory).toBe(-5);
+});
+
+test('M+ does not alter the visible expression', () => {
+  const state = dispatchAll([digit('2'), operator('+'), digit('3'), memoryAdd()]);
+  expect(state.expression).toBe('2+3');
+  expect(state.justEvaluated).toBe(false);
+});
+
+test('M+ leaves memory untouched when the expression is invalid', () => {
+  const state = dispatchAll([digit('6'), memoryAdd(), operator('+'), memoryAdd()]);
+  expect(state.memory).toBe(6);
+});
+
+test('M+ leaves memory untouched on a controlled evaluation error', () => {
+  const state = dispatchAll([
+    digit('5'),
+    memoryAdd(),
+    clear(),
+    digit('9'),
+    operator('/'),
+    digit('0'),
+    memoryAdd(),
+  ]);
+  expect(state.memory).toBe(5);
+});
+
+test('M+ leaves memory untouched when the expression is empty', () => {
+  const state = dispatchAll([digit('5'), memoryAdd(), clear(), memoryAdd()]);
+  expect(state.memory).toBe(5);
+});
+
+test('MR appends the stored value as an editable token', () => {
+  const state = dispatchAll([
+    digit('8'),
+    memoryAdd(),
+    clear(),
+    digit('2'),
+    operator('*'),
+    memoryRecall(),
+  ]);
+  expect(state.expression).toBe('2×8');
+
+  const evaluated = expressionReducer(state, equals());
+  expect(evaluated.expression).toBe('16');
+});
+
+test('MR on empty memory safely recalls zero', () => {
+  const state = dispatchAll([memoryRecall()]);
+  expect(state.expression).toBe('0');
+  expect(state.error).toBeNull();
+});
+
+test('MR after "=" starts a fresh expression from the stored value', () => {
+  const state = dispatchAll([
+    digit('4'),
+    memoryAdd(),
+    digit('1'),
+    operator('+'),
+    digit('1'),
+    equals(),
+    memoryRecall(),
+  ]);
+  expect(state.expression).toBe('4');
+  expect(state.justEvaluated).toBe(false);
+});
+
+test('MR recalls a negative stored value with the display glyph', () => {
+  const state = dispatchAll([digit('3'), memorySubtract(), clear(), memoryRecall()]);
+  expect(state.memory).toBe(-3);
+  expect(state.expression).toBe('−3');
+});
+
+test('MC clears memory without touching the current expression', () => {
+  const state = dispatchAll([digit('9'), memoryAdd(), memoryClear()]);
+  expect(state.memory).toBe(0);
+  expect(state.expression).toBe('9');
+});
+
+test('AC resets the expression but preserves memory', () => {
+  const state = dispatchAll([digit('9'), memoryAdd(), clear()]);
+  expect(state.expression).toBe('');
+  expect(state.memory).toBe(9);
+});
+
+test('memory survives continuing a calculation after "=" ', () => {
+  const state = dispatchAll([
+    digit('5'),
+    memoryAdd(),
+    digit('2'),
+    operator('+'),
+    digit('2'),
+    equals(),
+    operator('+'),
+  ]);
+  expect(state.memory).toBe(5);
+});
+
+test('repeated M+/M- accumulation does not accrue floating-point drift', () => {
+  const state = dispatchAll([
+    decimal(),
+    digit('1'),
+    memoryAdd(),
+    clear(),
+    decimal(),
+    digit('2'),
+    memoryAdd(),
+  ]);
+  expect(state.memory).toBe(0.3);
+});
