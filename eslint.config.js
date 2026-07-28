@@ -16,6 +16,9 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
+      globals: {
+        ...globals.node,
+      },
       parserOptions: {
         ecmaFeatures: {
           jsx: true,

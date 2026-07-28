@@ -21,29 +21,28 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 ## Current Release
 
-- Release: v0.4.0 — Scientific Functions (complete)
-- Current phase: CFL-27 — Application Logging
-- Goal: Implement internal logger for calculation events, errors, and unexpected failures.
-- Overall status: CFL-20, CFL-61, and CFL-62 are Done. CFL-27 is next.
+- Release: v1.0.0 — Stable Final Release
+- Current phase: CFL-31 — Release Management
+- Goal: Manage semantic version sequences, Git tagging procedures, GitHub Releases creation, release notes formatting, and human approval gates.
+- Overall status: CFL-29 is Done. CFL-31 is In Progress.
 
 ## Current Approved Sequence
 
-1. CFL-20 — Angle Mode (Done)
-2. CFL-27 — Application Logging (next)
+1. CFL-29 — Continuous Integration (Done)
+2. CFL-31 — Release Management (In Progress)
 
 The Foundation sequence below is historical context, not current active work.
 
 ## Active Features
 
-### Eldad — CFL-20 Angle Mode
+### Eldad — CFL-31 Release Management
 
-- Owner and release: Eldad; v0.4.0 — Scientific Functions.
-- Branch and worktree: Merged to `main` and branch deleted.
-- Jira status: CFL-20, CFL-61, and CFL-62 are Done.
-- Pull Request: [PR #28](https://github.com/eldaduz/CalcFlow/pull/28) is merged.
-- Scope: Keypad DEG/RAD toggle button, Display active mode label, sessionStorage persistence, immediate re-evaluation of current expression, and automated TDD testing.
-- Verification: Automated QA pipeline passed (npm ci, lint, format check, 186 tests, build). PR reviewed by Gavi and approved. Merged to main.
-- Next required action: Start CFL-27 — Application Logging.
+- Owner and release: Eldad; v1.0.0 — Stable Final Release.
+- Branch and worktree: `feature/CFL-31-release-management` created from updated `main`.
+- Jira status: CFL-31 (Feature) and CFL-83 (Task) are In Progress; CFL-84 is Selected for Development / Backlog.
+- Pull Request: None opened yet.
+- Scope: Document and automate/guide semantic version tagging, GitHub Release notes generation, release documentation (`docs/RELEASE_GUIDE.md`), release workflow scripts, and verification procedures.
+- Next required action: Present development plan and wait for human approval before implementing release management infrastructure and scripts.
 
 ### Eldad — CFL-19 Trigonometric Functions
 
@@ -110,10 +109,10 @@ The Foundation sequence below is historical context, not current active work.
 
 ### Eldad
 
-- Current Feature: None (CFL-29 — Continuous Integration is Done)
-- Current Foundation Feature: CFL-11 — Foundation Documentation and Verification (In Progress; blocked on Gavi's CFL-49 validation)
-- Completed parallel Feature: CFL-20 — Angle Mode (Done; DEG/RAD toggle and re-evaluation are merged)
-- Required action: Start next feature.
+- Current Feature: CFL-31 — Release Management (In Progress)
+- Current Tasks: CFL-83 (In Progress), CFL-84 (Selected for Development)
+- Branch: `feature/CFL-31-release-management`
+- Required action: Wait for human approval of development plan, then implement release management tools and documentation.
 
 ### Gavi
 
