@@ -151,6 +151,16 @@ The Foundation sequence below is historical context, not current active work.
 - Verification (real pipeline): clean `npm ci`; lint, format:check clean; 177 tests passing; 97.01% statement coverage; production build clean.
 - Next required action: Gavi to proceed with QA, merge, and deployment for CFL-21.
 
+### Gavi — CFL-23 (active, 2026-07-28)
+
+- Jira: CFL-23 — Memory Operations, plus child stories CFL-67 (Store and Recall) and CFL-68 (Modify and Clear) — **Code Review**. Second Feature of v0.5.0, started after CFL-22 went to Code Review.
+- Design contract: follows the CFL-23 row already in `design.md` ("`MC`, `MR`, `M+`, `M−` live in Scientific mode. Any visible memory state is accessible; errors and `AC` do not silently erase it").
+- Judgment calls made and confirmed with Gavi before implementation (neither is a design.md "Open Design Decision"): M+/M− evaluate the current expression on the fly (same evaluator path as `=`) and fold the result into memory, leaving memory untouched if it does not evaluate cleanly; MR appends the stored value as an editable token at the cursor, mirroring the π/e constant pattern rather than replacing the expression. Note `design.md` lists no dedicated "store" control, so CFL-67's "store" is M+ into empty (0) memory — the standard four-control convention.
+- Scope: `expressionEngine.js` gains `memory` in state plus `MEMORY_ADD`/`MEMORY_SUBTRACT`/`MEMORY_RECALL`/`MEMORY_CLEAR` actions and a non-logging `evaluateCurrentValue` helper; `Keypad.jsx` gains the four Scientific controls and an `aria-live` memory indicator; `Calculator.jsx` wires handlers and sessionStorage persistence. `AC` deliberately preserves memory — only `MC` clears it. Accumulation is rounded to 12 significant digits to avoid floating-point drift across repeated M+/M−.
+- Verification (real pipeline): clean install; lint, format:check clean; 213 tests passing (21 new); 96.91% statement coverage (70% threshold); production build and `git diff --check` clean. Independently verified in a real browser (Playwright against the dev server): controls hidden in Basic mode; M+ on `2+3` stores 5 without disturbing the displayed expression; M− subtracts; MR appends an editable token that re-evaluates correctly; a divide-by-zero error leaves memory intact; `AC` preserves memory; memory survives a page reload; `MC` clears it. Regression-checked against basic arithmetic — no console errors.
+- Structural risk flagged: this branch and CFL-22's [PR #35](https://github.com/eldaduz/CalcFlow/pull/35) both add a new section to `SECOND_BRAIN.md` at the same insertion point and both modify `expressionEngine.js`/`Calculator.jsx`. Whichever merges second will need a straightforward conflict resolution (both sets of changes are additive and independent — keep both).
+- Next required action: awaiting Eldad's review. CFL-24 (Keyboard Support) is next in the CFL-5 sequence.
+
 ### Design Decision Resolution (2026-07-26)
 
 Resolves the two judgment calls CFL-13 flagged to Eldad (see above). Eldad replied delegating both to Gavi ("fix the design.md as you fit"); Gavi then made the actual calls:
