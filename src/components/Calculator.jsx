@@ -3,6 +3,7 @@ import { useEffect, useReducer, useState } from 'react';
 import {
   expressionReducer,
   formatExpressionForDisplay,
+  formatResultForExpression,
   initialState,
 } from '../lib/expressionEngine.js';
 import Display from './Display.jsx';
@@ -10,6 +11,14 @@ import History from './History.jsx';
 import Keypad from './Keypad.jsx';
 
 const OPERATOR_KEYS = new Set(['+', '-', '*', '/']);
+
+function readStoredMemory() {
+  if (typeof sessionStorage === 'undefined') {
+    return 0;
+  }
+  const stored = Number(sessionStorage.getItem('calcflow_memory'));
+  return Number.isFinite(stored) ? stored : 0;
+}
 
 function readStoredHistory() {
   if (typeof sessionStorage === 'undefined') {
@@ -28,6 +37,7 @@ const init = (initial) => ({
   angleMode:
     (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('calcflow_angle_mode')) ||
     'rad',
+  memory: readStoredMemory(),
   history: readStoredHistory(),
 });
 
@@ -40,6 +50,12 @@ export default function Calculator() {
       sessionStorage.setItem('calcflow_angle_mode', state.angleMode);
     }
   }, [state.angleMode]);
+
+  useEffect(() => {
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('calcflow_memory', String(state.memory));
+    }
+  }, [state.memory]);
 
   useEffect(() => {
     if (typeof sessionStorage !== 'undefined') {
@@ -127,6 +143,11 @@ export default function Calculator() {
         onPercent={() => dispatch({ type: 'PERCENT' })}
         onAbs={() => dispatch({ type: 'ABS' })}
         onConstant={(symbol) => dispatch({ type: 'CONSTANT', symbol })}
+        memory={formatResultForExpression(state.memory)}
+        onMemoryAdd={() => dispatch({ type: 'MEMORY_ADD' })}
+        onMemorySubtract={() => dispatch({ type: 'MEMORY_SUBTRACT' })}
+        onMemoryRecall={() => dispatch({ type: 'MEMORY_RECALL' })}
+        onMemoryClear={() => dispatch({ type: 'MEMORY_CLEAR' })}
       />
       <History
         entries={state.history}

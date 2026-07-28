@@ -24,6 +24,7 @@ export const initialState = {
   error: null,
   angleMode: 'rad',
   history: [],
+  memory: 0,
 };
 
 const OPERATOR_GLYPHS = { '+': '+', '-': '−', '*': '×', '/': '÷' };
@@ -154,9 +155,30 @@ function toggleTrailingSign(expression) {
   return `${before}−${number}`;
 }
 
-function formatResultForExpression(value) {
+export function formatResultForExpression(value) {
   const rounded = Number(value.toPrecision(12));
   return String(rounded).replace('-', '−');
+}
+
+/**
+ * Evaluates the current expression for a memory operation (M+ / M-)
+ * without altering the displayed expression or logging a calculation
+ * event. Returns the numeric value, or null if the expression is
+ * currently empty or does not evaluate cleanly -- callers must leave
+ * memory untouched in that case.
+ */
+function evaluateCurrentValue(state) {
+  if (state.expression === '') {
+    return null;
+  }
+  try {
+    const result = evaluateExpression(toAsciiExpression(state.expression), {
+      angleMode: state.angleMode,
+    });
+    return result.ok ? result.value : null;
+  } catch {
+    return null;
+  }
 }
 
 function evaluateCurrentExpression(state) {
@@ -222,6 +244,7 @@ export function expressionReducer(state, action) {
         return {
           ...initialState,
           history: state.history,
+          memory: state.memory,
           expression: appendDigit('', action.digit),
         };
       }
@@ -229,7 +252,12 @@ export function expressionReducer(state, action) {
     }
     case 'DECIMAL': {
       if (state.justEvaluated) {
-        return { ...initialState, history: state.history, expression: appendDecimal('') };
+        return {
+          ...initialState,
+          history: state.history,
+          memory: state.memory,
+          expression: appendDecimal(''),
+        };
       }
       return { ...state, error: null, expression: appendDecimal(state.expression) };
     }
@@ -241,6 +269,7 @@ export function expressionReducer(state, action) {
           justEvaluated: false,
           error: null,
           history: state.history,
+          memory: state.memory,
         };
       }
       return {
@@ -258,13 +287,19 @@ export function expressionReducer(state, action) {
           justEvaluated: false,
           error: null,
           history: state.history,
+          memory: state.memory,
         };
       }
       return { ...state, error: null, expression };
     }
     case 'SQUARE_ROOT': {
       if (state.justEvaluated) {
-        return { ...initialState, history: state.history, expression: '√' };
+        return {
+          ...initialState,
+          history: state.history,
+          memory: state.memory,
+          expression: '√',
+        };
       }
       return { ...state, error: null, expression: appendSquareRoot(state.expression) };
     }
@@ -277,6 +312,7 @@ export function expressionReducer(state, action) {
           justEvaluated: false,
           error: null,
           history: state.history,
+          memory: state.memory,
         };
       }
       return { ...state, error: null, expression };
@@ -286,6 +322,7 @@ export function expressionReducer(state, action) {
         return {
           ...initialState,
           history: state.history,
+          memory: state.memory,
           expression: appendFunction('', action.name),
         };
       }
@@ -300,6 +337,7 @@ export function expressionReducer(state, action) {
           justEvaluated: false,
           error: null,
           history: state.history,
+          memory: state.memory,
         };
       }
       return { ...state, error: null, expression };
@@ -313,13 +351,19 @@ export function expressionReducer(state, action) {
           justEvaluated: false,
           error: null,
           history: state.history,
+          memory: state.memory,
         };
       }
       return { ...state, error: null, expression };
     }
     case 'ABS': {
       if (state.justEvaluated) {
-        return { ...initialState, history: state.history, expression: appendAbsBar('') };
+        return {
+          ...initialState,
+          history: state.history,
+          memory: state.memory,
+          expression: appendAbsBar(''),
+        };
       }
       return { ...state, error: null, expression: appendAbsBar(state.expression) };
     }
@@ -328,6 +372,7 @@ export function expressionReducer(state, action) {
         return {
           ...initialState,
           history: state.history,
+          memory: state.memory,
           expression: appendConstant('', action.symbol),
         };
       }
@@ -335,7 +380,12 @@ export function expressionReducer(state, action) {
     }
     case 'OPEN_PAREN': {
       if (state.justEvaluated) {
-        return { ...initialState, history: state.history, expression: '(' };
+        return {
+          ...initialState,
+          history: state.history,
+          memory: state.memory,
+          expression: '(',
+        };
       }
       return { ...state, error: null, expression: appendOpenParen(state.expression) };
     }
@@ -348,7 +398,30 @@ export function expressionReducer(state, action) {
     case 'EQUALS':
       return evaluateCurrentExpression(state);
     case 'CLEAR':
-      return { ...initialState, history: state.history };
+      return { ...initialState, history: state.history, memory: state.memory };
+    case 'MEMORY_ADD':
+    case 'MEMORY_SUBTRACT': {
+      const value = evaluateCurrentValue(state);
+      if (value === null) {
+        return state;
+      }
+      const signedValue = action.type === 'MEMORY_SUBTRACT' ? -value : value;
+      return { ...state, memory: Number((state.memory + signedValue).toPrecision(12)) };
+    }
+    case 'MEMORY_RECALL': {
+      const token = formatResultForExpression(state.memory);
+      if (state.justEvaluated) {
+        return {
+          ...initialState,
+          history: state.history,
+          memory: state.memory,
+          expression: token,
+        };
+      }
+      return { ...state, error: null, expression: appendConstant(state.expression, token) };
+    }
+    case 'MEMORY_CLEAR':
+      return { ...state, memory: 0 };
     case 'REUSE_HISTORY':
       return {
         ...state,

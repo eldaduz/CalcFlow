@@ -652,3 +652,127 @@ test('history persists across a fresh Calculator mount via sessionStorage', () =
   const toggle = container.querySelector('.calculator-history-toggle');
   expect(toggle.textContent).toBe('History (1)');
 });
+
+// --- memory operations (CFL-67 / CFL-68) ---
+
+function memoryIndicator() {
+  return container.querySelector('.calculator-memory-indicator').textContent;
+}
+
+test('memory controls are only available in Scientific mode', () => {
+  renderCalculator();
+
+  expect(() => clickButton('M+')).toThrow('No button found');
+  expect(() => clickButton('MR')).toThrow('No button found');
+
+  clickButton('Scientific');
+  expect(memoryIndicator()).toBe('M: 0');
+});
+
+test('M+ stores the evaluated current value and shows it in the indicator', () => {
+  renderCalculator();
+  clickButton('Scientific');
+
+  clickButton('2');
+  clickButton('+');
+  clickButton('3');
+  clickButton('M+');
+
+  expect(memoryIndicator()).toBe('M: 5');
+  // the visible expression is untouched by the memory operation
+  expect(currentValue()).toBe('2 + 3');
+});
+
+test('M+ then M− accumulate and subtract across calculations', () => {
+  renderCalculator();
+  clickButton('Scientific');
+
+  clickButton('1');
+  clickButton('0');
+  clickButton('M+');
+  clickButton('AC');
+  clickButton('4');
+  clickButton('M−');
+
+  expect(memoryIndicator()).toBe('M: 6');
+});
+
+test('MR recalls the stored value into the expression for further editing', () => {
+  renderCalculator();
+  clickButton('Scientific');
+
+  clickButton('7');
+  clickButton('M+');
+  clickButton('AC');
+  clickButton('3');
+  clickButton('×');
+  clickButton('MR');
+  expect(currentValue()).toBe('3 × 7');
+
+  clickButton('=');
+  expect(currentValue()).toBe('21');
+});
+
+test('MC clears memory and its indicator', () => {
+  renderCalculator();
+  clickButton('Scientific');
+
+  clickButton('9');
+  clickButton('M+');
+  expect(memoryIndicator()).toBe('M: 9');
+
+  clickButton('MC');
+  expect(memoryIndicator()).toBe('M: 0');
+});
+
+test('an error state does not corrupt stored memory', () => {
+  renderCalculator();
+  clickButton('Scientific');
+
+  clickButton('5');
+  clickButton('M+');
+  clickButton('AC');
+
+  clickButton('9');
+  clickButton('÷');
+  clickButton('0');
+  clickButton('=');
+  expect(errorText()).not.toBe('');
+
+  clickButton('M+');
+  expect(memoryIndicator()).toBe('M: 5');
+});
+
+test('AC does not erase memory', () => {
+  renderCalculator();
+  clickButton('Scientific');
+
+  clickButton('6');
+  clickButton('M+');
+  clickButton('AC');
+
+  expect(currentValue()).toBe('0');
+  expect(memoryIndicator()).toBe('M: 6');
+});
+
+test('memory persists across a fresh Calculator mount via sessionStorage', () => {
+  renderCalculator();
+  clickButton('Scientific');
+  clickButton('8');
+  clickButton('M+');
+
+  act(() => {
+    root.unmount();
+  });
+  container.remove();
+
+  container = document.createElement('div');
+  document.body.append(container);
+  root = createRoot(container);
+  act(() => {
+    root.render(<Calculator />);
+  });
+
+  clickButton('Scientific');
+  expect(memoryIndicator()).toBe('M: 8');
+});
