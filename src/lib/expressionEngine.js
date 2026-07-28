@@ -15,6 +15,7 @@
  */
 
 import { evaluateExpression } from '../calculator/expression/evaluateExpression.js';
+import { logEvent } from './logger.js';
 
 export const initialState = {
   expression: '',
@@ -166,6 +167,12 @@ function evaluateCurrentExpression(state) {
     });
   } catch (error) {
     console.error('Unexpected expression evaluation failure', error);
+    logEvent('UNEXPECTED_EVALUATION_ERROR', {
+      expression: toAsciiExpression(state.expression),
+      angleMode: state.angleMode,
+      errorName: error.name,
+      errorMessage: error.message,
+    });
     return {
       ...state,
       error: {
@@ -177,14 +184,27 @@ function evaluateCurrentExpression(state) {
   }
 
   if (result.ok) {
+    const nextExpression = formatResultForExpression(result.value);
+    logEvent('CALCULATION_SUCCESS', {
+      expression: toAsciiExpression(state.expression),
+      result: nextExpression,
+      angleMode: state.angleMode,
+    });
     return {
       ...state,
-      expression: formatResultForExpression(result.value),
+      expression: nextExpression,
       previousExpression: state.expression,
       justEvaluated: true,
       error: null,
     };
   }
+
+  logEvent('CALCULATION_ERROR', {
+    expression: toAsciiExpression(state.expression),
+    angleMode: state.angleMode,
+    errorCode: result.error.code,
+    errorMessage: result.error.message,
+  });
 
   return {
     ...state,

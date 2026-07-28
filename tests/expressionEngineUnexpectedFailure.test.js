@@ -6,6 +6,11 @@ vi.mock('../src/calculator/expression/evaluateExpression.js', () => ({
   },
 }));
 
+import * as logger from '../src/lib/logger.js';
+vi.mock('../src/lib/logger.js', () => ({
+  logEvent: vi.fn(),
+}));
+
 import { expressionReducer, initialState } from '../src/lib/expressionEngine.js';
 
 afterEach(() => {
@@ -33,6 +38,12 @@ test('contains an unexpected evaluator failure without losing the expression', (
     'Unexpected expression evaluation failure',
     expect.any(Error),
   );
+  expect(logger.logEvent).toHaveBeenCalledWith('UNEXPECTED_EVALUATION_ERROR', {
+    expression: '1+2',
+    angleMode: 'rad',
+    errorName: 'Error',
+    errorMessage: 'unexpected parser failure',
+  });
 });
 
 test('allows editing after an unexpected evaluator failure', () => {

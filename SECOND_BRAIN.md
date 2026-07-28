@@ -21,16 +21,15 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 ## Current Release
 
-- Release: v0.4.0 — Scientific Functions
-- Current phase: CFL-20 implementation
-- Goal: Deliver DEG/RAD toggle control, visible display indicator, immediate re-evaluation on toggle, and session persistence.
-- Overall status: CFL-20, CFL-61, and CFL-62 are In Progress. CFL-19 is Done and unblocks CFL-20.
+- Release: v0.4.0 — Scientific Functions (complete)
+- Current phase: CFL-27 — Application Logging
+- Goal: Implement internal logger for calculation events, errors, and unexpected failures.
+- Overall status: CFL-20, CFL-61, and CFL-62 are Done. CFL-27 is next.
 
 ## Current Approved Sequence
 
-1. CFL-20 — Angle Mode
-   - CFL-61 — Switch Between Degree and Radian Modes: active
-   - CFL-62 — Apply Angle Mode Consistently to Trigonometric Evaluation: active
+1. CFL-20 — Angle Mode (Done)
+2. CFL-27 — Application Logging (next)
 
 The Foundation sequence below is historical context, not current active work.
 
@@ -39,13 +38,12 @@ The Foundation sequence below is historical context, not current active work.
 ### Eldad — CFL-20 Angle Mode
 
 - Owner and release: Eldad; v0.4.0 — Scientific Functions.
-- Branch and worktree: `feature/CFL-20-angle-mode`
-- Jira status: CFL-20, CFL-61, and CFL-62 are in Ready for Deployment.
-- Pull Request: [PR #28](https://github.com/eldaduz/CalcFlow/pull/28) is open.
+- Branch and worktree: Merged to `main` and branch deleted.
+- Jira status: CFL-20, CFL-61, and CFL-62 are Done.
+- Pull Request: [PR #28](https://github.com/eldaduz/CalcFlow/pull/28) is merged.
 - Scope: Keypad DEG/RAD toggle button, Display active mode label, sessionStorage persistence, immediate re-evaluation of current expression, and automated TDD testing.
-- Blockers: None.
-- Verification: Tests planned in `tests/expressionEngine.test.js` and `tests/calculator.test.jsx`.
-- Next required action: Merge and deploy.
+- Verification: Automated QA pipeline passed (npm ci, lint, format check, 186 tests, build). PR reviewed by Gavi and approved. Merged to main.
+- Next required action: Start CFL-27 — Application Logging.
 
 ### Eldad — CFL-19 Trigonometric Functions
 
@@ -112,10 +110,10 @@ The Foundation sequence below is historical context, not current active work.
 
 ### Eldad
 
-- Current Feature: CFL-20 — Angle Mode (In Progress; active development of DEG/RAD toggle and re-evaluation)
+- Current Feature: CFL-27 — Application Logging (Code Review; PR opened)
 - Current Foundation Feature: CFL-11 — Foundation Documentation and Verification (In Progress; blocked on Gavi's CFL-49 validation)
-- Completed parallel Feature: CFL-16 — Expression Evaluation (Done; evaluator core and CFL-14 integration are merged)
-- Required action: Implement DEG/RAD toggle control, visible display indicator, immediate re-evaluation on toggle, and session persistence for CFL-20.
+- Completed parallel Feature: CFL-20 — Angle Mode (Done; DEG/RAD toggle and re-evaluation are merged)
+- Required action: Await review from Gavi for CFL-27.
 
 ### Gavi
 
@@ -261,11 +259,11 @@ Update this file when:
 
 ## Latest Handoff
 
-- Current work: CFL-19 is Done.
-- Scope: Scientific `sin`, `cos`, and `tan` controls insert editable expressions. Evaluator supports all three functions, explicit DEG/RAD context, RAD default, common-angle normalization, and a controlled near-right-angle tangent error. Visible DEG/RAD selection, calculator UI forwarding, session persistence, and scientific keyboard shortcuts remain CFL-20 scope.
-- Verification: Automated QA pipeline passed on `main`. Manual UI QA passed human validation.
+- Current work: CFL-27 (Application Logging) is in Code Review.
+- Scope: Implemented internal logger for successful calculations (CFL-75) and validation errors/unexpected failures (CFL-76) in `logger.js` and integrated with `expressionEngine.js`.
+- Verification: Automated QA pipeline passed (npm ci, lint, format check, coverage, build).
 - Current risks: repository still has no GitHub Actions workflow. Playwright environment is unavailable for AI UI testing.
-- Next safe action: Select next Feature (CFL-20 — Angle Mode) and prepare a development plan for approval.
+- Next safe action: Review [PR #X] for CFL-27.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
