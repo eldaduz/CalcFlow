@@ -15,23 +15,21 @@ The AI must verify all live information against Jira and GitHub before acting.
 ## Last Updated
 
 - Date: 2026-07-28
-- Updated by: Eldad / Antigravity
-- Human owner: Eldad
-- AI used: Antigravity
+- Updated by: Gavi / Claude
+- Human owner: Gavi
+- AI used: Claude
 
 ## Current Release
 
-- Release: v1.0.0 — Stable Final Release
-- Current phases:
-  - Eldad: CFL-31 — Release Management (Ready for Deployment — tooling merged via PR #34; v1.0.0 tag execution pending final milestone completion)
-  - Gavi: CFL-21 — Additional Scientific Operations (Code Review) / CFL-22 — Calculation History (Selected for Development)
-- Goal: Manage semantic version sequences, Git tagging procedures, GitHub Releases creation, release notes formatting, and human approval gates.
-- Overall status: CFL-29 is Done. CFL-31 release infrastructure is merged; v1.0.0 tag creation is Ready for Deployment.
+Two tracks are in flight in parallel, one per owner:
+
+- **Gavi — v0.5.0 (History and Memory): shipped and Done.** CFL-22 (Calculation History: CFL-65/66) and CFL-23 (Memory Operations: CFL-67/68) are both Done, merged ([PR #35](https://github.com/eldaduz/CalcFlow/pull/35), [PR #36](https://github.com/eldaduz/CalcFlow/pull/36)), deployed, and smoke-tested live on https://calc-flow-fawn.vercel.app/. Next up for Gavi: CFL-24 — Keyboard Support, first Feature of v0.6.0 — Complete User Experience.
+- **Eldad — v1.0.0 (Stable Final Release): in progress.** CFL-31 — Release Management tooling merged via PR #34; status per his own section below (not re-verified in this update — check Jira live for current state before relying on it).
 
 ## Current Approved Sequence
 
-1. CFL-29 — Continuous Integration (Done)
-2. CFL-31 — Release Management (Ready for Deployment — tooling merged)
+1. Gavi: CFL-24 — Keyboard Support (next, v0.6.0)
+2. Eldad: CFL-31 — Release Management (per his section below; verify live)
 
 The Foundation sequence below is historical context, not current active work.
 
