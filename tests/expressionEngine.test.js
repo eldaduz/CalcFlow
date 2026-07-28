@@ -373,3 +373,34 @@ test('formatExpressionForDisplay spaces binary operators but not unary signs', (
   expect(formatExpressionForDisplay('−5')).toBe('−5');
   expect(formatExpressionForDisplay('(2+3)×4')).toBe('(2 + 3) × 4');
 });
+
+// --- angle mode toggle and re-evaluation ---
+
+test('initialState includes angleMode defaulting to rad', () => {
+  expect(initialState.angleMode).toBe('rad');
+});
+
+test('TOGGLE_ANGLE_MODE toggles mode between rad and deg', () => {
+  const state1 = expressionReducer(initialState, { type: 'TOGGLE_ANGLE_MODE' });
+  expect(state1.angleMode).toBe('deg');
+  const state2 = expressionReducer(state1, { type: 'TOGGLE_ANGLE_MODE' });
+  expect(state2.angleMode).toBe('rad');
+});
+
+test('TOGGLE_ANGLE_MODE re-evaluates active expression immediately', () => {
+  const state = expressionReducer(
+    {
+      expression: 'sin(90)',
+      previousExpression: '',
+      justEvaluated: false,
+      error: null,
+      angleMode: 'rad',
+    },
+    { type: 'TOGGLE_ANGLE_MODE' },
+  ); // switches to deg
+
+  // sin(90) in deg mode evaluates to 1
+  expect(state.expression).toBe('1');
+  expect(state.error).toBeNull();
+  expect(state.justEvaluated).toBe(true);
+});

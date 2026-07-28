@@ -71,6 +71,7 @@ export default function Calculator() {
         currentValue={formatExpressionForDisplay(state.expression) || '0'}
         previousExpression={formatExpressionForDisplay(state.previousExpression)}
         error={state.error}
+        angleMode={state.angleMode}
       />
       <Keypad
         onDigit={(digit) => dispatch({ type: 'DIGIT', digit })}
@@ -83,6 +84,8 @@ export default function Calculator() {
         onDelete={() => dispatch({ type: 'DELETE' })}
         onToggleSign={() => dispatch({ type: 'TOGGLE_SIGN' })}
         scientific={mode === 'scientific'}
+        angleMode={state.angleMode}
+        onToggleAngleMode={() => dispatch({ type: 'TOGGLE_ANGLE_MODE' })}
         onPower={(square) => dispatch({ type: 'POWER', square })}
         onSquareRoot={() => dispatch({ type: 'SQUARE_ROOT' })}
         onNthRoot={() => dispatch({ type: 'NTH_ROOT' })}

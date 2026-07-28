@@ -466,3 +466,42 @@ test('log recovers from a domain error by editing the argument in place', () => 
   expect(errorText()).toBe('');
   expect(currentValue()).toBe('1');
 });
+
+test('renders angle mode indicator inside display', () => {
+  renderCalculator();
+  // By default, displays RAD
+  const indicator = container.querySelector('.calculator-angle-mode-indicator');
+  expect(indicator).not.toBeNull();
+  expect(indicator.textContent).toBe('RAD');
+});
+
+test('clicking the DEG/RAD button toggles angle mode and re-evaluates', () => {
+  renderCalculator();
+  clickButton('Scientific');
+
+  // Default is RAD
+  expect(container.querySelector('.calculator-angle-mode-indicator').textContent).toBe('RAD');
+
+  // Type sin(90)
+  clickButton('sin');
+  clickButton('9');
+  clickButton('0');
+  clickButton(')');
+  clickButton('=');
+
+  // sin(90) in RAD is 0.893996663601
+  expect(currentValue()).toBe('0.893996663601');
+
+  // Click RAD to toggle to DEG
+  clickButton('RAD');
+
+  // Button text updates to DEG
+  const degBtn = Array.from(container.querySelectorAll('button')).find(
+    (el) => el.textContent === 'DEG',
+  );
+  expect(degBtn).not.toBeNull();
+
+  // Display updates immediately to 1
+  expect(currentValue()).toBe('1');
+  expect(container.querySelector('.calculator-angle-mode-indicator').textContent).toBe('DEG');
+});

@@ -14,28 +14,38 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 ## Last Updated
 
-- Date: 2026-07-27
-- Updated by: Eldad / Codex
+- Date: 2026-07-28
+- Updated by: Eldad / Antigravity
 - Human owner: Eldad
-- AI used: Codex
+- AI used: Antigravity
 
 ## Current Release
 
 - Release: v0.4.0 — Scientific Functions
-- Current phase: CFL-19 implementation
-- Goal: Deliver trigonometric expression functions without starting CFL-20 angle-mode UI or session persistence.
-- Overall status: CFL-19, CFL-59, and CFL-60 are In Progress. CFL-59 is implemented and verified locally; CFL-60 tangent tolerance work is active. CFL-16 is Done and unblocks CFL-19. CFL-19 blocks CFL-20.
+- Current phase: CFL-20 implementation
+- Goal: Deliver DEG/RAD toggle control, visible display indicator, immediate re-evaluation on toggle, and session persistence.
+- Overall status: CFL-20, CFL-61, and CFL-62 are In Progress. CFL-19 is Done and unblocks CFL-20.
 
 ## Current Approved Sequence
 
-1. CFL-19 — Trigonometric Functions
-   - CFL-59 — Calculate Sine and Cosine: implemented
-   - CFL-60 — Calculate Tangent and Handle Undefined Results: active
-2. CFL-20 — Angle Mode remains blocked by CFL-19.
+1. CFL-20 — Angle Mode
+   - CFL-61 — Switch Between Degree and Radian Modes: active
+   - CFL-62 — Apply Angle Mode Consistently to Trigonometric Evaluation: active
 
 The Foundation sequence below is historical context, not current active work.
 
 ## Active Features
+
+### Eldad — CFL-20 Angle Mode
+
+- Owner and release: Eldad; v0.4.0 — Scientific Functions.
+- Branch and worktree: `feature/CFL-20-angle-mode`
+- Jira status: CFL-20, CFL-61, and CFL-62 are In Progress.
+- Pull Request: None opened yet.
+- Scope: Keypad DEG/RAD toggle button, Display active mode label, sessionStorage persistence, immediate re-evaluation of current expression, and automated TDD testing.
+- Blockers: None.
+- Verification: Tests planned in `tests/expressionEngine.test.js` and `tests/calculator.test.jsx`.
+- Next required action: Implement Task 1 (extend engine state with angleMode).
 
 ### Eldad — CFL-19 Trigonometric Functions
 
@@ -102,9 +112,10 @@ The Foundation sequence below is historical context, not current active work.
 
 ### Eldad
 
+- Current Feature: CFL-20 — Angle Mode (In Progress; active development of DEG/RAD toggle and re-evaluation)
 - Current Foundation Feature: CFL-11 — Foundation Documentation and Verification (In Progress; blocked on Gavi's CFL-49 validation)
 - Completed parallel Feature: CFL-16 — Expression Evaluation (Done; evaluator core and CFL-14 integration are merged)
-- Required action: for CFL-11, wait for Gavi's CFL-49 evidence
+- Required action: Implement DEG/RAD toggle control, visible display indicator, immediate re-evaluation on toggle, and session persistence for CFL-20.
 
 ### Gavi
 
