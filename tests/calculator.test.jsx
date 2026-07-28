@@ -572,3 +572,83 @@ test('initial angle mode is loaded from sessionStorage if present', () => {
   // Clean up
   sessionStorage.removeItem('calcflow_angle_mode');
 });
+
+// --- calculation history (CFL-65 / CFL-66) ---
+
+test('history is hidden until a calculation succeeds, then shows the toggle', () => {
+  renderCalculator();
+  expect(container.querySelector('.calculator-history')).toBeNull();
+
+  clickButton('1');
+  clickButton('+');
+  clickButton('1');
+  clickButton('=');
+
+  const toggle = container.querySelector('.calculator-history-toggle');
+  expect(toggle.textContent).toBe('History (1)');
+});
+
+test('a division-by-zero error does not add a history entry', () => {
+  renderCalculator();
+
+  clickButton('9');
+  clickButton('÷');
+  clickButton('0');
+  clickButton('=');
+
+  expect(container.querySelector('.calculator-history')).toBeNull();
+});
+
+test('reusing a history entry restores its expression for editing', () => {
+  renderCalculator();
+
+  clickButton('1');
+  clickButton('2');
+  clickButton('=');
+  clickButton('3');
+  clickButton('4');
+  clickButton('=');
+
+  clickButton('History (2)');
+  clickButton('12= 12');
+
+  expect(currentValue()).toBe('12');
+
+  clickButton('5');
+  clickButton('=');
+  expect(currentValue()).toBe('125');
+});
+
+test('clearing history removes all entries and hides the panel again', () => {
+  renderCalculator();
+
+  clickButton('1');
+  clickButton('=');
+
+  clickButton('History (1)');
+  clickButton('Clear');
+
+  expect(container.querySelector('.calculator-history')).toBeNull();
+});
+
+test('history persists across a fresh Calculator mount via sessionStorage', () => {
+  renderCalculator();
+
+  clickButton('7');
+  clickButton('=');
+
+  act(() => {
+    root.unmount();
+  });
+  container.remove();
+
+  container = document.createElement('div');
+  document.body.append(container);
+  root = createRoot(container);
+  act(() => {
+    root.render(<Calculator />);
+  });
+
+  const toggle = container.querySelector('.calculator-history-toggle');
+  expect(toggle.textContent).toBe('History (1)');
+});
