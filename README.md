@@ -39,3 +39,4 @@ Calculator logic, utilities, and UI folders will be added with the work that use
 
 - [design.md](design.md) defines the shared UI and UX rules.
 - [PROJECT_PLAN.md](PROJECT_PLAN.md) defines scope, roles, workflow, review policy, sources of truth, and release process.
+- [ALL_LICENSES](ALL_LICENSES) records third-party asset and dependency licensing.

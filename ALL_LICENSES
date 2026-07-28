@@ -1,0 +1,17 @@
+# ALL_LICENSES
+
+Third-party licensing records for CalcFlow, per PROJECT_PLAN.md's Dependency
+and License Governance rules.
+
+## Third-Party Assets
+
+- `public/favicon.png` — "Calculator" icon by Ian Banyuke
+  (https://thenounproject.com/creator/ianbanyuke/) from the Noun Project
+  (https://thenounproject.com/icon/calculator-4575983/), licensed under
+  CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/).
+
+## Dependencies
+
+Direct and transitive package licenses, generated from `package-lock.json`.
+Tracked under CFL-87 (Generate ALL_LICENSES from the Lock File) and CFL-88
+(Review License Report and Resolve Unknown Licenses) — not yet generated.
