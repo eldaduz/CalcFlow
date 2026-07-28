@@ -387,7 +387,25 @@ test('TOGGLE_ANGLE_MODE toggles mode between rad and deg', () => {
   expect(state2.angleMode).toBe('rad');
 });
 
-test('TOGGLE_ANGLE_MODE re-evaluates active expression immediately', () => {
+test('TOGGLE_ANGLE_MODE re-evaluates previously evaluated expression immediately', () => {
+  const state = expressionReducer(
+    {
+      expression: '0.893996663601',
+      previousExpression: 'sin(90)',
+      justEvaluated: true,
+      error: null,
+      angleMode: 'rad',
+    },
+    { type: 'TOGGLE_ANGLE_MODE' },
+  ); // switches to deg
+
+  // sin(90) in deg mode evaluates to 1
+  expect(state.expression).toBe('1');
+  expect(state.error).toBeNull();
+  expect(state.justEvaluated).toBe(true);
+});
+
+test('TOGGLE_ANGLE_MODE mid-edit does not re-evaluate', () => {
   const state = expressionReducer(
     {
       expression: 'sin(90)',
@@ -399,8 +417,7 @@ test('TOGGLE_ANGLE_MODE re-evaluates active expression immediately', () => {
     { type: 'TOGGLE_ANGLE_MODE' },
   ); // switches to deg
 
-  // sin(90) in deg mode evaluates to 1
-  expect(state.expression).toBe('1');
-  expect(state.error).toBeNull();
-  expect(state.justEvaluated).toBe(true);
+  expect(state.expression).toBe('sin(90)');
+  expect(state.justEvaluated).toBe(false);
+  expect(state.angleMode).toBe('deg');
 });

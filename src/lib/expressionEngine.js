@@ -301,16 +301,10 @@ export function expressionReducer(state, action) {
     }
     case 'TOGGLE_ANGLE_MODE': {
       const nextMode = state.angleMode === 'deg' ? 'rad' : 'deg';
-      if (typeof sessionStorage !== 'undefined') {
-        sessionStorage.setItem('calcflow_angle_mode', nextMode);
-      }
       const nextState = { ...state, angleMode: nextMode, error: null };
       if (state.justEvaluated && state.previousExpression !== '') {
         const evalState = { ...nextState, expression: state.previousExpression };
         return evaluateCurrentExpression(evalState);
-      }
-      if (state.expression !== '') {
-        return evaluateCurrentExpression(nextState);
       }
       return nextState;
     }

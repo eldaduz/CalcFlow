@@ -145,15 +145,13 @@ The Foundation sequence below is historical context, not current active work.
 - PR opened: [PR #17](https://github.com/eldaduz/CalcFlow/pull/17), Eldad requested as reviewer. CFL-18/57/58 moved to Code Review.
 - Next required action: awaiting Eldad's review on PR #17.
 
-### Gavi — CFL-21 (active, 2026-07-27)
+### Gavi — CFL-21 (active, 2026-07-28)
 
-- Jira: CFL-21 — Additional Scientific Operations, plus child stories CFL-63/CFL-64 — **In Progress**. Unblocked (only dependency, CFL-16, is Done); scope intentionally **excludes `%`**, pending Eldad's answer on percent semantics (flagged on CFL-63, plus Gavi's suggestion of a straightforward-vs-contextual toggle as possible separate follow-up scope).
-- New module `src/lib/scientificOperations.js`: `factorial(n)` (non-negative integers only, `FACTORIAL_DOMAIN_ERROR` otherwise; caps at 170 with `FACTORIAL_LIMIT_EXCEEDED` above that, since 171! already overflows a JS double) and `absoluteValue(x)`, both via a self-contained `ScientificOperationError`, matching the `arithmetic.js`/`logarithm.js` convention.
-- `evaluateExpression` grammar: tokenizer recognizes `π` as a literal `Math.PI` number token and extends the existing identifier-run logic (already used for `log`/`ln`) to recognize `e` as `Math.E` — both become plain number tokens, no parser changes needed for the constants themselves. Added a `parsePostfix` tier (between `parsePower` and `parsePrimary`) consuming trailing `!` via `factorial`, so `2^3!` = `2^(3!)` = `64` (factorial binds tighter than power, standard convention). `parsePrimary` gained `|...|` parsing: `|` always opens a new scope (exactly like `(`), so nesting (`|1-|2-5||`) resolves correctly for free via the existing recursion, reusing the same nesting-depth counter/limit.
-- Branch: `feature/CFL-21-additional-operations`, off `feature/CFL-18-log-expression-grammar` (PR #17, unmerged) rather than `main` directly — both branches extend the tokenizer's identifier-recognition mechanism (PR #17 for `log`/`ln`, this one for `e`), so building on top avoids two independent additions to the same mechanism colliding. Will rebase onto `main` once PR #17 merges.
-- Keypad: four new scientific buttons — `|x|`, `x!`, `π`, `e`. After `=`: `x!` continues from the previous result (like `POWER`); `|x|` resets to a fresh `|` (like `SQUARE_ROOT` — append-only editing can't retroactively wrap a prior result in bars); `π`/`e` reset fresh (like a plain digit).
-- Verification (real pipeline): clean `npm ci`; lint, format:check clean; 157 tests passing; coverage 96.82% statements; production build and `git diff --check` pass. Independently verified in a real browser (Playwright/system Chrome against the dev server): `|−5|` → `5`; `5!` → `120`; `(-1)!` shows the domain error inline; `π` → `3.14159265359`; `e` → `2.71828182846`; no new console errors (same pre-existing, unrelated favicon 404 as CFL-18/CFL-17).
-- Next required action: open PR, request Eldad as reviewer, move CFL-21/63/64 to Code Review.
+- Jira: CFL-21 — Additional Scientific Operations, plus child stories CFL-63/CFL-64 — **Code Review**. Percent semantics approved as straightforward divide-by-100 (Jira comment 10583).
+- Scope: `evaluateExpression.js` tokenizer recognizes `%` and postfix divide-by-100 in `parsePostfix`. Keypad button `%` in Scientific row, `appendPercent` guard in `expressionEngine.js`.
+- PR opened & reviewed: [PR #27](https://github.com/eldaduz/CalcFlow/pull/27) reviewed and approved by Eldad on 2026-07-28.
+- Verification (real pipeline): clean `npm ci`; lint, format:check clean; 177 tests passing; 97.01% statement coverage; production build clean.
+- Next required action: Gavi to proceed with QA, merge, and deployment for CFL-21.
 
 ### Design Decision Resolution (2026-07-26)
 

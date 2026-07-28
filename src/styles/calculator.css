@@ -131,12 +131,9 @@ body {
 
 .calculator-angle-mode-indicator {
   font-size: 14px;
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.5);
   font-weight: bold;
   margin-bottom: var(--space-8);
-  padding: var(--space-4) var(--space-8);
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: var(--space-4);
 }
 
 .calculator-error {

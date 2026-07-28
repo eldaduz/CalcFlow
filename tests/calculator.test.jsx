@@ -1,11 +1,15 @@
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { afterEach, expect, test } from 'vitest';
+import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import Calculator from '../src/components/Calculator.jsx';
 
 let container;
 let root;
+
+beforeEach(() => {
+  sessionStorage.clear();
+});
 
 afterEach(() => {
   act(() => {
@@ -504,4 +508,53 @@ test('clicking the DEG/RAD button toggles angle mode and re-evaluates', () => {
   // Display updates immediately to 1
   expect(currentValue()).toBe('1');
   expect(container.querySelector('.calculator-angle-mode-indicator').textContent).toBe('DEG');
+});
+
+test('toggling angle mode mid-expression does not evaluate or show spurious errors', () => {
+  renderCalculator();
+  clickButton('Scientific');
+
+  // Type sin( without completing it
+  clickButton('sin');
+  expect(currentValue()).toBe('sin(');
+
+  // Toggle angle mode
+  clickButton('RAD');
+  expect(container.querySelector('.calculator-angle-mode-indicator').textContent).toBe('DEG');
+  expect(currentValue()).toBe('sin(');
+  expect(container.querySelector('.calculator-error').textContent).toBe('');
+});
+
+test('toggling angle mode on a complete-but-unsubmitted expression does not auto-evaluate', () => {
+  renderCalculator();
+  clickButton('Scientific');
+
+  // Type sin(90) but do NOT press equals
+  clickButton('sin');
+  clickButton('9');
+  clickButton('0');
+  clickButton(')');
+  expect(currentValue()).toBe('sin(90)');
+
+  // Toggle angle mode
+  clickButton('RAD');
+  expect(container.querySelector('.calculator-angle-mode-indicator').textContent).toBe('DEG');
+
+  // Verify expression is still editable and not evaluated to 1
+  expect(currentValue()).toBe('sin(90)');
+
+  // Submit now to verify it evaluates in DEG mode to 1
+  clickButton('=');
+  expect(currentValue()).toBe('1');
+});
+
+test('initial angle mode is loaded from sessionStorage if present', () => {
+  sessionStorage.setItem('calcflow_angle_mode', 'deg');
+  renderCalculator();
+
+  const indicator = container.querySelector('.calculator-angle-mode-indicator');
+  expect(indicator.textContent).toBe('DEG');
+
+  // Clean up
+  sessionStorage.removeItem('calcflow_angle_mode');
 });

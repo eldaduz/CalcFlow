@@ -10,9 +10,22 @@ import Keypad from './Keypad.jsx';
 
 const OPERATOR_KEYS = new Set(['+', '-', '*', '/']);
 
+const init = (initial) => ({
+  ...initial,
+  angleMode:
+    (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('calcflow_angle_mode')) ||
+    'rad',
+});
+
 export default function Calculator() {
-  const [state, dispatch] = useReducer(expressionReducer, initialState);
+  const [state, dispatch] = useReducer(expressionReducer, initialState, init);
   const [mode, setMode] = useState('basic');
+
+  useEffect(() => {
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('calcflow_angle_mode', state.angleMode);
+    }
+  }, [state.angleMode]);
 
   useEffect(() => {
     function handleKeyDown(event) {

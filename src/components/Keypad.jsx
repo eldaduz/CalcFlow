@@ -44,7 +44,6 @@ export default function Keypad({
     <div className="calculator-keypad-section">
       {scientific && (
         <div className="calculator-scientific-row">
-          {/* ponytail: simple button toggle inside grid. If grid becomes too crowded, shift to display-level toggle button. */}
           <button
             type="button"
             className="calculator-button"
