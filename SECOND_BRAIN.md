@@ -41,7 +41,7 @@ The Foundation sequence below is historical context, not current active work.
 
 - Owner and release: Eldad; v0.4.0 — Scientific Functions.
 - Branch and worktree: Merged to `main` and branch deleted.
-- Jira status: CFL-19, CFL-59, and CFL-60 are in Ready for Deployment.
+- Jira status: CFL-19, CFL-59, and CFL-60 are Done.
 - Pull Request: [PR #19](https://github.com/eldaduz/CalcFlow/pull/19) is merged.
 - CFL-59: Scientific `sin` and `cos` controls insert editable expressions; evaluator supports both functions with explicit DEG/RAD context and RAD default.
 - CFL-60: Scientific `tan` control inserts an editable expression. `tan(45°)` normalizes to `1`; `tan(90°)` returns a controlled error when cosine magnitude is below `1e-12`. CFL-20 UI and persistence remain excluded.
@@ -252,11 +252,11 @@ Update this file when:
 
 ## Latest Handoff
 
-- Current work: CFL-19 Ready for Deployment.
+- Current work: CFL-19 is Done.
 - Scope: Scientific `sin`, `cos`, and `tan` controls insert editable expressions. Evaluator supports all three functions, explicit DEG/RAD context, RAD default, common-angle normalization, and a controlled near-right-angle tangent error. Visible DEG/RAD selection, calculator UI forwarding, session persistence, and scientific keyboard shortcuts remain CFL-20 scope.
 - Verification: Automated QA pipeline passed on `main`. Manual UI QA passed human validation.
 - Current risks: repository still has no GitHub Actions workflow. Playwright environment is unavailable for AI UI testing.
-- Next safe action: Complete Vercel Production smoke test and mark CFL-19 as Done.
+- Next safe action: Select next Feature (CFL-20 — Angle Mode) and prepare a development plan for approval.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
