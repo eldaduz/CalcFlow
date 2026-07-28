@@ -343,6 +343,33 @@ specifically, run the actual function against edge cases the PR's own tests
 don't cover, rather than trusting that "the diff looks right" or "the new
 tests pass." Both bugs here were only visible by execution, not by reading.
 
+### PR #31 (Eldad's CFL-29 CI work) — approved three times, dismissed twice
+
+Approved it, told Gavi "approved," and GitHub auto-dismissed the approval
+minutes later — twice in a row — because a new commit landed on the branch
+each time. Eldad caught it both times before it was caught here. **The
+wrong takeaway (initially reached for and explicitly corrected by Gavi):**
+that the _milestone SECOND_BRAIN.md commits themselves_ were the problem,
+or that the fix is to avoid routine doc commits on review branches. That's
+not it.
+
+**The actual mechanism:** a GitHub PR review is scoped to one exact commit
+SHA (`review.commit_id`). The instant _any_ new commit lands on that
+branch — trivial or not, yours or someone else's — the prior approval is
+auto-dismissed by branch protection, by design. A text reply saying
+"approved," even one said seconds ago, is not evidence the PR is
+_currently_ approved; the two can silently diverge the moment someone else
+pushes. Confirmed by directly comparing `review.commit_id` against the PR's
+live `head.sha` each time — they'd already diverged.
+
+**Now a standing rule in `CLAUDE.md` (item 15) and in Claude's persistent
+cross-session memory** (`feedback_verify_approval_against_current_commit`,
+not CalcFlow-specific — this is a general GitHub mechanism): before
+reporting or relying on a PR's approval/mergeable state, including right
+after submitting your own approval, fetch the PR fresh and confirm the
+review's `commit_id` matches the _current_ `head.sha` at that exact moment.
+Never reuse an earlier check or a prior "approved" statement as still true.
+
 ## 10. Currently open threads (verify live before trusting this section — it
 
 will go stale fast)
@@ -400,6 +427,11 @@ audit fix` is a real, distinct, mutating command that shares the same
   "should we build a standalone module first" and "what's the branch base"
   judgment calls — when in doubt, look at how the _other_ side's most
   recent similar PR handled it before improvising a new pattern.
+- **A prior "approved" statement is not evidence a PR is currently
+  approved.** Reviews are commit-SHA-scoped and silently go stale the
+  moment anyone pushes again, even a trivial docs commit. Re-verify
+  `review.commit_id` against the live `head.sha` every time, not just once.
+  See §9's PR #31 case study.
 - **Product Epics drift silently just like Features/Stories do** — nobody
   had explicitly checked CFL-3's status against its (fully Done) children
   in a long time. Epic-level status isn't automatically covered by the
