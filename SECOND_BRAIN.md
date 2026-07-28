@@ -21,29 +21,30 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 ## Current Release
 
-- Release: v0.4.0 — Scientific Functions (complete)
-- Current phase: CFL-27 — Application Logging
-- Goal: Implement internal logger for calculation events, errors, and unexpected failures.
-- Overall status: CFL-20, CFL-61, and CFL-62 are Done. CFL-27 is next.
+- Release: v1.0.0 — Stable Final Release
+- Current phases:
+  - Eldad: CFL-31 — Release Management (Ready for Deployment)
+  - Gavi: CFL-21 — Additional Scientific Operations (Code Review) / CFL-22 — Calculation History (Selected for Development)
+- Goal: Manage semantic version sequences, Git tagging procedures, GitHub Releases creation, release notes formatting, and human approval gates.
+- Overall status: CFL-29 is Done. CFL-31 is Ready for Deployment.
 
 ## Current Approved Sequence
 
-1. CFL-20 — Angle Mode (Done)
-2. CFL-27 — Application Logging (next)
+1. CFL-29 — Continuous Integration (Done)
+2. CFL-31 — Release Management (Ready for Deployment)
 
 The Foundation sequence below is historical context, not current active work.
 
 ## Active Features
 
-### Eldad — CFL-20 Angle Mode
+### Eldad — CFL-31 Release Management
 
-- Owner and release: Eldad; v0.4.0 — Scientific Functions.
-- Branch and worktree: Merged to `main` and branch deleted.
-- Jira status: CFL-20, CFL-61, and CFL-62 are Done.
-- Pull Request: [PR #28](https://github.com/eldaduz/CalcFlow/pull/28) is merged.
-- Scope: Keypad DEG/RAD toggle button, Display active mode label, sessionStorage persistence, immediate re-evaluation of current expression, and automated TDD testing.
-- Verification: Automated QA pipeline passed (npm ci, lint, format check, 186 tests, build). PR reviewed by Gavi and approved. Merged to main.
-- Next required action: Start CFL-27 — Application Logging.
+- Owner and release: Eldad; v1.0.0 — Stable Final Release.
+- Branch and worktree: `feature/CFL-31-release-management` created from updated `main`.
+- Jira status: CFL-31 (Feature), CFL-83 (Task), and CFL-84 (Task) are Ready for Deployment.
+- Pull Request: [PR #34](https://github.com/eldaduz/CalcFlow/pull/34) is open and approved by Gavi.
+- Scope: Document and automate/guide semantic version tagging, GitHub Release notes generation, release documentation (`docs/RELEASE_GUIDE.md`), release workflow scripts, and verification procedures.
+- Next required action: Await human approval to merge PR #34 to main, deploy, run production smoke test, and mark Done in Jira.
 
 ### Eldad — CFL-19 Trigonometric Functions
 
@@ -110,10 +111,10 @@ The Foundation sequence below is historical context, not current active work.
 
 ### Eldad
 
-- Current Feature: None (CFL-29 — Continuous Integration is Done)
-- Current Foundation Feature: CFL-11 — Foundation Documentation and Verification (In Progress; blocked on Gavi's CFL-49 validation)
-- Completed parallel Feature: CFL-20 — Angle Mode (Done; DEG/RAD toggle and re-evaluation are merged)
-- Required action: Start next feature.
+- Current Feature: CFL-31 — Release Management (In Progress)
+- Current Tasks: CFL-83 (In Progress), CFL-84 (Selected for Development)
+- Branch: `feature/CFL-31-release-management`
+- Required action: Wait for human approval of development plan, then implement release management tools and documentation.
 
 ### Gavi
 
@@ -151,6 +152,16 @@ The Foundation sequence below is historical context, not current active work.
 - Verification (real pipeline): clean `npm ci`; lint, format:check clean; 177 tests passing; 97.01% statement coverage; production build clean.
 - Next required action: Gavi to proceed with QA, merge, and deployment for CFL-21.
 
+### Gavi — CFL-22 (2026-07-28)
+
+- Jira: CFL-22 — Calculation History, plus child stories CFL-65 (Record and Display) and CFL-66 (Reuse and Clear) — **Done**. First Feature of v0.5.0 — History and Memory, started once v0.4.0's Features were all confirmed Done.
+- Design contract: follows the CFL-22 row already recorded in `design.md` ("collapsible region below the keypad... can be reused, and clears independently").
+- Judgment calls made and confirmed with Gavi before implementation (neither is a design.md "Open Design Decision", so no Eldad sign-off required): reusing a history entry restores the full original expression (editable, re-evaluatable) rather than just the result; history persists via `sessionStorage` for the current tab, mirroring the CFL-20 `angleMode` pattern.
+- Scope: `expressionEngine.js` gains a `history` array in state (newest-first, populated only on successful `EQUALS`), plus `REUSE_HISTORY` and `CLEAR_HISTORY` actions. New `History.jsx` component (collapsible, returns `null` when empty so it reserves no space per design.md) renders below `Keypad` in `Calculator.jsx`. `AC`/`CLEAR` intentionally does not clear history — only the dedicated Clear control does.
+- Verification (real pipeline): clean `npm ci`; lint, format:check clean; 210 tests passing (16 new); 96%+ statement coverage (70% threshold); production build and `git diff --check` clean. Independently verified in a real browser (Playwright driving system Chrome against the dev server): history hidden at 0 entries, count updates per successful calculation, divide-by-zero does not add an entry, reusing an entry restores an editable expression that re-evaluates correctly, Clear empties the panel, history survives a page reload via sessionStorage. Regression-checked alongside Scientific mode, DEG/RAD toggle, and existing error handling — no console errors.
+- PR: [PR #35](https://github.com/eldaduz/CalcFlow/pull/35), reviewed and approved by Eldad, merged to `main`. QA + regression re-run against the production build (Vercel Preview was behind Vercel SSO and unreachable) all passed. Production deployment confirmed and smoke-tested live on https://calc-flow-fawn.vercel.app/ (site loads, core calculation, history persistence, error handling, Scientific mode — zero console errors), confirmed by Gavi.
+- Next required action: none. CFL-23 (Memory Operations) is next in the CFL-5 sequence.
+
 ### Gavi — CFL-23 (active, 2026-07-28)
 
 - Jira: CFL-23 — Memory Operations, plus child stories CFL-67 (Store and Recall) and CFL-68 (Modify and Clear) — **Code Review**. Second Feature of v0.5.0, started after CFL-22 went to Code Review.
@@ -158,8 +169,8 @@ The Foundation sequence below is historical context, not current active work.
 - Judgment calls made and confirmed with Gavi before implementation (neither is a design.md "Open Design Decision"): M+/M− evaluate the current expression on the fly (same evaluator path as `=`) and fold the result into memory, leaving memory untouched if it does not evaluate cleanly; MR appends the stored value as an editable token at the cursor, mirroring the π/e constant pattern rather than replacing the expression. Note `design.md` lists no dedicated "store" control, so CFL-67's "store" is M+ into empty (0) memory — the standard four-control convention.
 - Scope: `expressionEngine.js` gains `memory` in state plus `MEMORY_ADD`/`MEMORY_SUBTRACT`/`MEMORY_RECALL`/`MEMORY_CLEAR` actions and a non-logging `evaluateCurrentValue` helper; `Keypad.jsx` gains the four Scientific controls and an `aria-live` memory indicator; `Calculator.jsx` wires handlers and sessionStorage persistence. `AC` deliberately preserves memory — only `MC` clears it. Accumulation is rounded to 12 significant digits to avoid floating-point drift across repeated M+/M−.
 - Verification (real pipeline): clean install; lint, format:check clean; 213 tests passing (21 new); 96.91% statement coverage (70% threshold); production build and `git diff --check` clean. Independently verified in a real browser (Playwright against the dev server): controls hidden in Basic mode; M+ on `2+3` stores 5 without disturbing the displayed expression; M− subtracts; MR appends an editable token that re-evaluates correctly; a divide-by-zero error leaves memory intact; `AC` preserves memory; memory survives a page reload; `MC` clears it. Regression-checked against basic arithmetic — no console errors.
-- Structural risk flagged: this branch and CFL-22's [PR #35](https://github.com/eldaduz/CalcFlow/pull/35) both add a new section to `SECOND_BRAIN.md` at the same insertion point and both modify `expressionEngine.js`/`Calculator.jsx`. Whichever merges second will need a straightforward conflict resolution (both sets of changes are additive and independent — keep both).
-- Next required action: awaiting Eldad's review. CFL-24 (Keyboard Support) is next in the CFL-5 sequence.
+- Merge conflict with CFL-22's [PR #35](https://github.com/eldaduz/CalcFlow/pull/35): as flagged in advance, once #35 merged first this branch conflicted in `expressionEngine.js`, `Calculator.jsx`, `calculator.css`, both test files, and this file itself. Resolved by keeping both change sets — every `justEvaluated`-reset branch in the reducer now explicitly preserves both `history` and `memory` (neither is dropped by the other's `...initialState` spread).
+- Next required action: awaiting Eldad's re-review (new commit dismisses the prior approval). CFL-24 (Keyboard Support) is next in the CFL-5 sequence once this merges.
 
 ### Design Decision Resolution (2026-07-26)
 

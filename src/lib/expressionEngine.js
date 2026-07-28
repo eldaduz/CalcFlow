@@ -23,6 +23,7 @@ export const initialState = {
   justEvaluated: false,
   error: null,
   angleMode: 'rad',
+  history: [],
   memory: 0,
 };
 
@@ -212,12 +213,14 @@ function evaluateCurrentExpression(state) {
       result: nextExpression,
       angleMode: state.angleMode,
     });
+    const historyEntry = { expression: state.expression, result: nextExpression };
     return {
       ...state,
       expression: nextExpression,
       previousExpression: state.expression,
       justEvaluated: true,
       error: null,
+      history: [historyEntry, ...(state.history || [])],
     };
   }
 
@@ -238,13 +241,23 @@ export function expressionReducer(state, action) {
   switch (action.type) {
     case 'DIGIT': {
       if (state.justEvaluated) {
-        return { ...initialState, memory: state.memory, expression: appendDigit('', action.digit) };
+        return {
+          ...initialState,
+          history: state.history,
+          memory: state.memory,
+          expression: appendDigit('', action.digit),
+        };
       }
       return { ...state, error: null, expression: appendDigit(state.expression, action.digit) };
     }
     case 'DECIMAL': {
       if (state.justEvaluated) {
-        return { ...initialState, memory: state.memory, expression: appendDecimal('') };
+        return {
+          ...initialState,
+          history: state.history,
+          memory: state.memory,
+          expression: appendDecimal(''),
+        };
       }
       return { ...state, error: null, expression: appendDecimal(state.expression) };
     }
@@ -255,6 +268,7 @@ export function expressionReducer(state, action) {
           previousExpression: '',
           justEvaluated: false,
           error: null,
+          history: state.history,
           memory: state.memory,
         };
       }
@@ -272,6 +286,7 @@ export function expressionReducer(state, action) {
           previousExpression: '',
           justEvaluated: false,
           error: null,
+          history: state.history,
           memory: state.memory,
         };
       }
@@ -279,7 +294,12 @@ export function expressionReducer(state, action) {
     }
     case 'SQUARE_ROOT': {
       if (state.justEvaluated) {
-        return { ...initialState, memory: state.memory, expression: '√' };
+        return {
+          ...initialState,
+          history: state.history,
+          memory: state.memory,
+          expression: '√',
+        };
       }
       return { ...state, error: null, expression: appendSquareRoot(state.expression) };
     }
@@ -291,6 +311,7 @@ export function expressionReducer(state, action) {
           previousExpression: '',
           justEvaluated: false,
           error: null,
+          history: state.history,
           memory: state.memory,
         };
       }
@@ -300,6 +321,7 @@ export function expressionReducer(state, action) {
       if (state.justEvaluated) {
         return {
           ...initialState,
+          history: state.history,
           memory: state.memory,
           expression: appendFunction('', action.name),
         };
@@ -314,6 +336,7 @@ export function expressionReducer(state, action) {
           previousExpression: '',
           justEvaluated: false,
           error: null,
+          history: state.history,
           memory: state.memory,
         };
       }
@@ -327,6 +350,7 @@ export function expressionReducer(state, action) {
           previousExpression: '',
           justEvaluated: false,
           error: null,
+          history: state.history,
           memory: state.memory,
         };
       }
@@ -334,7 +358,12 @@ export function expressionReducer(state, action) {
     }
     case 'ABS': {
       if (state.justEvaluated) {
-        return { ...initialState, memory: state.memory, expression: appendAbsBar('') };
+        return {
+          ...initialState,
+          history: state.history,
+          memory: state.memory,
+          expression: appendAbsBar(''),
+        };
       }
       return { ...state, error: null, expression: appendAbsBar(state.expression) };
     }
@@ -342,6 +371,7 @@ export function expressionReducer(state, action) {
       if (state.justEvaluated) {
         return {
           ...initialState,
+          history: state.history,
           memory: state.memory,
           expression: appendConstant('', action.symbol),
         };
@@ -350,7 +380,12 @@ export function expressionReducer(state, action) {
     }
     case 'OPEN_PAREN': {
       if (state.justEvaluated) {
-        return { ...initialState, memory: state.memory, expression: '(' };
+        return {
+          ...initialState,
+          history: state.history,
+          memory: state.memory,
+          expression: '(',
+        };
       }
       return { ...state, error: null, expression: appendOpenParen(state.expression) };
     }
@@ -363,7 +398,7 @@ export function expressionReducer(state, action) {
     case 'EQUALS':
       return evaluateCurrentExpression(state);
     case 'CLEAR':
-      return { ...initialState, memory: state.memory };
+      return { ...initialState, history: state.history, memory: state.memory };
     case 'MEMORY_ADD':
     case 'MEMORY_SUBTRACT': {
       const value = evaluateCurrentValue(state);
@@ -376,12 +411,27 @@ export function expressionReducer(state, action) {
     case 'MEMORY_RECALL': {
       const token = formatResultForExpression(state.memory);
       if (state.justEvaluated) {
-        return { ...initialState, memory: state.memory, expression: token };
+        return {
+          ...initialState,
+          history: state.history,
+          memory: state.memory,
+          expression: token,
+        };
       }
       return { ...state, error: null, expression: appendConstant(state.expression, token) };
     }
     case 'MEMORY_CLEAR':
       return { ...state, memory: 0 };
+    case 'REUSE_HISTORY':
+      return {
+        ...state,
+        expression: action.expression,
+        previousExpression: '',
+        justEvaluated: false,
+        error: null,
+      };
+    case 'CLEAR_HISTORY':
+      return { ...state, history: [] };
     case 'DELETE': {
       if (state.justEvaluated) {
         return state;

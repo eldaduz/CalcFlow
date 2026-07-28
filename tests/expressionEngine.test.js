@@ -285,7 +285,7 @@ test('an operator after "=" continues the calculation from the result', () => {
 test('square root after "=" starts a fresh prefix expression', () => {
   const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
   const next = expressionReducer(evaluated, squareRoot());
-  expect(next).toEqual({ ...initialState, expression: '√' });
+  expect(next).toEqual({ ...initialState, history: evaluated.history, expression: '√' });
 });
 
 // --- sign toggle ---
@@ -332,7 +332,7 @@ test('function entry appends the function name and an opening parenthesis', () =
 test('function entry after "=" starts a fresh expression rather than continuing the result', () => {
   const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
   const next = expressionReducer(evaluated, func('ln'));
-  expect(next).toEqual({ ...initialState, expression: 'ln(' });
+  expect(next).toEqual({ ...initialState, history: evaluated.history, expression: 'ln(' });
 });
 
 test('function entry clears an existing error and keeps editing in place', () => {
@@ -381,7 +381,7 @@ test('abs-value entry appends a bar and after "=" starts a fresh expression', ()
 
   const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
   const next = expressionReducer(evaluated, absKey());
-  expect(next).toEqual({ ...initialState, expression: '|' });
+  expect(next).toEqual({ ...initialState, history: evaluated.history, expression: '|' });
 });
 
 test('constant entry appends the symbol and after "=" starts a fresh expression', () => {
@@ -390,7 +390,7 @@ test('constant entry appends the symbol and after "=" starts a fresh expression'
 
   const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
   const next = expressionReducer(evaluated, constant('π'));
-  expect(next).toEqual({ ...initialState, expression: 'π' });
+  expect(next).toEqual({ ...initialState, history: evaluated.history, expression: 'π' });
 });
 
 test('factorial and constant entry clear an existing error and keep editing in place', () => {
@@ -457,6 +457,80 @@ test('TOGGLE_ANGLE_MODE mid-edit does not re-evaluate', () => {
   expect(state.expression).toBe('sin(90)');
   expect(state.justEvaluated).toBe(false);
   expect(state.angleMode).toBe('deg');
+});
+
+// --- calculation history (CFL-65 / CFL-66) ---
+
+test('initialState includes an empty history', () => {
+  expect(initialState.history).toEqual([]);
+});
+
+test('a successful calculation adds an entry to history', () => {
+  const state = dispatchAll([digit('1'), digit('2'), operator('+'), digit('3'), equals()]);
+  expect(state.history).toEqual([{ expression: '12+3', result: '15' }]);
+});
+
+test('an invalid calculation does not add anything to history', () => {
+  const state = dispatchAll([digit('9'), operator('/'), digit('0'), equals()]);
+  expect(state.history).toEqual([]);
+});
+
+test('history orders newest calculation first', () => {
+  const state = dispatchAll([
+    digit('1'),
+    operator('+'),
+    digit('1'),
+    equals(),
+    digit('2'),
+    operator('+'),
+    digit('2'),
+    equals(),
+  ]);
+  expect(state.history).toEqual([
+    { expression: '2+2', result: '4' },
+    { expression: '1+1', result: '2' },
+  ]);
+});
+
+test('history survives starting a new calculation after an evaluation', () => {
+  const state = dispatchAll([
+    digit('1'),
+    operator('+'),
+    digit('1'),
+    equals(),
+    digit('5'),
+    operator('+'),
+    digit('5'),
+    equals(),
+  ]);
+  expect(state.history).toHaveLength(2);
+});
+
+test('CLEAR resets the expression but preserves history', () => {
+  const state = dispatchAll([digit('1'), operator('+'), digit('1'), equals(), clear()]);
+  expect(state.expression).toBe('');
+  expect(state.history).toEqual([{ expression: '1+1', result: '2' }]);
+});
+
+test('REUSE_HISTORY restores the entry expression as an editable expression', () => {
+  const evaluated = dispatchAll([digit('1'), operator('+'), digit('1'), equals()]);
+  const reused = expressionReducer(evaluated, {
+    type: 'REUSE_HISTORY',
+    expression: evaluated.history[0].expression,
+  });
+  expect(reused.expression).toBe('1+1');
+  expect(reused.justEvaluated).toBe(false);
+  expect(reused.previousExpression).toBe('');
+
+  const evaluatedAgain = expressionReducer(reused, equals());
+  expect(evaluatedAgain.expression).toBe('2');
+});
+
+test('CLEAR_HISTORY empties history without touching the current expression', () => {
+  const evaluated = dispatchAll([digit('1'), operator('+'), digit('1'), equals()]);
+  const cleared = expressionReducer(evaluated, { type: 'CLEAR_HISTORY' });
+  expect(cleared.history).toEqual([]);
+  expect(cleared.expression).toBe('2');
 });
 
 // --- memory operations (CFL-67 / CFL-68) ---

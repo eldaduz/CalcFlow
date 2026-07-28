@@ -7,6 +7,7 @@ import {
   initialState,
 } from '../lib/expressionEngine.js';
 import Display from './Display.jsx';
+import History from './History.jsx';
 import Keypad from './Keypad.jsx';
 
 const OPERATOR_KEYS = new Set(['+', '-', '*', '/']);
@@ -19,12 +20,25 @@ function readStoredMemory() {
   return Number.isFinite(stored) ? stored : 0;
 }
 
+function readStoredHistory() {
+  if (typeof sessionStorage === 'undefined') {
+    return [];
+  }
+  try {
+    const stored = sessionStorage.getItem('calcflow_history');
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
 const init = (initial) => ({
   ...initial,
   angleMode:
     (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('calcflow_angle_mode')) ||
     'rad',
   memory: readStoredMemory(),
+  history: readStoredHistory(),
 });
 
 export default function Calculator() {
@@ -42,6 +56,12 @@ export default function Calculator() {
       sessionStorage.setItem('calcflow_memory', String(state.memory));
     }
   }, [state.memory]);
+
+  useEffect(() => {
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('calcflow_history', JSON.stringify(state.history));
+    }
+  }, [state.history]);
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -128,6 +148,11 @@ export default function Calculator() {
         onMemorySubtract={() => dispatch({ type: 'MEMORY_SUBTRACT' })}
         onMemoryRecall={() => dispatch({ type: 'MEMORY_RECALL' })}
         onMemoryClear={() => dispatch({ type: 'MEMORY_CLEAR' })}
+      />
+      <History
+        entries={state.history}
+        onReuse={(entry) => dispatch({ type: 'REUSE_HISTORY', expression: entry.expression })}
+        onClear={() => dispatch({ type: 'CLEAR_HISTORY' })}
       />
     </div>
   );
