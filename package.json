@@ -14,6 +14,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "coverage": "vitest run --coverage",
+    "release:verify": "node scripts/release-helper.js",
     "prepare": "husky",
     "format:check": "prettier . --check",
     "format": "prettier . --write",
