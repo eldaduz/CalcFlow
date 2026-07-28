@@ -46,6 +46,16 @@ The Foundation sequence below is historical context, not current active work.
 - Scope: Document and automate/guide semantic version tagging, GitHub Release notes generation, release documentation (`docs/RELEASE_GUIDE.md`), release workflow scripts, and verification procedures.
 - Verification: QA and full regression suite passed (linting, formatting check, 188 unit tests, 97.16% coverage, production build, and `release:verify`). Infrastructure merged to main.
 
+### Eldad — CFL-32 Dependency Governance
+
+- Owner and release: Eldad; v1.0.0 — Stable Final Release.
+- Branch: `feature/CFL-32-dependency-governance`
+- Jira status: CFL-32 (Feature), CFL-85 (Task), and CFL-86 (Task) are Code Review.
+- Pull Request: [PR #38](https://github.com/eldaduz/CalcFlow/pull/38) is open.
+- Scope: Created `docs/DEPENDENCIES.md` establishing dependency governance. Completed final dependency audit (`npm ci` and `npm audit` clean).
+- Verification: Clean `npm ci`, zero vulnerabilities in `npm audit`, passed formatting, linting, tests, and build.
+- Required action: Awaiting Gavi's review on PR #38.
+
 ### Eldad — CFL-19 Trigonometric Functions
 
 - Owner and release: Eldad; v0.4.0 — Scientific Functions.
@@ -111,10 +121,8 @@ The Foundation sequence below is historical context, not current active work.
 
 ### Eldad
 
-- Current Feature: CFL-31 — Release Management (In Progress)
-- Current Tasks: CFL-83 (In Progress), CFL-84 (Selected for Development)
-- Branch: `feature/CFL-31-release-management`
-- Required action: Wait for human approval of development plan, then implement release management tools and documentation.
+- Current Feature: None (awaiting reviews for CFL-32 and deployment for CFL-31)
+- Required action: Wait for Gavi's review on PR #38 before proceeding with QA.
 
 ### Gavi
 
