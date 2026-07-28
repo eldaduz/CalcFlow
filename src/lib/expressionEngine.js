@@ -21,9 +21,7 @@ export const initialState = {
   previousExpression: '',
   justEvaluated: false,
   error: null,
-  angleMode:
-    (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('calcflow_angle_mode')) ||
-    'rad',
+  angleMode: 'rad',
 };
 
 const OPERATOR_GLYPHS = { '+': '+', '-': '−', '*': '×', '/': '÷' };
