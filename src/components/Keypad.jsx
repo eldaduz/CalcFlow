@@ -34,18 +34,36 @@ export default function Keypad({
   onSquareRoot,
   onNthRoot,
   onFunction,
+  onFactorial,
+  onAbs,
+  onConstant,
 }) {
   return (
     <div className="calculator-keypad-section">
       {scientific && (
         <div className="calculator-scientific-row">
-          <button type="button" className="calculator-button" onClick={() => onFunction('sin')}>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Sine"
+            onClick={() => onFunction('sin')}
+          >
             sin
           </button>
-          <button type="button" className="calculator-button" onClick={() => onFunction('cos')}>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Cosine"
+            onClick={() => onFunction('cos')}
+          >
             cos
           </button>
-          <button type="button" className="calculator-button" onClick={() => onFunction('tan')}>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Tangent"
+            onClick={() => onFunction('tan')}
+          >
             tan
           </button>
           <button
@@ -95,6 +113,38 @@ export default function Keypad({
             onClick={onNthRoot}
           >
             ⁿ√
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Absolute value"
+            onClick={onAbs}
+          >
+            |x|
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Factorial"
+            onClick={onFactorial}
+          >
+            x!
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Pi"
+            onClick={() => onConstant('π')}
+          >
+            π
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Euler's number"
+            onClick={() => onConstant('e')}
+          >
+            e
           </button>
         </div>
       )}

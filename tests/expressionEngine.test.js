@@ -24,6 +24,9 @@ const square = () => ({ type: 'POWER', square: true });
 const squareRoot = () => ({ type: 'SQUARE_ROOT' });
 const nthRoot = () => ({ type: 'NTH_ROOT' });
 const func = (name) => ({ type: 'FUNCTION', name });
+const factorialKey = () => ({ type: 'FACTORIAL' });
+const absKey = () => ({ type: 'ABS' });
+const constant = (symbol) => ({ type: 'CONSTANT', symbol });
 
 // --- entering multiple operands and operators ---
 
@@ -316,6 +319,50 @@ test('function entry clears an existing error and keeps editing in place', () =>
   const next = expressionReducer(errored, func('log'));
   expect(next.error).toBe(null);
   expect(next.expression).toBe('(2+log(');
+});
+
+// --- factorial, absolute value, and constants ---
+
+test('factorial entry appends "!" only after a digit or closing parenthesis', () => {
+  const state = dispatchAll([digit('5'), factorialKey()]);
+  expect(state.expression).toBe('5!');
+
+  const inert = expressionReducer(initialState, factorialKey());
+  expect(inert.expression).toBe('');
+});
+
+test('factorial entry after "=" continues the calculation from the result', () => {
+  const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
+  const next = expressionReducer(evaluated, factorialKey());
+  expect(next.expression).toBe('10!');
+  expect(next.justEvaluated).toBe(false);
+});
+
+test('abs-value entry appends a bar and after "=" starts a fresh expression', () => {
+  const state = dispatchAll([absKey(), digit('5')]);
+  expect(state.expression).toBe('|5');
+
+  const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
+  const next = expressionReducer(evaluated, absKey());
+  expect(next).toEqual({ ...initialState, expression: '|' });
+});
+
+test('constant entry appends the symbol and after "=" starts a fresh expression', () => {
+  const state = dispatchAll([constant('π'), operator('+'), constant('e')]);
+  expect(state.expression).toBe('π+e');
+
+  const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
+  const next = expressionReducer(evaluated, constant('π'));
+  expect(next).toEqual({ ...initialState, expression: 'π' });
+});
+
+test('factorial and constant entry clear an existing error and keep editing in place', () => {
+  const errored = dispatchAll([openParen(), digit('2'), operator('+'), digit('3'), equals()]);
+  expect(errored.error).not.toBe(null);
+
+  const next = expressionReducer(errored, factorialKey());
+  expect(next.error).toBe(null);
+  expect(next.expression).toBe('(2+3!');
 });
 
 // --- display formatting ---

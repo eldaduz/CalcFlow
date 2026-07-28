@@ -89,6 +89,18 @@ function appendFunction(expression, name) {
   return expression === '' || /[+−×÷(^√]$/.test(expression) ? `${expression}${name}(` : expression;
 }
 
+function appendFactorial(expression) {
+  return /[\d)]$/.test(expression) ? `${expression}!` : expression;
+}
+
+function appendAbsBar(expression) {
+  return `${expression}|`;
+}
+
+function appendConstant(expression, symbol) {
+  return `${expression}${symbol}`;
+}
+
 function appendOpenParen(expression) {
   return `${expression}(`;
 }
@@ -226,6 +238,25 @@ export function expressionReducer(state, action) {
         return { ...initialState, expression: appendFunction('', action.name) };
       }
       return { ...state, error: null, expression: appendFunction(state.expression, action.name) };
+    }
+    case 'FACTORIAL': {
+      const expression = appendFactorial(state.expression);
+      if (state.justEvaluated) {
+        return { expression, previousExpression: '', justEvaluated: false, error: null };
+      }
+      return { ...state, error: null, expression };
+    }
+    case 'ABS': {
+      if (state.justEvaluated) {
+        return { ...initialState, expression: appendAbsBar('') };
+      }
+      return { ...state, error: null, expression: appendAbsBar(state.expression) };
+    }
+    case 'CONSTANT': {
+      if (state.justEvaluated) {
+        return { ...initialState, expression: appendConstant('', action.symbol) };
+      }
+      return { ...state, error: null, expression: appendConstant(state.expression, action.symbol) };
     }
     case 'OPEN_PAREN': {
       if (state.justEvaluated) {

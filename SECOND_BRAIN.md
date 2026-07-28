@@ -42,11 +42,11 @@ The Foundation sequence below is historical context, not current active work.
 - Owner and release: Eldad; v0.4.0 — Scientific Functions.
 - Branch and worktree: `feature/CFL-19-trigonometric-functions`; `C:\tmp\calcflow-cfl19`.
 - Jira status: CFL-19, CFL-59, and CFL-60 are In Progress.
-- Pull Request: [PR #19](https://github.com/eldaduz/CalcFlow/pull/19) is open against `main` for Code Review. Reviewer request for `GaviLazan` is pending because Codex cannot submit that GitHub action in this session.
+- Pull Request: [PR #19](https://github.com/eldaduz/CalcFlow/pull/19) remains open for Code Review. Gavi identified the CFL-21 merge conflict and a logarithm error-message regression; both are reconciled locally and await commit/push for re-review.
 - CFL-59: Scientific `sin` and `cos` controls insert editable expressions; evaluator supports both functions with explicit DEG/RAD context and RAD default.
 - CFL-60: Scientific `tan` control inserts an editable expression. `tan(45°)` normalizes to `1`; `tan(90°)` returns a controlled error when cosine magnitude is below `1e-12`. CFL-20 UI and persistence remain excluded.
 - Approved boundary: CFL-19 establishes evaluator-level DEG/RAD context and RAD-default UI behavior. CFL-20 exclusively owns visible DEG/RAD selection, forwarding that selection through the calculator UI, and session persistence.
-- Verification: focused RED/GREEN cycles, lint, format check, 132 tests, 94.92% statement coverage, build, and diff check passed.
+- Verification: review-fix RED/GREEN cycle, lint, format check, 172 tests, 96.94% statement coverage, build, and diff check passed.
 
 ### Eldad
 
@@ -131,7 +131,18 @@ The Foundation sequence below is historical context, not current active work.
 - PR #10 (standalone `log10`/`ln` computation core) was approved by Eldad and merged to `main` as `0c76270`.
 - This pass (new branch `feature/CFL-18-log-expression-grammar`, off `main` after PR #10/#13/#14/#16): extends `evaluateExpression`'s tokenizer to recognize `log`/`ln` as identifiers and its parser to handle them as function calls at the primary precedence tier (`log(` / `ln(` + a full sub-expression argument + `)`), reusing the merged `log10`/`ln` from `src/lib/logarithm.js` and translating `LogarithmError` into a new `LOG_DOMAIN_ERROR` `ExpressionError` code. Reuses the existing paren-nesting-depth counter so the recursion limit still applies to function-call parens. Bundled the `log`/`ln` scientific-keypad buttons in the same pass (append `log(`/`ln(`, same reducer pattern as the existing `POWER`/`SQUARE_ROOT` actions) since CFL-17 already shipped the Scientific-mode toggle and keypad infrastructure.
 - Verification (real pipeline): clean `npm ci`; lint, format:check clean; 131 tests passing; coverage 96.26% statements; production build and `git diff --check` pass. Independently verified in a real browser (Playwright driving system Chrome against the dev server, not just unit tests): Scientific mode shows all six controls (`x²`, `xʸ`, `√`, `ⁿ√`, `log`, `ln`); `log(100)+5` → `7`; `ln(1)` → `0`; `log(0)` shows the domain error inline; backspace-and-retype recovery to `log(10)` → `1` clears the error; no new console errors (one pre-existing, unrelated favicon 404 — the app has no `<link rel="icon">` or `public/` dir at all).
-- Next required action: open PR, request Eldad as reviewer (touches `evaluateExpression.js`, his completed CFL-16 boundary), move CFL-18/57/58 to Code Review.
+- PR opened: [PR #17](https://github.com/eldaduz/CalcFlow/pull/17), Eldad requested as reviewer. CFL-18/57/58 moved to Code Review.
+- Next required action: awaiting Eldad's review on PR #17.
+
+### Gavi — CFL-21 (active, 2026-07-27)
+
+- Jira: CFL-21 — Additional Scientific Operations, plus child stories CFL-63/CFL-64 — **In Progress**. Unblocked (only dependency, CFL-16, is Done); scope intentionally **excludes `%`**, pending Eldad's answer on percent semantics (flagged on CFL-63, plus Gavi's suggestion of a straightforward-vs-contextual toggle as possible separate follow-up scope).
+- New module `src/lib/scientificOperations.js`: `factorial(n)` (non-negative integers only, `FACTORIAL_DOMAIN_ERROR` otherwise; caps at 170 with `FACTORIAL_LIMIT_EXCEEDED` above that, since 171! already overflows a JS double) and `absoluteValue(x)`, both via a self-contained `ScientificOperationError`, matching the `arithmetic.js`/`logarithm.js` convention.
+- `evaluateExpression` grammar: tokenizer recognizes `π` as a literal `Math.PI` number token and extends the existing identifier-run logic (already used for `log`/`ln`) to recognize `e` as `Math.E` — both become plain number tokens, no parser changes needed for the constants themselves. Added a `parsePostfix` tier (between `parsePower` and `parsePrimary`) consuming trailing `!` via `factorial`, so `2^3!` = `2^(3!)` = `64` (factorial binds tighter than power, standard convention). `parsePrimary` gained `|...|` parsing: `|` always opens a new scope (exactly like `(`), so nesting (`|1-|2-5||`) resolves correctly for free via the existing recursion, reusing the same nesting-depth counter/limit.
+- Branch: `feature/CFL-21-additional-operations`, off `feature/CFL-18-log-expression-grammar` (PR #17, unmerged) rather than `main` directly — both branches extend the tokenizer's identifier-recognition mechanism (PR #17 for `log`/`ln`, this one for `e`), so building on top avoids two independent additions to the same mechanism colliding. Will rebase onto `main` once PR #17 merges.
+- Keypad: four new scientific buttons — `|x|`, `x!`, `π`, `e`. After `=`: `x!` continues from the previous result (like `POWER`); `|x|` resets to a fresh `|` (like `SQUARE_ROOT` — append-only editing can't retroactively wrap a prior result in bars); `π`/`e` reset fresh (like a plain digit).
+- Verification (real pipeline): clean `npm ci`; lint, format:check clean; 157 tests passing; coverage 96.82% statements; production build and `git diff --check` pass. Independently verified in a real browser (Playwright/system Chrome against the dev server): `|−5|` → `5`; `5!` → `120`; `(-1)!` shows the domain error inline; `π` → `3.14159265359`; `e` → `2.71828182846`; no new console errors (same pre-existing, unrelated favicon 404 as CFL-18/CFL-17).
+- Next required action: open PR, request Eldad as reviewer, move CFL-21/63/64 to Code Review.
 
 ### Design Decision Resolution (2026-07-26)
 
@@ -241,11 +252,11 @@ Update this file when:
 
 ## Latest Handoff
 
-- Current work: CFL-19 / CFL-59 and CFL-60 are implemented on `feature/CFL-19-trigonometric-functions` in `C:\tmp\calcflow-cfl19`.
+- Current work: CFL-19 / CFL-59 and CFL-60 are reconciled with CFL-21 on `feature/CFL-19-trigonometric-functions` in `C:\tmp\calcflow-cfl19`; Gavi's logarithm error-message review fix is included.
 - Scope: Scientific `sin`, `cos`, and `tan` controls insert editable expressions. Evaluator supports all three functions, explicit DEG/RAD context, RAD default, common-angle normalization, and a controlled near-right-angle tangent error. Visible DEG/RAD selection, calculator UI forwarding, session persistence, and scientific keyboard shortcuts remain CFL-20 scope.
-- Verification: focused RED/GREEN cycles, lint, format check, 132 tests, 94.92% statement coverage, production build, and `git diff --check` passed. Baseline was 119 tests.
+- Verification: review-fix RED/GREEN cycle, lint, format check, 172 tests, 96.94% statement coverage, production build, and `git diff --check` passed. Baseline was 119 tests.
 - Current risks: repository still has no GitHub Actions workflow. PR #16 resolved previous `npm audit` findings (0 vulnerabilities); CFL-32 records that work.
-- Next safe action: await Gavi review on PR #19. Do not begin QA, merge, or move Jira status beyond Code Review without approval.
+- Next safe action: commit and push reconciliation to PR #19, then await Gavi re-review. Do not begin QA, merge, or move Jira status beyond Code Review without approval.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
