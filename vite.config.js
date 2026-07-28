@@ -6,5 +6,13 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     exclude: ['**/node_modules/**', 'tests/foundation-entry.test.mjs'],
+    coverage: {
+      thresholds: {
+        lines: 70,
+        functions: 70,
+        branches: 70,
+        statements: 70,
+      },
+    },
   },
 });
