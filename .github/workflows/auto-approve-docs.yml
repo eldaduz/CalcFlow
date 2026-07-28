@@ -1,0 +1,109 @@
+# Auto-approves and auto-merges pull requests that touch ONLY the following
+# root-level documentation files, none of which define the approval process
+# itself (PROJECT_PLAN.md, CLAUDE.md, and AGENTS.md are deliberately excluded
+# and always require normal human review):
+#
+#   - README.md
+#   - SECOND_BRAIN.md
+#   - design.md
+#   - CODEX_MODEL_GUIDE.md
+#   - CODEX_HANDSHAKE.md
+#
+# A pull request qualifies only if every changed file is in that exact list.
+# Any PR that touches even one other file (app code, tests, config, or a
+# non-qualifying doc) is left alone for normal manual review.
+#
+# --- One-time setup required before this workflow can actually approve/merge ---
+#
+# GitHub does not allow a pull request's own author to approve it, and does
+# not count approvals submitted with the default GITHUB_TOKEN toward branch
+# protection's required-approval check. Both facts mean this workflow needs
+# credentials from a real account that is never the PR's author:
+#
+#   1. Create a dedicated GitHub bot/service account (or use an existing
+#      third account that is not Gavi's or Eldad's personal account).
+#   2. Add that account as a collaborator on this repository with Write
+#      access.
+#   3. Generate a classic or fine-grained personal access token for that
+#      account with `repo` scope (classic) or
+#      `Pull requests: Read and write` + `Contents: Read and write`
+#      (fine-grained).
+#   4. In this repository's Settings -> Secrets and variables -> Actions,
+#      add a repository secret named BOT_APPROVAL_TOKEN containing that
+#      token.
+#
+# Until BOT_APPROVAL_TOKEN exists, the approve/merge steps below will fail
+# with an authentication error and the PR will simply sit unapproved, same
+# as if this workflow did not exist -- it fails safe, not open.
+
+name: Auto-approve docs-only PRs
+
+"on":
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+
+jobs:
+  auto-approve-docs:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      contents: read
+    steps:
+      - name: Determine whether this PR is docs-only
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          allowed_files="README.md SECOND_BRAIN.md design.md CODEX_MODEL_GUIDE.md CODEX_HANDSHAKE.md"
+
+          changed_files=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json files --jq '.files[].path')
+
+          if [ -z "$changed_files" ]; then
+            echo "qualifies=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          qualifies=true
+          while IFS= read -r file; do
+            match=false
+            for allowed in $allowed_files; do
+              if [ "$file" = "$allowed" ]; then
+                match=true
+                break
+              fi
+            done
+            if [ "$match" = false ]; then
+              echo "Disqualifying file: $file"
+              qualifies=false
+              break
+            fi
+          done <<< "$changed_files"
+
+          echo "qualifies=$qualifies" >> "$GITHUB_OUTPUT"
+
+      - name: Approve pull request
+        if: steps.check.outputs.qualifies == 'true'
+        env:
+          # STUB: repository secret not yet configured -- see setup notes above.
+          GH_TOKEN: ${{ secrets.BOT_APPROVAL_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh pr review "$PR_NUMBER" --repo "$REPO" --approve \
+            --body "Auto-approved: this pull request only touches root documentation files exempted from manual review (README.md, SECOND_BRAIN.md, design.md, CODEX_MODEL_GUIDE.md, CODEX_HANDSHAKE.md)."
+
+      - name: Enable auto-merge
+        if: steps.check.outputs.qualifies == 'true'
+        env:
+          # STUB: repository secret not yet configured -- see setup notes above.
+          GH_TOKEN: ${{ secrets.BOT_APPROVAL_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh pr merge "$PR_NUMBER" --repo "$REPO" --auto --merge
