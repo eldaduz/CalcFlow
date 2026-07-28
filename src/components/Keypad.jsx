@@ -45,6 +45,46 @@ export default function Keypad({
           <button
             type="button"
             className="calculator-button"
+            aria-label="Sine"
+            onClick={() => onFunction('sin')}
+          >
+            sin
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Cosine"
+            onClick={() => onFunction('cos')}
+          >
+            cos
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Tangent"
+            onClick={() => onFunction('tan')}
+          >
+            tan
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Base-10 logarithm"
+            onClick={() => onFunction('log')}
+          >
+            log
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Natural logarithm"
+            onClick={() => onFunction('ln')}
+          >
+            ln
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
             aria-label="Square"
             onClick={() => onPower(true)}
           >
@@ -73,22 +113,6 @@ export default function Keypad({
             onClick={onNthRoot}
           >
             ⁿ√
-          </button>
-          <button
-            type="button"
-            className="calculator-button"
-            aria-label="Base-10 logarithm"
-            onClick={() => onFunction('log')}
-          >
-            log
-          </button>
-          <button
-            type="button"
-            className="calculator-button"
-            aria-label="Natural logarithm"
-            onClick={() => onFunction('ln')}
-          >
-            ln
           </button>
           <button
             type="button"

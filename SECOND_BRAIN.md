@@ -14,32 +14,39 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 ## Last Updated
 
-- Date: 2026-07-26
+- Date: 2026-07-27
 - Updated by: Eldad / Codex
 - Human owner: Eldad
 - AI used: Codex
 
 ## Current Release
 
-- Release: v0.1.0 — Basic Calculator MVP
-- Current phase: Foundation
-- Goal: Establish the repository, development standards, unit testing foundation, and project documentation
-- Overall status: CFL-9 and CFL-10 have passed feature-level QA; CFL-11 remains in progress pending Gavi's separate-machine CFL-49 validation. CFL-48's package repair was committed to `main` in `72c5a81`. CFL-2 completion confirmation remains deferred. A temporary, approved sequencing exception allows CFL-16 preparation for v0.2.0 while this external Foundation validation is pending.
+- Release: v0.4.0 — Scientific Functions
+- Current phase: CFL-19 implementation
+- Goal: Deliver trigonometric expression functions without starting CFL-20 angle-mode UI or session persistence.
+- Overall status: CFL-19, CFL-59, and CFL-60 are In Progress. CFL-59 is implemented and verified locally; CFL-60 tangent tolerance work is active. CFL-16 is Done and unblocks CFL-19. CFL-19 blocks CFL-20.
 
 ## Current Approved Sequence
 
-1. CFL-2 — Application Foundation
-2. CFL-9 — Development Standards
-3. CFL-10 — Unit Testing Foundation
-4. CFL-11 — Foundation Documentation and Verification
+1. CFL-19 — Trigonometric Functions
+   - CFL-59 — Calculate Sine and Cosine: implemented
+   - CFL-60 — Calculate Tangent and Handle Undefined Results: active
+2. CFL-20 — Angle Mode remains blocked by CFL-19.
 
-The first approved work item is:
-
-- CFL-15 — Review Existing Repository Configuration
-
-Do not begin another Foundation Feature before the current sequence and Jira dependencies allow it.
+The Foundation sequence below is historical context, not current active work.
 
 ## Active Features
+
+### Eldad — CFL-19 Trigonometric Functions
+
+- Owner and release: Eldad; v0.4.0 — Scientific Functions.
+- Branch and worktree: `feature/CFL-19-trigonometric-functions`; `C:\tmp\calcflow-cfl19`.
+- Jira status: CFL-19, CFL-59, and CFL-60 are In Progress.
+- Pull Request: [PR #19](https://github.com/eldaduz/CalcFlow/pull/19) remains open for Code Review. Gavi identified the CFL-21 merge conflict and a logarithm error-message regression; both are reconciled locally and await commit/push for re-review.
+- CFL-59: Scientific `sin` and `cos` controls insert editable expressions; evaluator supports both functions with explicit DEG/RAD context and RAD default.
+- CFL-60: Scientific `tan` control inserts an editable expression. `tan(45°)` normalizes to `1`; `tan(90°)` returns a controlled error when cosine magnitude is below `1e-12`. CFL-20 UI and persistence remain excluded.
+- Approved boundary: CFL-19 establishes evaluator-level DEG/RAD context and RAD-default UI behavior. CFL-20 exclusively owns visible DEG/RAD selection, forwarding that selection through the calculator UI, and session persistence.
+- Verification: review-fix RED/GREEN cycle, lint, format check, 172 tests, 96.94% statement coverage, build, and diff check passed.
 
 ### Eldad
 
@@ -245,10 +252,11 @@ Update this file when:
 
 ## Latest Handoff
 
-- Work completed: CFL-17 and child items CFL-55/CFL-56 are Done. PR #13 was Gavi-approved and merged to `main` as `e5c0ed2`.
-- Verification performed: lint, format check, 105 tests, coverage (95.66% statements), production build, `git diff --check`, Vercel deployment, and production smoke all passed.
-- Current risks: repository still has no GitHub Actions workflow; Vercel checks passed. PR #16 resolved previous `npm audit` findings (0 vulnerabilities); CFL-32 records that work.
-- Next safe action: wait for human selection and approval of the next Feature.
+- Current work: CFL-19 / CFL-59 and CFL-60 are reconciled with CFL-21 on `feature/CFL-19-trigonometric-functions` in `C:\tmp\calcflow-cfl19`; Gavi's logarithm error-message review fix is included.
+- Scope: Scientific `sin`, `cos`, and `tan` controls insert editable expressions. Evaluator supports all three functions, explicit DEG/RAD context, RAD default, common-angle normalization, and a controlled near-right-angle tangent error. Visible DEG/RAD selection, calculator UI forwarding, session persistence, and scientific keyboard shortcuts remain CFL-20 scope.
+- Verification: review-fix RED/GREEN cycle, lint, format check, 172 tests, 96.94% statement coverage, production build, and `git diff --check` passed. Baseline was 119 tests.
+- Current risks: repository still has no GitHub Actions workflow. PR #16 resolved previous `npm audit` findings (0 vulnerabilities); CFL-32 records that work.
+- Next safe action: commit and push reconciliation to PR #19, then await Gavi re-review. Do not begin QA, merge, or move Jira status beyond Code Review without approval.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 

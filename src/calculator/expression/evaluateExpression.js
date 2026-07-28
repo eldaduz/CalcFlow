@@ -18,14 +18,15 @@ const errorMessages = {
   NON_FINITE_RESULT: 'The result is outside the supported range.',
   POWER_DOMAIN_ERROR: 'This power is undefined in the real numbers.',
   ROOT_DOMAIN_ERROR: 'This root is undefined in the real numbers.',
+  TANGENT_UNDEFINED: 'Tangent is undefined for this angle.',
   UNMATCHED_PARENTHESIS: 'Check the parentheses in the expression.',
 };
 
 const functionsByName = { log: log10, ln };
 const constantsByName = { e: Math.E };
-
 const maximumExpressionLength = 512;
 const maximumNestingDepth = 32;
+const trigonometricTolerance = 1e-12;
 
 class ExpressionError extends Error {
   constructor(code) {
@@ -77,7 +78,6 @@ function tokenize(source) {
       index += 1;
       continue;
     }
-
     if (/[a-z]/i.test(character)) {
       const start = index;
       while (/[a-z]/i.test(source[index] ?? '')) {
@@ -85,7 +85,7 @@ function tokenize(source) {
       }
 
       const name = source.slice(start, index);
-      if (Object.hasOwn(functionsByName, name)) {
+      if (Object.hasOwn(functionsByName, name) || ['sin', 'cos', 'tan'].includes(name)) {
         tokens.push({ type: 'function', value: name });
         continue;
       }
@@ -104,7 +104,37 @@ function tokenize(source) {
   return tokens;
 }
 
-function parse(tokens) {
+function normalizeTrigonometricResult(result) {
+  const nearestInteger = Math.round(result);
+  return Math.abs(result - nearestInteger) < trigonometricTolerance ? nearestInteger : result;
+}
+
+function evaluateFunctionCall(name, value, angleMode) {
+  if (Object.hasOwn(functionsByName, name)) {
+    try {
+      return functionsByName[name](value);
+    } catch (error) {
+      if (error instanceof LogarithmError) {
+        throw new ExpressionError(
+          error.code === 'LOG_DOMAIN_ERROR' ? 'LOG_DOMAIN_ERROR' : 'NON_FINITE_RESULT',
+        );
+      }
+      throw error;
+    }
+  }
+
+  const angle = angleMode === 'deg' ? (value * Math.PI) / 180 : value;
+
+  if (name === 'tan' && Math.abs(Math.cos(angle)) < trigonometricTolerance) {
+    throw new ExpressionError('TANGENT_UNDEFINED');
+  }
+
+  const result =
+    name === 'sin' ? Math.sin(angle) : name === 'cos' ? Math.cos(angle) : Math.tan(angle);
+  return normalizeTrigonometricResult(result);
+}
+
+function parse(tokens, angleMode) {
   let index = 0;
   let nestingDepth = 0;
 
@@ -224,33 +254,23 @@ function parse(tokens) {
     }
     nestingDepth -= 1;
 
-    try {
-      return functionsByName[name](argument);
-    } catch (error) {
-      if (error instanceof LogarithmError) {
-        throw new ExpressionError(
-          error.code === 'LOG_DOMAIN_ERROR' ? 'LOG_DOMAIN_ERROR' : 'NON_FINITE_RESULT',
-        );
-      }
-      throw error;
-    }
+    return evaluateFunctionCall(name, argument, angleMode);
   }
-
   function parsePrimary() {
     if (consume('√')) {
       return evaluateRoot(2, parseUnary());
-    }
-
-    if (current()?.type === 'function') {
-      const name = current().value;
-      index += 1;
-      return parseFunctionCall(name);
     }
 
     if (current()?.type === 'number') {
       const value = current().value;
       index += 1;
       return value;
+    }
+
+    if (current()?.type === 'function') {
+      const functionName = current().value;
+      index += 1;
+      return parseFunctionCall(functionName);
     }
 
     if (consume('(')) {
@@ -316,7 +336,7 @@ function evaluateRoot(degree, radicand) {
   return radicand ** (1 / degree);
 }
 
-export function evaluateExpression(source) {
+export function evaluateExpression(source, options = {}) {
   if (typeof source !== 'string') {
     return {
       ok: false,
@@ -347,15 +367,27 @@ export function evaluateExpression(source) {
     };
   }
 
+  const angleMode = options?.angleMode === 'deg' ? 'deg' : 'rad';
+
   try {
-    const value = parse(tokenize(source));
+    const value = parse(tokenize(source), angleMode);
     if (!Number.isFinite(value)) {
       throw new ExpressionError('NON_FINITE_RESULT');
     }
 
     return { ok: true, value };
   } catch (error) {
-    if (error instanceof ExpressionError) {
+    if (error instanceof ExpressionError || error instanceof LogarithmError) {
+      if (error instanceof LogarithmError && error.code === 'INVALID_OPERAND') {
+        return {
+          ok: false,
+          error: {
+            code: 'NON_FINITE_RESULT',
+            message: errorMessages.NON_FINITE_RESULT,
+          },
+        };
+      }
+
       return {
         ok: false,
         error: { code: error.code, message: error.message },

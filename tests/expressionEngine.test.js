@@ -314,11 +314,11 @@ test('function entry after "=" starts a fresh expression rather than continuing 
 });
 
 test('function entry clears an existing error and keeps editing in place', () => {
-  const errored = dispatchAll([openParen(), digit('2'), operator('+'), digit('3'), equals()]);
+  const errored = dispatchAll([openParen(), digit('2'), operator('+'), equals()]);
   expect(errored.error).not.toBe(null);
   const next = expressionReducer(errored, func('log'));
   expect(next.error).toBe(null);
-  expect(next.expression).toBe('(2+3log(');
+  expect(next.expression).toBe('(2+log(');
 });
 
 // --- factorial, absolute value, and constants ---

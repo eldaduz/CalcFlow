@@ -86,7 +86,7 @@ function appendSquareRoot(expression) {
 }
 
 function appendFunction(expression, name) {
-  return `${expression}${name}(`;
+  return expression === '' || /[+−×÷(^√]$/.test(expression) ? `${expression}${name}(` : expression;
 }
 
 function appendFactorial(expression) {
