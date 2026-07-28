@@ -22,14 +22,16 @@ The AI must verify all live information against Jira and GitHub before acting.
 ## Current Release
 
 - Release: v1.0.0 — Stable Final Release
-- Current phase: CFL-31 — Release Management
+- Current phases:
+  - Eldad: CFL-31 — Release Management (Code Review)
+  - Gavi: CFL-21 — Additional Scientific Operations (Code Review) / CFL-22 — Calculation History (Selected for Development)
 - Goal: Manage semantic version sequences, Git tagging procedures, GitHub Releases creation, release notes formatting, and human approval gates.
-- Overall status: CFL-29 is Done. CFL-31 is In Progress.
+- Overall status: CFL-29 is Done. CFL-31 is in Code Review.
 
 ## Current Approved Sequence
 
 1. CFL-29 — Continuous Integration (Done)
-2. CFL-31 — Release Management (In Progress)
+2. CFL-31 — Release Management (Code Review)
 
 The Foundation sequence below is historical context, not current active work.
 
@@ -39,10 +41,10 @@ The Foundation sequence below is historical context, not current active work.
 
 - Owner and release: Eldad; v1.0.0 — Stable Final Release.
 - Branch and worktree: `feature/CFL-31-release-management` created from updated `main`.
-- Jira status: CFL-31 (Feature) and CFL-83 (Task) are In Progress; CFL-84 is Selected for Development / Backlog.
-- Pull Request: None opened yet.
+- Jira status: CFL-31 (Feature), CFL-83 (Task), and CFL-84 (Task) are in Code Review.
+- Pull Request: [PR #34](https://github.com/eldaduz/CalcFlow/pull/34) is open and approved by Gavi.
 - Scope: Document and automate/guide semantic version tagging, GitHub Release notes generation, release documentation (`docs/RELEASE_GUIDE.md`), release workflow scripts, and verification procedures.
-- Next required action: Present development plan and wait for human approval before implementing release management infrastructure and scripts.
+- Next required action: Address review comments in SECOND_BRAIN.md and eslint.config.js, push updates, complete QA, and merge to main.
 
 ### Eldad — CFL-19 Trigonometric Functions
 

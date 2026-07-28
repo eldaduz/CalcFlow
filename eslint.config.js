@@ -16,13 +16,19 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      globals: {
-        ...globals.node,
-      },
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
         },
+      },
+    },
+  },
+
+  {
+    files: ['scripts/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
       },
     },
   },
