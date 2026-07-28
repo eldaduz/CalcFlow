@@ -25,6 +25,7 @@ const squareRoot = () => ({ type: 'SQUARE_ROOT' });
 const nthRoot = () => ({ type: 'NTH_ROOT' });
 const func = (name) => ({ type: 'FUNCTION', name });
 const factorialKey = () => ({ type: 'FACTORIAL' });
+const percentKey = () => ({ type: 'PERCENT' });
 const absKey = () => ({ type: 'ABS' });
 const constant = (symbol) => ({ type: 'CONSTANT', symbol });
 
@@ -335,6 +336,21 @@ test('factorial entry after "=" continues the calculation from the result', () =
   const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
   const next = expressionReducer(evaluated, factorialKey());
   expect(next.expression).toBe('10!');
+  expect(next.justEvaluated).toBe(false);
+});
+
+test('percent entry appends "%" only after a digit or closing parenthesis', () => {
+  const state = dispatchAll([digit('5'), digit('0'), percentKey()]);
+  expect(state.expression).toBe('50%');
+
+  const inert = expressionReducer(initialState, percentKey());
+  expect(inert.expression).toBe('');
+});
+
+test('percent entry after "=" continues the calculation from the result', () => {
+  const evaluated = dispatchAll([digit('9'), operator('+'), digit('1'), equals()]);
+  const next = expressionReducer(evaluated, percentKey());
+  expect(next.expression).toBe('10%');
   expect(next.justEvaluated).toBe(false);
 });
 

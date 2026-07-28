@@ -35,6 +35,7 @@ export default function Keypad({
   onNthRoot,
   onFunction,
   onFactorial,
+  onPercent,
   onAbs,
   onConstant,
 }) {
@@ -113,6 +114,14 @@ export default function Keypad({
             onClick={onNthRoot}
           >
             ⁿ√
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Percent"
+            onClick={onPercent}
+          >
+            %
           </button>
           <button
             type="button"
