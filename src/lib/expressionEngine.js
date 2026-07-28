@@ -21,6 +21,7 @@ export const initialState = {
   previousExpression: '',
   justEvaluated: false,
   error: null,
+  angleMode: 'rad',
 };
 
 const OPERATOR_GLYPHS = { '+': '+', '-': '−', '*': '×', '/': '÷' };
@@ -160,7 +161,9 @@ function evaluateCurrentExpression(state) {
   let result;
 
   try {
-    result = evaluateExpression(toAsciiExpression(state.expression));
+    result = evaluateExpression(toAsciiExpression(state.expression), {
+      angleMode: state.angleMode,
+    });
   } catch (error) {
     console.error('Unexpected expression evaluation failure', error);
     return {
@@ -175,6 +178,7 @@ function evaluateCurrentExpression(state) {
 
   if (result.ok) {
     return {
+      ...state,
       expression: formatResultForExpression(result.value),
       previousExpression: state.expression,
       justEvaluated: true,
@@ -303,6 +307,15 @@ export function expressionReducer(state, action) {
         };
       }
       return { ...state, expression: toggleTrailingSign(state.expression) };
+    }
+    case 'TOGGLE_ANGLE_MODE': {
+      const nextMode = state.angleMode === 'deg' ? 'rad' : 'deg';
+      const nextState = { ...state, angleMode: nextMode, error: null };
+      if (state.justEvaluated && state.previousExpression !== '') {
+        const evalState = { ...nextState, expression: state.previousExpression };
+        return evaluateCurrentExpression(evalState);
+      }
+      return nextState;
     }
     default:
       return state;

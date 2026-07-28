@@ -10,9 +10,22 @@ import Keypad from './Keypad.jsx';
 
 const OPERATOR_KEYS = new Set(['+', '-', '*', '/']);
 
+const init = (initial) => ({
+  ...initial,
+  angleMode:
+    (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('calcflow_angle_mode')) ||
+    'rad',
+});
+
 export default function Calculator() {
-  const [state, dispatch] = useReducer(expressionReducer, initialState);
+  const [state, dispatch] = useReducer(expressionReducer, initialState, init);
   const [mode, setMode] = useState('basic');
+
+  useEffect(() => {
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('calcflow_angle_mode', state.angleMode);
+    }
+  }, [state.angleMode]);
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -71,6 +84,7 @@ export default function Calculator() {
         currentValue={formatExpressionForDisplay(state.expression) || '0'}
         previousExpression={formatExpressionForDisplay(state.previousExpression)}
         error={state.error}
+        angleMode={state.angleMode}
       />
       <Keypad
         onDigit={(digit) => dispatch({ type: 'DIGIT', digit })}
@@ -83,6 +97,8 @@ export default function Calculator() {
         onDelete={() => dispatch({ type: 'DELETE' })}
         onToggleSign={() => dispatch({ type: 'TOGGLE_SIGN' })}
         scientific={mode === 'scientific'}
+        angleMode={state.angleMode}
+        onToggleAngleMode={() => dispatch({ type: 'TOGGLE_ANGLE_MODE' })}
         onPower={(square) => dispatch({ type: 'POWER', square })}
         onSquareRoot={() => dispatch({ type: 'SQUARE_ROOT' })}
         onNthRoot={() => dispatch({ type: 'NTH_ROOT' })}

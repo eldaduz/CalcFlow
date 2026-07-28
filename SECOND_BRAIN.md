@@ -14,28 +14,38 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 ## Last Updated
 
-- Date: 2026-07-27
-- Updated by: Eldad / Codex
+- Date: 2026-07-28
+- Updated by: Eldad / Antigravity
 - Human owner: Eldad
-- AI used: Codex
+- AI used: Antigravity
 
 ## Current Release
 
 - Release: v0.4.0 — Scientific Functions
-- Current phase: CFL-19 implementation
-- Goal: Deliver trigonometric expression functions without starting CFL-20 angle-mode UI or session persistence.
-- Overall status: CFL-19, CFL-59, and CFL-60 are In Progress. CFL-59 is implemented and verified locally; CFL-60 tangent tolerance work is active. CFL-16 is Done and unblocks CFL-19. CFL-19 blocks CFL-20.
+- Current phase: CFL-20 implementation
+- Goal: Deliver DEG/RAD toggle control, visible display indicator, immediate re-evaluation on toggle, and session persistence.
+- Overall status: CFL-20, CFL-61, and CFL-62 are In Progress. CFL-19 is Done and unblocks CFL-20.
 
 ## Current Approved Sequence
 
-1. CFL-19 — Trigonometric Functions
-   - CFL-59 — Calculate Sine and Cosine: implemented
-   - CFL-60 — Calculate Tangent and Handle Undefined Results: active
-2. CFL-20 — Angle Mode remains blocked by CFL-19.
+1. CFL-20 — Angle Mode
+   - CFL-61 — Switch Between Degree and Radian Modes: active
+   - CFL-62 — Apply Angle Mode Consistently to Trigonometric Evaluation: active
 
 The Foundation sequence below is historical context, not current active work.
 
 ## Active Features
+
+### Eldad — CFL-20 Angle Mode
+
+- Owner and release: Eldad; v0.4.0 — Scientific Functions.
+- Branch and worktree: `feature/CFL-20-angle-mode`
+- Jira status: CFL-20, CFL-61, and CFL-62 are in Ready for Deployment.
+- Pull Request: [PR #28](https://github.com/eldaduz/CalcFlow/pull/28) is open.
+- Scope: Keypad DEG/RAD toggle button, Display active mode label, sessionStorage persistence, immediate re-evaluation of current expression, and automated TDD testing.
+- Blockers: None.
+- Verification: Tests planned in `tests/expressionEngine.test.js` and `tests/calculator.test.jsx`.
+- Next required action: Merge and deploy.
 
 ### Eldad — CFL-19 Trigonometric Functions
 
@@ -102,9 +112,10 @@ The Foundation sequence below is historical context, not current active work.
 
 ### Eldad
 
+- Current Feature: CFL-20 — Angle Mode (In Progress; active development of DEG/RAD toggle and re-evaluation)
 - Current Foundation Feature: CFL-11 — Foundation Documentation and Verification (In Progress; blocked on Gavi's CFL-49 validation)
 - Completed parallel Feature: CFL-16 — Expression Evaluation (Done; evaluator core and CFL-14 integration are merged)
-- Required action: for CFL-11, wait for Gavi's CFL-49 evidence
+- Required action: Implement DEG/RAD toggle control, visible display indicator, immediate re-evaluation on toggle, and session persistence for CFL-20.
 
 ### Gavi
 
@@ -134,15 +145,13 @@ The Foundation sequence below is historical context, not current active work.
 - PR opened: [PR #17](https://github.com/eldaduz/CalcFlow/pull/17), Eldad requested as reviewer. CFL-18/57/58 moved to Code Review.
 - Next required action: awaiting Eldad's review on PR #17.
 
-### Gavi — CFL-21 (active, 2026-07-27)
+### Gavi — CFL-21 (active, 2026-07-28)
 
-- Jira: CFL-21 — Additional Scientific Operations, plus child stories CFL-63/CFL-64 — **In Progress**. Unblocked (only dependency, CFL-16, is Done); scope intentionally **excludes `%`**, pending Eldad's answer on percent semantics (flagged on CFL-63, plus Gavi's suggestion of a straightforward-vs-contextual toggle as possible separate follow-up scope).
-- New module `src/lib/scientificOperations.js`: `factorial(n)` (non-negative integers only, `FACTORIAL_DOMAIN_ERROR` otherwise; caps at 170 with `FACTORIAL_LIMIT_EXCEEDED` above that, since 171! already overflows a JS double) and `absoluteValue(x)`, both via a self-contained `ScientificOperationError`, matching the `arithmetic.js`/`logarithm.js` convention.
-- `evaluateExpression` grammar: tokenizer recognizes `π` as a literal `Math.PI` number token and extends the existing identifier-run logic (already used for `log`/`ln`) to recognize `e` as `Math.E` — both become plain number tokens, no parser changes needed for the constants themselves. Added a `parsePostfix` tier (between `parsePower` and `parsePrimary`) consuming trailing `!` via `factorial`, so `2^3!` = `2^(3!)` = `64` (factorial binds tighter than power, standard convention). `parsePrimary` gained `|...|` parsing: `|` always opens a new scope (exactly like `(`), so nesting (`|1-|2-5||`) resolves correctly for free via the existing recursion, reusing the same nesting-depth counter/limit.
-- Branch: `feature/CFL-21-additional-operations`, off `feature/CFL-18-log-expression-grammar` (PR #17, unmerged) rather than `main` directly — both branches extend the tokenizer's identifier-recognition mechanism (PR #17 for `log`/`ln`, this one for `e`), so building on top avoids two independent additions to the same mechanism colliding. Will rebase onto `main` once PR #17 merges.
-- Keypad: four new scientific buttons — `|x|`, `x!`, `π`, `e`. After `=`: `x!` continues from the previous result (like `POWER`); `|x|` resets to a fresh `|` (like `SQUARE_ROOT` — append-only editing can't retroactively wrap a prior result in bars); `π`/`e` reset fresh (like a plain digit).
-- Verification (real pipeline): clean `npm ci`; lint, format:check clean; 157 tests passing; coverage 96.82% statements; production build and `git diff --check` pass. Independently verified in a real browser (Playwright/system Chrome against the dev server): `|−5|` → `5`; `5!` → `120`; `(-1)!` shows the domain error inline; `π` → `3.14159265359`; `e` → `2.71828182846`; no new console errors (same pre-existing, unrelated favicon 404 as CFL-18/CFL-17).
-- Next required action: open PR, request Eldad as reviewer, move CFL-21/63/64 to Code Review.
+- Jira: CFL-21 — Additional Scientific Operations, plus child stories CFL-63/CFL-64 — **Code Review**. Percent semantics approved as straightforward divide-by-100 (Jira comment 10583).
+- Scope: `evaluateExpression.js` tokenizer recognizes `%` and postfix divide-by-100 in `parsePostfix`. Keypad button `%` in Scientific row, `appendPercent` guard in `expressionEngine.js`.
+- PR opened & reviewed: [PR #27](https://github.com/eldaduz/CalcFlow/pull/27) reviewed and approved by Eldad on 2026-07-28.
+- Verification (real pipeline): clean `npm ci`; lint, format:check clean; 177 tests passing; 97.01% statement coverage; production build clean.
+- Next required action: Gavi to proceed with QA, merge, and deployment for CFL-21.
 
 ### Design Decision Resolution (2026-07-26)
 

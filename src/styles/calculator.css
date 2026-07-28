@@ -122,6 +122,20 @@ body {
   white-space: nowrap;
 }
 
+.calculator-display-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.calculator-angle-mode-indicator {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  font-weight: bold;
+  margin-bottom: var(--space-8);
+}
+
 .calculator-error {
   min-height: 1.4em;
   font-size: 14px;
