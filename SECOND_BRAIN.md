@@ -23,15 +23,15 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 - Release: v1.0.0 — Stable Final Release
 - Current phases:
-  - Eldad: CFL-31 — Release Management (Done)
+  - Eldad: CFL-31 — Release Management (Ready for Deployment — tooling merged via PR #34; v1.0.0 tag execution pending final milestone completion)
   - Gavi: CFL-21 — Additional Scientific Operations (Code Review) / CFL-22 — Calculation History (Selected for Development)
 - Goal: Manage semantic version sequences, Git tagging procedures, GitHub Releases creation, release notes formatting, and human approval gates.
-- Overall status: CFL-29 is Done. CFL-31 is Done.
+- Overall status: CFL-29 is Done. CFL-31 release infrastructure is merged; v1.0.0 tag creation is Ready for Deployment.
 
 ## Current Approved Sequence
 
 1. CFL-29 — Continuous Integration (Done)
-2. CFL-31 — Release Management (Done)
+2. CFL-31 — Release Management (Ready for Deployment — tooling merged)
 
 The Foundation sequence below is historical context, not current active work.
 
@@ -40,11 +40,11 @@ The Foundation sequence below is historical context, not current active work.
 ### Eldad — CFL-31 Release Management
 
 - Owner and release: Eldad; v1.0.0 — Stable Final Release.
-- Branch and worktree: Merged to `main` via PR #34 (`0679039`).
-- Jira status: CFL-31 (Feature), CFL-83 (Task), and CFL-84 (Task) are Done.
+- Branch and worktree: Tooling & documentation merged to `main` via PR #34 (`0679039`).
+- Jira status: CFL-31 (Feature), CFL-83 (Task), and CFL-84 (Task) are Ready for Deployment (tooling verified; v1.0.0 tag & release execution pending end of milestone).
 - Pull Request: [PR #34](https://github.com/eldaduz/CalcFlow/pull/34) is merged.
 - Scope: Document and automate/guide semantic version tagging, GitHub Release notes generation, release documentation (`docs/RELEASE_GUIDE.md`), release workflow scripts, and verification procedures.
-- Verification: QA and full regression suite passed (linting, formatting check, 188 unit tests, 97.16% coverage, production build, and `release:verify`). Merged to main and marked Done.
+- Verification: QA and full regression suite passed (linting, formatting check, 188 unit tests, 97.16% coverage, production build, and `release:verify`). Infrastructure merged to main.
 
 ### Eldad — CFL-19 Trigonometric Functions
 
