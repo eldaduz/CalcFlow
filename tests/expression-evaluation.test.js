@@ -460,6 +460,19 @@ test('returns a controlled error for a factorial past the practical limit', () =
   });
 });
 
+test('evaluates a straightforward postfix percent as divide by 100', () => {
+  expect(evaluateExpression('50%')).toEqual({ ok: true, value: 0.5 });
+  expect(evaluateExpression('(200+10)%')).toEqual({ ok: true, value: 2.1 });
+  expect(evaluateExpression('200%')).toEqual({ ok: true, value: 2 });
+});
+
+test('percent composes with other postfix and infix operators', () => {
+  expect(evaluateExpression('5!%')).toEqual({ ok: true, value: 1.2 });
+  expect(evaluateExpression('50%%')).toEqual({ ok: true, value: 0.005 });
+  expect(evaluateExpression('2+50%')).toEqual({ ok: true, value: 2.5 });
+  expect(evaluateExpression('-50%')).toEqual({ ok: true, value: -0.5 });
+});
+
 test('evaluates the pi and e constants in expressions', () => {
   expect(evaluateExpression('π')).toEqual({ ok: true, value: Math.PI });
   expect(evaluateExpression('e')).toEqual({ ok: true, value: Math.E });

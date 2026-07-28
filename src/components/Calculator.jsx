@@ -88,6 +88,7 @@ export default function Calculator() {
         onNthRoot={() => dispatch({ type: 'NTH_ROOT' })}
         onFunction={(name) => dispatch({ type: 'FUNCTION', name })}
         onFactorial={() => dispatch({ type: 'FACTORIAL' })}
+        onPercent={() => dispatch({ type: 'PERCENT' })}
         onAbs={() => dispatch({ type: 'ABS' })}
         onConstant={(symbol) => dispatch({ type: 'CONSTANT', symbol })}
       />

@@ -73,7 +73,7 @@ function tokenize(source) {
       continue;
     }
 
-    if ('+-*/^√()!|'.includes(character)) {
+    if ('+-*/^√()!|%'.includes(character)) {
       tokens.push({ type: character, value: character });
       index += 1;
       continue;
@@ -219,7 +219,13 @@ function parse(tokens, angleMode) {
   function parsePostfix() {
     let value = parsePrimary();
 
-    while (current()?.type === '!') {
+    while (current()?.type === '!' || current()?.type === '%') {
+      if (current().type === '%') {
+        index += 1;
+        value = value / 100;
+        continue;
+      }
+
       index += 1;
       try {
         value = factorial(value);

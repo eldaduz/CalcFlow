@@ -93,6 +93,10 @@ function appendFactorial(expression) {
   return /[\d)]$/.test(expression) ? `${expression}!` : expression;
 }
 
+function appendPercent(expression) {
+  return /[\d)]$/.test(expression) ? `${expression}%` : expression;
+}
+
 function appendAbsBar(expression) {
   return `${expression}|`;
 }
@@ -241,6 +245,13 @@ export function expressionReducer(state, action) {
     }
     case 'FACTORIAL': {
       const expression = appendFactorial(state.expression);
+      if (state.justEvaluated) {
+        return { expression, previousExpression: '', justEvaluated: false, error: null };
+      }
+      return { ...state, error: null, expression };
+    }
+    case 'PERCENT': {
+      const expression = appendPercent(state.expression);
       if (state.justEvaluated) {
         return { expression, previousExpression: '', justEvaluated: false, error: null };
       }

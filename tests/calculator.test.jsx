@@ -388,8 +388,22 @@ test('absolute value, factorial, and constant buttons are hidden in Basic mode',
 
   expect(() => clickButton('|x|')).toThrow('No button found');
   expect(() => clickButton('x!')).toThrow('No button found');
+  expect(() => clickButton('%')).toThrow('No button found');
   expect(() => clickButton('π')).toThrow('No button found');
   expect(() => clickButton('e')).toThrow('No button found');
+});
+
+test('percent divides the preceding operand by 100 using the shared expression flow', () => {
+  renderCalculator();
+
+  clickButton('Scientific');
+  clickButton('5');
+  clickButton('0');
+  clickButton('%');
+  clickButton('=');
+
+  expect(currentValue()).toBe('0.5');
+  expect(previousExpression()).toBe('50%');
 });
 
 test('absolute value wraps a negative operand using the shared expression flow', () => {
