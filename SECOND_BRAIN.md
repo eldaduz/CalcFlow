@@ -110,10 +110,10 @@ The Foundation sequence below is historical context, not current active work.
 
 ### Eldad
 
-- Current Feature: CFL-29 — Continuous Integration (Code Review; PR opened)
+- Current Feature: CFL-29 — Continuous Integration (QA; PR approved)
 - Current Foundation Feature: CFL-11 — Foundation Documentation and Verification (In Progress; blocked on Gavi's CFL-49 validation)
 - Completed parallel Feature: CFL-20 — Angle Mode (Done; DEG/RAD toggle and re-evaluation are merged)
-- Required action: Await Gavi's review for CFL-29.
+- Required action: Review and execute QA plan for CFL-29.
 
 ### Gavi
 
@@ -259,11 +259,11 @@ Update this file when:
 
 ## Latest Handoff
 
-- Current work: CFL-29 (Continuous Integration) is in Code Review.
+- Current work: CFL-29 (Continuous Integration) is in QA.
 - Scope: Created `.github/workflows/ci.yml` for pull request and main branch validation, and configured a 70% coverage threshold in `vite.config.js`.
-- Verification: Local QA pipeline passed cleanly with >97% coverage. PR #31 opened.
+- Verification: Local QA pipeline passed cleanly with >97% coverage. PR #31 approved and ready for QA testing.
 - Current risks: GitHub Actions workflow itself needs to be verified on GitHub's runners via the PR.
-- Next safe action: Review [PR #31](https://github.com/eldaduz/CalcFlow/pull/31) for CFL-29.
+- Next safe action: Execute QA plan for CFL-29, merge PR, and confirm run on `main`.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
