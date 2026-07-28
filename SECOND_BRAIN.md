@@ -40,13 +40,13 @@ The Foundation sequence below is historical context, not current active work.
 ### Eldad — CFL-19 Trigonometric Functions
 
 - Owner and release: Eldad; v0.4.0 — Scientific Functions.
-- Branch and worktree: `feature/CFL-19-trigonometric-functions`; `C:\tmp\calcflow-cfl19`.
-- Jira status: CFL-19, CFL-59, and CFL-60 are In Progress.
-- Pull Request: [PR #19](https://github.com/eldaduz/CalcFlow/pull/19) remains open for Code Review. Gavi identified the CFL-21 merge conflict and a logarithm error-message regression; both are reconciled locally and await commit/push for re-review.
+- Branch and worktree: Merged to `main` and branch deleted.
+- Jira status: CFL-19, CFL-59, and CFL-60 are in QA.
+- Pull Request: [PR #19](https://github.com/eldaduz/CalcFlow/pull/19) is merged.
 - CFL-59: Scientific `sin` and `cos` controls insert editable expressions; evaluator supports both functions with explicit DEG/RAD context and RAD default.
 - CFL-60: Scientific `tan` control inserts an editable expression. `tan(45°)` normalizes to `1`; `tan(90°)` returns a controlled error when cosine magnitude is below `1e-12`. CFL-20 UI and persistence remain excluded.
 - Approved boundary: CFL-19 establishes evaluator-level DEG/RAD context and RAD-default UI behavior. CFL-20 exclusively owns visible DEG/RAD selection, forwarding that selection through the calculator UI, and session persistence.
-- Verification: review-fix RED/GREEN cycle, lint, format check, 172 tests, 96.94% statement coverage, build, and diff check passed.
+- Verification: Automated QA pipeline on `main` passed (clean `npm ci`, lint, format check, 172 tests, 96.94% statement coverage, build, diff check). Manual UI checks require human verification (Playwright environment unavailable for AI).
 
 ### Eldad
 
@@ -252,11 +252,11 @@ Update this file when:
 
 ## Latest Handoff
 
-- Current work: CFL-19 / CFL-59 and CFL-60 are reconciled with CFL-21 on `feature/CFL-19-trigonometric-functions` in `C:\tmp\calcflow-cfl19`; Gavi's logarithm error-message review fix is included.
+- Current work: CFL-19 QA on `main`.
 - Scope: Scientific `sin`, `cos`, and `tan` controls insert editable expressions. Evaluator supports all three functions, explicit DEG/RAD context, RAD default, common-angle normalization, and a controlled near-right-angle tangent error. Visible DEG/RAD selection, calculator UI forwarding, session persistence, and scientific keyboard shortcuts remain CFL-20 scope.
-- Verification: review-fix RED/GREEN cycle, lint, format check, 172 tests, 96.94% statement coverage, production build, and `git diff --check` passed. Baseline was 119 tests.
-- Current risks: repository still has no GitHub Actions workflow. PR #16 resolved previous `npm audit` findings (0 vulnerabilities); CFL-32 records that work.
-- Next safe action: commit and push reconciliation to PR #19, then await Gavi re-review. Do not begin QA, merge, or move Jira status beyond Code Review without approval.
+- Verification: Automated QA pipeline passed on `main` (lint, format check, 172 tests, 96.94% statement coverage, build, diff check). Manual UI QA requires human validation.
+- Current risks: repository still has no GitHub Actions workflow. Playwright environment is unavailable for AI UI testing.
+- Next safe action: Human owner to complete manual UI QA for CFL-19, then move to Ready for Deployment and proceed to smoke test.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
