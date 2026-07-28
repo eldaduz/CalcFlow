@@ -23,6 +23,7 @@ export const initialState = {
   justEvaluated: false,
   error: null,
   angleMode: 'rad',
+  history: [],
 };
 
 const OPERATOR_GLYPHS = { '+': '+', '-': '−', '*': '×', '/': '÷' };
@@ -190,12 +191,14 @@ function evaluateCurrentExpression(state) {
       result: nextExpression,
       angleMode: state.angleMode,
     });
+    const historyEntry = { expression: state.expression, result: nextExpression };
     return {
       ...state,
       expression: nextExpression,
       previousExpression: state.expression,
       justEvaluated: true,
       error: null,
+      history: [historyEntry, ...(state.history || [])],
     };
   }
 
@@ -216,13 +219,17 @@ export function expressionReducer(state, action) {
   switch (action.type) {
     case 'DIGIT': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: appendDigit('', action.digit) };
+        return {
+          ...initialState,
+          history: state.history,
+          expression: appendDigit('', action.digit),
+        };
       }
       return { ...state, error: null, expression: appendDigit(state.expression, action.digit) };
     }
     case 'DECIMAL': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: appendDecimal('') };
+        return { ...initialState, history: state.history, expression: appendDecimal('') };
       }
       return { ...state, error: null, expression: appendDecimal(state.expression) };
     }
@@ -233,6 +240,7 @@ export function expressionReducer(state, action) {
           previousExpression: '',
           justEvaluated: false,
           error: null,
+          history: state.history,
         };
       }
       return {
@@ -244,58 +252,90 @@ export function expressionReducer(state, action) {
     case 'POWER': {
       const expression = appendPower(state.expression, action.square);
       if (state.justEvaluated) {
-        return { expression, previousExpression: '', justEvaluated: false, error: null };
+        return {
+          expression,
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
+          history: state.history,
+        };
       }
       return { ...state, error: null, expression };
     }
     case 'SQUARE_ROOT': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: '√' };
+        return { ...initialState, history: state.history, expression: '√' };
       }
       return { ...state, error: null, expression: appendSquareRoot(state.expression) };
     }
     case 'NTH_ROOT': {
       const expression = appendNthRoot(state.expression);
       if (state.justEvaluated) {
-        return { expression, previousExpression: '', justEvaluated: false, error: null };
+        return {
+          expression,
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
+          history: state.history,
+        };
       }
       return { ...state, error: null, expression };
     }
     case 'FUNCTION': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: appendFunction('', action.name) };
+        return {
+          ...initialState,
+          history: state.history,
+          expression: appendFunction('', action.name),
+        };
       }
       return { ...state, error: null, expression: appendFunction(state.expression, action.name) };
     }
     case 'FACTORIAL': {
       const expression = appendFactorial(state.expression);
       if (state.justEvaluated) {
-        return { expression, previousExpression: '', justEvaluated: false, error: null };
+        return {
+          expression,
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
+          history: state.history,
+        };
       }
       return { ...state, error: null, expression };
     }
     case 'PERCENT': {
       const expression = appendPercent(state.expression);
       if (state.justEvaluated) {
-        return { expression, previousExpression: '', justEvaluated: false, error: null };
+        return {
+          expression,
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
+          history: state.history,
+        };
       }
       return { ...state, error: null, expression };
     }
     case 'ABS': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: appendAbsBar('') };
+        return { ...initialState, history: state.history, expression: appendAbsBar('') };
       }
       return { ...state, error: null, expression: appendAbsBar(state.expression) };
     }
     case 'CONSTANT': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: appendConstant('', action.symbol) };
+        return {
+          ...initialState,
+          history: state.history,
+          expression: appendConstant('', action.symbol),
+        };
       }
       return { ...state, error: null, expression: appendConstant(state.expression, action.symbol) };
     }
     case 'OPEN_PAREN': {
       if (state.justEvaluated) {
-        return { ...initialState, expression: '(' };
+        return { ...initialState, history: state.history, expression: '(' };
       }
       return { ...state, error: null, expression: appendOpenParen(state.expression) };
     }
@@ -308,7 +348,17 @@ export function expressionReducer(state, action) {
     case 'EQUALS':
       return evaluateCurrentExpression(state);
     case 'CLEAR':
-      return { ...initialState };
+      return { ...initialState, history: state.history };
+    case 'REUSE_HISTORY':
+      return {
+        ...state,
+        expression: action.expression,
+        previousExpression: '',
+        justEvaluated: false,
+        error: null,
+      };
+    case 'CLEAR_HISTORY':
+      return { ...state, history: [] };
     case 'DELETE': {
       if (state.justEvaluated) {
         return state;

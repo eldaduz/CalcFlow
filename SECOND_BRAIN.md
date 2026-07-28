@@ -152,6 +152,16 @@ The Foundation sequence below is historical context, not current active work.
 - Verification (real pipeline): clean `npm ci`; lint, format:check clean; 177 tests passing; 97.01% statement coverage; production build clean.
 - Next required action: Gavi to proceed with QA, merge, and deployment for CFL-21.
 
+### Gavi — CFL-22 (active, 2026-07-28)
+
+- Jira: CFL-22 — Calculation History, plus child stories CFL-65 (Record and Display) and CFL-66 (Reuse and Clear) — **Code Review**. First Feature of v0.5.0 — History and Memory, started once v0.4.0's Features were all confirmed Done.
+- Design contract: follows the CFL-22 row already recorded in `design.md` ("collapsible region below the keypad... can be reused, and clears independently").
+- Judgment calls made and confirmed with Gavi before implementation (neither is a design.md "Open Design Decision", so no Eldad sign-off required): reusing a history entry restores the full original expression (editable, re-evaluatable) rather than just the result; history persists via `sessionStorage` for the current tab, mirroring the CFL-20 `angleMode` pattern.
+- Scope: `expressionEngine.js` gains a `history` array in state (newest-first, populated only on successful `EQUALS`), plus `REUSE_HISTORY` and `CLEAR_HISTORY` actions. New `History.jsx` component (collapsible, returns `null` when empty so it reserves no space per design.md) renders below `Keypad` in `Calculator.jsx`. `AC`/`CLEAR` intentionally does not clear history — only the dedicated Clear control does.
+- Verification (real pipeline): clean `npm ci`; lint, format:check clean; 210 tests passing (16 new); 96%+ statement coverage (70% threshold); production build and `git diff --check` clean. Independently verified in a real browser (Playwright driving system Chrome against the dev server): history hidden at 0 entries, count updates per successful calculation, divide-by-zero does not add an entry, reusing an entry restores an editable expression that re-evaluates correctly, Clear empties the panel, history survives a page reload via sessionStorage. Regression-checked alongside Scientific mode, DEG/RAD toggle, and existing error handling — no console errors.
+- PR opened: [PR #35](https://github.com/eldaduz/CalcFlow/pull/35), Eldad requested as reviewer.
+- Next required action: awaiting Eldad's review on PR #35. CFL-23 (Memory Operations) is next in the approved CFL-5 sequence once this merges.
+
 ### Design Decision Resolution (2026-07-26)
 
 Resolves the two judgment calls CFL-13 flagged to Eldad (see above). Eldad replied delegating both to Gavi ("fix the design.md as you fit"); Gavi then made the actual calls:

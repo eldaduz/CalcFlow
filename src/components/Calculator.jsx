@@ -6,15 +6,29 @@ import {
   initialState,
 } from '../lib/expressionEngine.js';
 import Display from './Display.jsx';
+import History from './History.jsx';
 import Keypad from './Keypad.jsx';
 
 const OPERATOR_KEYS = new Set(['+', '-', '*', '/']);
+
+function readStoredHistory() {
+  if (typeof sessionStorage === 'undefined') {
+    return [];
+  }
+  try {
+    const stored = sessionStorage.getItem('calcflow_history');
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
 
 const init = (initial) => ({
   ...initial,
   angleMode:
     (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('calcflow_angle_mode')) ||
     'rad',
+  history: readStoredHistory(),
 });
 
 export default function Calculator() {
@@ -26,6 +40,12 @@ export default function Calculator() {
       sessionStorage.setItem('calcflow_angle_mode', state.angleMode);
     }
   }, [state.angleMode]);
+
+  useEffect(() => {
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('calcflow_history', JSON.stringify(state.history));
+    }
+  }, [state.history]);
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -107,6 +127,11 @@ export default function Calculator() {
         onPercent={() => dispatch({ type: 'PERCENT' })}
         onAbs={() => dispatch({ type: 'ABS' })}
         onConstant={(symbol) => dispatch({ type: 'CONSTANT', symbol })}
+      />
+      <History
+        entries={state.history}
+        onReuse={(entry) => dispatch({ type: 'REUSE_HISTORY', expression: entry.expression })}
+        onClear={() => dispatch({ type: 'CLEAR_HISTORY' })}
       />
     </div>
   );
