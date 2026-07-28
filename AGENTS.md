@@ -57,3 +57,8 @@ When working in the AGY IDE, use the configured MCP servers for all GitHub and J
 - **Jira**: `mcp-atlassian` MCP tools
 
 Do not substitute direct API calls, curl, or browser automation when MCP tools are available. If an MCP tool fails, report the error and wait for human guidance.
+
+## Pull Request Rules
+
+- **Verify before PR**: You must push PRs ONLY after running and verifying all unit tests and format checks locally.
+- **Assign Reviewer**: You must attach Gavi (GitHub: `GaviLazan`) as a reviewer when creating or pushing a PR.
