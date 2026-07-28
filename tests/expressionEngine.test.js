@@ -1,4 +1,9 @@
-import { expect, test } from 'vitest';
+import { expect, test, vi, beforeEach } from 'vitest';
+import * as logger from '../src/lib/logger.js';
+
+vi.mock('../src/lib/logger.js', () => ({
+  logEvent: vi.fn(),
+}));
 
 import {
   expressionReducer,
@@ -31,6 +36,10 @@ const constant = (symbol) => ({ type: 'CONSTANT', symbol });
 
 // --- entering multiple operands and operators ---
 
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
 test('builds an expression from multiple operands and operators', () => {
   const state = dispatchAll([
     digit('1'),
@@ -55,6 +64,11 @@ test('respects precedence when evaluating a multi-operand expression', () => {
   ]);
   expect(state.expression).toBe('24');
   expect(state.error).toBeNull();
+  expect(logger.logEvent).toHaveBeenCalledWith('CALCULATION_SUCCESS', {
+    expression: '12+3*4',
+    result: '24',
+    angleMode: 'rad',
+  });
 });
 
 test('leading zero is replaced by the first digit typed', () => {
@@ -225,6 +239,13 @@ test('an invalid expression shows a controlled error and keeps the expression on
   expect(state.error).not.toBeNull();
   expect(state.error.message.toLowerCase()).toContain('divide');
   expect(state.expression).toBe('9÷0');
+
+  expect(logger.logEvent).toHaveBeenCalledWith('CALCULATION_ERROR', {
+    expression: '9/0',
+    angleMode: 'rad',
+    errorCode: expect.any(String),
+    errorMessage: expect.any(String),
+  });
 });
 
 test('the user recovers from an error by continuing to edit, not by losing the expression', () => {
