@@ -15,7 +15,7 @@ The AI must verify all live information against Jira and GitHub before acting.
 ## Last Updated
 
 - Date: 2026-07-29
-- Updated by: Gavi / Claude
+- Updated by: Eldad / Codex
 - Human owner: Gavi
 - AI used: Claude
 
@@ -311,20 +311,21 @@ Update this file when:
 
 ## CFL-89 — Angle mode preservation bug
 
-- Jira: CFL-89 is In Progress under the completed CFL-20 Angle Mode Feature; no open GitHub PR touches `src/lib/expressionEngine.js`.
+- Jira: CFL-89 is Ready for Deployment under the completed CFL-20 Angle Mode Feature, following Gavi's approval and completed QA for PR #45.
 - Branch: `bug/CFL-89-angle-mode-preservation`.
+- Sync: Rebased onto current `main` (`317cc12`) before QA; `SECOND_BRAIN.md` retains main's newer CFL-24/CFL-25 handoff.
 - Scope: Preserve the active `angleMode` across all `justEvaluated` continuation branches (`DIGIT`, `DECIMAL`, `OPERATOR`, `POWER`, `SQUARE_ROOT`, `NTH_ROOT`, `FUNCTION`, `FACTORIAL`, `PERCENT`, `ABS`, `CONSTANT`, `OPEN_PAREN`, `MEMORY_RECALL`).
-- Verification: Regression test is red before the fix and green after it; full suite 244/244, lint, format check, and build pass.
-- PR: [PR #45](https://github.com/eldaduz/CalcFlow/pull/45) is open against `main`; Gavi (`GaviLazan`) was requested as reviewer.
-- Next safe action: Await Gavi's Code Review.
+- Verification: Clean `npm ci` found zero vulnerabilities; lint, format check, 254 tests, 97.55% statement coverage, production build, and diff check pass. The regression matrix covers all 13 continuation actions. Browser QA confirmed `sin(90)` in DEG returns `1`, and DIGIT and `log` continuations retain DEG.
+- PR: [PR #45](https://github.com/eldaduz/CalcFlow/pull/45) is open against `main`, approved by Gavi.
+- Next safe action: Await Eldad's explicit approval to merge PR #45.
 
 ## Latest Handoff
 
-- Current work: CFL-89 — Angle mode silently resets to RAD when continuing a calculation after evaluation.
-- Scope: Root cause fixed in `src/lib/expressionEngine.js`; regression coverage added in `tests/expressionEngine.test.js`.
-- Verification: Full local verification passed: 244 tests, lint, format check, and production build.
-- Current risks: No known code risk. QA, merge, deployment, and smoke test remain pending.
-- Next safe action: Await Gavi's Code Review on PR #45.
+- Current work: CFL-89 is Ready for Deployment.
+- Scope: Root-cause fix preserves `angleMode` across all 13 evaluated-expression continuation paths; regression coverage covers all 13.
+- Verification: PR rebased onto current `main`; clean install, lint, format, 254 tests, coverage, build, diff check, and focused browser QA pass.
+- Current risks: No known code risk; merge, deployment, and production smoke test remain pending.
+- Next safe action: Await Eldad's explicit approval to merge PR #45.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
