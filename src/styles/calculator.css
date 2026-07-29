@@ -293,6 +293,66 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Approved scoped exception to the "no fixed-position layout" rule
+   (design.md, CFL-24/CFL-70 only): this is a floating window by explicit
+   joint approval, not an in-flow panel. */
+.calculator-shortcuts-help {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  max-width: calc(100vw - var(--space-32));
+  max-height: calc(100vh - var(--space-32));
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-text-secondary);
+  border-radius: var(--space-8);
+  padding: var(--space-12);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.calculator-shortcuts-help-hint {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.calculator-shortcuts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-8) var(--space-16);
+  font-size: 14px;
+}
+
+.calculator-shortcuts-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.calculator-shortcuts-row kbd {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 2px 6px;
+  border-radius: var(--space-4);
+  background: var(--color-action-button);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  .calculator-shortcuts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 420px) {
   .calculator {
     max-width: none;

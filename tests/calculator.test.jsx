@@ -41,9 +41,11 @@ function clickButton(text) {
   });
 }
 
-function pressKey(key) {
+function pressKey(key, modifiers = {}) {
   act(() => {
-    window.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+    window.dispatchEvent(
+      new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...modifiers }),
+    );
   });
 }
 
@@ -775,4 +777,156 @@ test('memory persists across a fresh Calculator mount via sessionStorage', () =>
 
   clickButton('Scientific');
   expect(memoryIndicator()).toBe('M: 8');
+});
+
+// --- keyboard support (CFL-69 / CFL-70) ---
+
+test('modifier-held keys (Cmd/Ctrl/Alt) are never intercepted, so browser shortcuts still work', () => {
+  renderCalculator();
+
+  pressKey('+', { metaKey: true });
+  pressKey('r', { ctrlKey: true });
+  pressKey('Backspace', { altKey: true });
+
+  expect(currentValue()).toBe('0');
+});
+
+test('unsupported bare keys are ignored safely with no crash or state change', () => {
+  renderCalculator();
+
+  clickButton('1');
+  pressKey('q');
+  pressKey('@');
+  pressKey('F1');
+
+  expect(currentValue()).toBe('1');
+});
+
+test('scientific letter shortcuts are inert in Basic mode', () => {
+  renderCalculator();
+
+  pressKey('s');
+  pressKey('p');
+
+  expect(currentValue()).toBe('0');
+});
+
+test('scientific letter shortcuts match their button behavior once in Scientific mode', () => {
+  renderCalculator();
+  clickButton('Scientific');
+
+  pressKey('s');
+  expect(currentValue()).toBe('sin(');
+
+  pressKey('Escape');
+  pressKey('c');
+  expect(currentValue()).toBe('cos(');
+
+  pressKey('Escape');
+  pressKey('t');
+  expect(currentValue()).toBe('tan(');
+
+  pressKey('Escape');
+  pressKey('l');
+  expect(currentValue()).toBe('log(');
+
+  pressKey('Escape');
+  pressKey('n');
+  expect(currentValue()).toBe('ln(');
+
+  pressKey('Escape');
+  pressKey('r');
+  expect(currentValue()).toBe('√');
+
+  pressKey('Escape');
+  clickButton('3');
+  pressKey('u');
+  expect(currentValue()).toBe('3√');
+
+  pressKey('Escape');
+  clickButton('2');
+  pressKey('^');
+  clickButton('3');
+  pressKey('Enter');
+  expect(currentValue()).toBe('8');
+
+  pressKey('Escape');
+  clickButton('5');
+  pressKey('!');
+  pressKey('Enter');
+  expect(currentValue()).toBe('120');
+
+  pressKey('Escape');
+  clickButton('2');
+  clickButton('0');
+  clickButton('0');
+  pressKey('%');
+  pressKey('Enter');
+  expect(currentValue()).toBe('2');
+
+  pressKey('Escape');
+  pressKey('p');
+  expect(currentValue()).toBe('π');
+
+  pressKey('Escape');
+  pressKey('e');
+  expect(currentValue()).toBe('e');
+});
+
+test('the "d" shortcut toggles DEG/RAD the same as the button, only in Scientific mode', () => {
+  renderCalculator();
+  clickButton('Scientific');
+
+  const indicator = () => container.querySelector('.calculator-angle-mode-indicator');
+  expect(indicator().textContent).toBe('RAD');
+
+  pressKey('d');
+  expect(indicator().textContent).toBe('DEG');
+
+  pressKey('d');
+  expect(indicator().textContent).toBe('RAD');
+});
+
+test('"?" toggles the shortcuts help panel and lists both core and scientific keys', () => {
+  renderCalculator();
+
+  expect(container.querySelector('.calculator-shortcuts-help')).toBeNull();
+
+  pressKey('?');
+  const panel = container.querySelector('.calculator-shortcuts-help');
+  expect(panel).not.toBeNull();
+  expect(panel.textContent).toContain('sin (Scientific)');
+
+  pressKey('?');
+  expect(container.querySelector('.calculator-shortcuts-help')).toBeNull();
+});
+
+test('Escape closes the shortcuts panel first, without also clearing the expression', () => {
+  renderCalculator();
+
+  clickButton('1');
+  clickButton('2');
+  pressKey('?');
+  expect(container.querySelector('.calculator-shortcuts-help')).not.toBeNull();
+
+  pressKey('Escape');
+  expect(container.querySelector('.calculator-shortcuts-help')).toBeNull();
+  expect(currentValue()).toBe('12');
+
+  // a second Escape now falls through to the normal Clear behavior
+  pressKey('Escape');
+  expect(currentValue()).toBe('0');
+});
+
+test('the shortcuts panel does not trap other keyboard input while open', () => {
+  renderCalculator();
+
+  pressKey('?');
+  clickButton('1');
+  clickButton('+');
+  clickButton('1');
+  clickButton('=');
+
+  expect(currentValue()).toBe('2');
+  expect(container.querySelector('.calculator-shortcuts-help')).not.toBeNull();
 });
