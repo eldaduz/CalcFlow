@@ -264,12 +264,11 @@ export function expressionReducer(state, action) {
     case 'OPERATOR': {
       if (state.justEvaluated) {
         return {
+          ...state,
           expression: appendOperator(state.expression, action.operator),
           previousExpression: '',
           justEvaluated: false,
           error: null,
-          history: state.history,
-          memory: state.memory,
         };
       }
       return {
@@ -282,12 +281,11 @@ export function expressionReducer(state, action) {
       const expression = appendPower(state.expression, action.square);
       if (state.justEvaluated) {
         return {
+          ...state,
           expression,
           previousExpression: '',
           justEvaluated: false,
           error: null,
-          history: state.history,
-          memory: state.memory,
         };
       }
       return { ...state, error: null, expression };
@@ -307,12 +305,11 @@ export function expressionReducer(state, action) {
       const expression = appendNthRoot(state.expression);
       if (state.justEvaluated) {
         return {
+          ...state,
           expression,
           previousExpression: '',
           justEvaluated: false,
           error: null,
-          history: state.history,
-          memory: state.memory,
         };
       }
       return { ...state, error: null, expression };
@@ -332,12 +329,11 @@ export function expressionReducer(state, action) {
       const expression = appendFactorial(state.expression);
       if (state.justEvaluated) {
         return {
+          ...state,
           expression,
           previousExpression: '',
           justEvaluated: false,
           error: null,
-          history: state.history,
-          memory: state.memory,
         };
       }
       return { ...state, error: null, expression };
@@ -346,12 +342,11 @@ export function expressionReducer(state, action) {
       const expression = appendPercent(state.expression);
       if (state.justEvaluated) {
         return {
+          ...state,
           expression,
           previousExpression: '',
           justEvaluated: false,
           error: null,
-          history: state.history,
-          memory: state.memory,
         };
       }
       return { ...state, error: null, expression };

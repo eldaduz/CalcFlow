@@ -309,13 +309,21 @@ Update this file when:
 - merge, deployment, and smoke test complete
 - the next safe action changes
 
+## CFL-89 — Angle mode preservation bug
+
+- Jira: CFL-89 is In Progress under the completed CFL-20 Angle Mode Feature; no open GitHub PR touches `src/lib/expressionEngine.js`.
+- Branch: `bug/CFL-89-angle-mode-preservation`.
+- Scope: Preserve the active `angleMode` when `OPERATOR`, `POWER`, `NTH_ROOT`, `FACTORIAL`, or `PERCENT` continues an evaluated expression.
+- Verification: Regression test is red before the fix and green after it; full suite 244/244, lint, format check, and build pass.
+- Next safe action: Self-review, commit, push, open PR, and request Gavi after explicit review-stage approval.
+
 ## Latest Handoff
 
-- Current work: CFL-29 (Continuous Integration) is Done.
-- Scope: Created `.github/workflows/ci.yml` for pull request and main branch validation, and configured a 70% coverage threshold in `vite.config.js`.
-- Verification: QA plan completed. Workflow passed on PR and successfully triggered and passed on `main` post-merge.
-- Current risks: None. The CI baseline is established. Playwright environment is unavailable for AI UI testing.
-- Next safe action: Determine next feature to start from the backlog.
+- Current work: CFL-89 — Angle mode silently resets to RAD when continuing a calculation after evaluation.
+- Scope: Root cause fixed in `src/lib/expressionEngine.js`; regression coverage added in `tests/expressionEngine.test.js`.
+- Verification: Full local verification passed: 244 tests, lint, format check, and production build.
+- Current risks: No known code risk. PR/reviewer/QA stages remain pending.
+- Next safe action: Self-review and prepare the pull request for Gavi.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
