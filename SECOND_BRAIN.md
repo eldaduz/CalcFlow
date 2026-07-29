@@ -311,21 +311,21 @@ Update this file when:
 
 ## CFL-89 — Angle mode preservation bug
 
-- Jira: CFL-89 is Ready for Deployment under the completed CFL-20 Angle Mode Feature, following Gavi's approval and completed QA for PR #45.
+- Jira: CFL-89 is in Code Review under the completed CFL-20 Angle Mode Feature. QA passed, but the rebase onto current `main` dismissed Gavi's prior approval.
 - Branch: `bug/CFL-89-angle-mode-preservation`.
 - Sync: Rebased onto current `main` (`317cc12`) before QA; `SECOND_BRAIN.md` retains main's newer CFL-24/CFL-25 handoff.
 - Scope: Preserve the active `angleMode` across all `justEvaluated` continuation branches (`DIGIT`, `DECIMAL`, `OPERATOR`, `POWER`, `SQUARE_ROOT`, `NTH_ROOT`, `FUNCTION`, `FACTORIAL`, `PERCENT`, `ABS`, `CONSTANT`, `OPEN_PAREN`, `MEMORY_RECALL`).
 - Verification: Clean `npm ci` found zero vulnerabilities; lint, format check, 254 tests, 97.55% statement coverage, production build, and diff check pass. The regression matrix covers all 13 continuation actions. Browser QA confirmed `sin(90)` in DEG returns `1`, and DIGIT and `log` continuations retain DEG.
-- PR: [PR #45](https://github.com/eldaduz/CalcFlow/pull/45) is open against `main`, approved by Gavi.
-- Next safe action: Await Eldad's explicit approval to merge PR #45.
+- PR: [PR #45](https://github.com/eldaduz/CalcFlow/pull/45) is open against `main`; Gavi's approval was dismissed by the rebase and must be renewed.
+- Next safe action: Await Gavi's renewed approval, then return to Ready for Deployment.
 
 ## Latest Handoff
 
-- Current work: CFL-89 is Ready for Deployment.
+- Current work: CFL-89 awaits renewed Code Review after rebase.
 - Scope: Root-cause fix preserves `angleMode` across all 13 evaluated-expression continuation paths; regression coverage covers all 13.
 - Verification: PR rebased onto current `main`; clean install, lint, format, 254 tests, coverage, build, diff check, and focused browser QA pass.
-- Current risks: No known code risk; merge, deployment, and production smoke test remain pending.
-- Next safe action: Await Eldad's explicit approval to merge PR #45.
+- Current risks: No known code risk; GitHub requires renewed approval after rebase. Merge, deployment, and production smoke test remain pending.
+- Next safe action: Await Gavi's renewed approval on PR #45.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
