@@ -141,8 +141,16 @@ Resolved:
   since `^` then `2` already produces the same token. Memory shortcuts
   (MC/MR/M+/M−) are intentionally excluded from this pass — not part of
   this control set. A `?` key (any mode) toggles a shortcuts-help panel
-  listing all shortcuts; `Esc` closes it first before falling through to
-  its existing Clear behavior, so nothing is trapped.
+  listing all shortcuts. `Esc` while the panel is open closes the panel
+  **only** — it does not also clear the expression in that same keypress.
+  A second, separate `Esc` press (with the panel already closed) then
+  clears, same as always. This is deliberate, not an oversight: the panel
+  exists so a user can look something up mid-calculation (e.g. "what's the
+  shortcut for π?") without losing their in-progress expression as a side
+  effect of dismissing it. Collapsing "close panel" and "clear" into one
+  keypress would make checking the help panel destructive for the exact
+  case it's meant to serve. The panel is non-modal and never blocks
+  interaction while open (per CFL-70's "focus is not trapped" AC), so nothing is lost by requiring the second press.
 - Scoped exception to the "no fixed-position layout" rule below (approved
   by both Gavi and Eldad, CFL-24/CFL-70 only): the `?` shortcuts-help panel
   is a floating window (`position: fixed`), not in-flow. It does not
