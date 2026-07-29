@@ -14,7 +14,7 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 ## Last Updated
 
-- Date: 2026-07-28
+- Date: 2026-07-29
 - Updated by: Gavi / Claude
 - Human owner: Gavi
 - AI used: Claude
@@ -23,13 +23,13 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 Two tracks are in flight in parallel, one per owner:
 
-- **Gavi — v0.5.0 (History and Memory): shipped and Done.** CFL-22 (Calculation History: CFL-65/66) and CFL-23 (Memory Operations: CFL-67/68) are both Done, merged ([PR #35](https://github.com/eldaduz/CalcFlow/pull/35), [PR #36](https://github.com/eldaduz/CalcFlow/pull/36)), deployed, and smoke-tested live on https://calc-flow-fawn.vercel.app/. Next up for Gavi: CFL-24 — Keyboard Support, first Feature of v0.6.0 — Complete User Experience.
-- **Eldad — v1.0.0 (Stable Final Release): in progress.** CFL-31 — Release Management tooling merged via PR #34; status per his own section below (not re-verified in this update — check Jira live for current state before relying on it).
+- **Gavi — v0.5.0 (History and Memory): shipped, Done, tagged and released** (GitHub tag/release `v0.5.0`). v0.6.0 — Complete User Experience is now in progress: CFL-24 (Keyboard Support: CFL-69/70) is Done, merged ([PR #41](https://github.com/eldaduz/CalcFlow/pull/41)), deployed, and smoke-tested live on https://calc-flow-fawn.vercel.app/. Next up for Gavi: **CFL-25 — Responsive Interface**, next Feature of v0.6.0 in the CFL-5 sequence.
+- **Eldad — v1.0.0 (Stable Final Release): in progress.** CFL-31 — Release Management tooling merged via PR #34, Ready for Deployment. CFL-32 — Dependency Governance's PR ([#38](https://github.com/eldaduz/CalcFlow/pull/38)) is **merged**, but as of this update Jira still shows CFL-32/CFL-85/CFL-86 at Code Review — a live Jira/GitHub mismatch on Eldad's Feature, flagged here rather than corrected (not ours to touch per the established ownership boundary). Re-verify live before relying on either.
 
 ## Current Approved Sequence
 
-1. Gavi: CFL-24 — Keyboard Support (next, v0.6.0)
-2. Eldad: CFL-31 — Release Management (per his section below; verify live)
+1. Gavi: CFL-25 — Responsive Interface (next, v0.6.0, CFL-5 sequence)
+2. Eldad: CFL-31 / CFL-32 (per his section below; verify live — CFL-32's Jira status is currently stale relative to GitHub)
 
 The Foundation sequence below is historical context, not current active work.
 
@@ -48,11 +48,11 @@ The Foundation sequence below is historical context, not current active work.
 
 - Owner and release: Eldad; v1.0.0 — Stable Final Release.
 - Branch: `feature/CFL-32-dependency-governance`
-- Jira status: CFL-32 (Feature), CFL-85 (Task), and CFL-86 (Task) are Code Review.
-- Pull Request: [PR #38](https://github.com/eldaduz/CalcFlow/pull/38) is open.
+- Jira status (as of 2026-07-29): CFL-32 (Feature), CFL-85 (Task), and CFL-86 (Task) still show **Code Review** in Jira, but the PR is already merged (see below) — a live mismatch, not corrected here since this is Eldad's Feature (not ours to touch per the established ownership boundary). Re-verify live before relying on either the Jira or GitHub state.
+- Pull Request: [PR #38](https://github.com/eldaduz/CalcFlow/pull/38) is **merged**.
 - Scope: Created `docs/DEPENDENCIES.md` establishing dependency governance. Completed final dependency audit (`npm ci` and `npm audit` clean).
 - Verification: Clean `npm ci`, zero vulnerabilities in `npm audit`, passed formatting, linting, tests, and build.
-- Required action: Awaiting Gavi's review on PR #38.
+- Required action: none from Gavi's side — PR merged. Only the stale Jira status above needs Eldad's own correction.
 
 ### Eldad — CFL-19 Trigonometric Functions
 
