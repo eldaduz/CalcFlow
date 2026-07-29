@@ -16,7 +16,9 @@ const OPERATOR_KEYS = new Set(['+', '-', '*', '/']);
 /**
  * Scientific-mode-only keyboard shortcuts (CFL-70). Gated to Scientific mode
  * because their corresponding controls are only visible there -- shortcuts
- * mirror what's on screen rather than acting as hidden bindings.
+ * mirror what's on screen rather than acting as hidden bindings. `%` is
+ * handled separately below (not mode-gated) since CFL-25 moved its button
+ * onto the universal base keypad.
  */
 const SCIENTIFIC_KEY_ACTIONS = {
   s: { type: 'FUNCTION', name: 'sin' },
@@ -28,7 +30,6 @@ const SCIENTIFIC_KEY_ACTIONS = {
   u: { type: 'NTH_ROOT' },
   '^': { type: 'POWER', square: false },
   '!': { type: 'FACTORIAL' },
-  '%': { type: 'PERCENT' },
   p: { type: 'CONSTANT', symbol: 'π' },
   e: { type: 'CONSTANT', symbol: 'e' },
   d: { type: 'TOGGLE_ANGLE_MODE' },
@@ -123,6 +124,11 @@ export default function Calculator() {
       } else if (key === ')') {
         event.preventDefault();
         dispatch({ type: 'CLOSE_PAREN' });
+      } else if (key === '%') {
+        // Not mode-gated: the % button lives on the universal base keypad
+        // (CFL-25), unlike the other Scientific-only shortcuts below.
+        event.preventDefault();
+        dispatch({ type: 'PERCENT' });
       } else if (key === 'Enter' || key === '=') {
         event.preventDefault();
         dispatch({ type: 'EQUALS' });

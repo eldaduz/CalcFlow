@@ -41,19 +41,30 @@ editable expression, and clear after valid editing or reset.
 
 ## Base Keypad and Expression Workflow
 
-The base keypad is permanent:
+The base keypad is permanent and identical in Basic and Scientific mode:
 
 ```text
-AC  ±  ⌫  ÷
+AC  %  ⌫  ÷
 7   8  9  ×
 4   5  6  −
 1   2  3  +
-0      .  =
+0   ±  .  =
 ```
 
-- `0` is double width.
-- `(` and `)` remain in the expression-controls row directly above the base
-  keypad.
+- Revised by CFL-25 (Gavi's proposed direction, pending Eldad's joint
+  sign-off per Design Control — see Decisions below): `0` is
+  single width, `±` moved next to it in the bottom row, and `%` moved into
+  the base keypad's top row (out of the Scientific-controls section). This
+  supersedes the earlier "`0` is double width" decision. Every base-keypad
+  button is now the same size, and the keypad no longer differs between
+  Basic and Scientific mode in any respect — the prior approach of a
+  Scientific-only reordering was considered and rejected specifically
+  because it would have made the base keypad mode-dependent.
+- `(` and `)` remain in a dedicated expression-controls row directly above
+  the base keypad in Basic mode, unchanged. In Scientific mode, the same two
+  controls move into the Scientific-controls grid instead (see Scientific
+  Control Contracts) so the row is not duplicated; this does not remove or
+  alter Basic mode's row.
 - `AC`, delete, sign toggle, keyboard entry, and equals retain their existing
   expression behavior.
 - The expression may be incomplete while being edited; calculation reports the
@@ -71,11 +82,30 @@ themselves unless their Feature explicitly approves an immediate operation.
 | CFL-17 Powers and Roots                     | `x²`, `xʸ`, `√`, and `ⁿ√` support expression entry. `x²` appends `^2`; `xʸ` appends `^`; prefix `√` starts a square-root operand; infix `√` follows a degree and starts an nth-root radicand. Power and root domains report controlled real-number errors inline.                |
 | CFL-18 Logarithms                           | `log` and `ln` are Scientific expression functions: each control inserts `log(` or `ln(` at the cursor for continued editable entry (for example, `log(100)`). They never replace the expression with its current evaluated value. Evaluator serialization remains CFL-18 scope. |
 | CFL-19 / CFL-20 Trigonometry and angle mode | `sin`, `cos`, `tan` use the shared expression. A visible `DEG` / `RAD` mode control makes the active mode unambiguous and keeps it for the current session.                                                                                                                      |
-| CFL-21 Additional operations                | `%`, `&#124;x&#124;`, `x!`, `π`, and `e` use the same scientific-controls section and expression flow.                                                                                                                                                                           |
+| CFL-21 Additional operations                | `&#124;x&#124;`, `x!`, `π`, and `e` use the same scientific-controls section and expression flow. `%` moved to the base keypad under CFL-25 (see Decisions) and is no longer part of this section.                                                                               |
 
 Keyboard support invokes the same actions as controls. Existing basic keys stay
 supported. Scientific shortcuts must not be added until their owning Feature
 documents them; controls remain discoverable without hidden shortcuts.
+
+### Scientific-Controls Grid Order (CFL-25)
+
+The Scientific-controls section is a single 4-column grid, shown only in
+Scientific mode, in this fixed row order (20 controls, 5 full rows, no
+partial row):
+
+```text
+RAD sin cos tan
+x!  |x| log ln
+x²  xʸ  √   ⁿ√
+(   )   π   e
+MC  MR  M+  M−
+```
+
+`(` and `)` here are the same controls as Basic mode's expression-controls
+row (see Base Keypad and Expression Workflow) — Scientific mode does not
+show both. The memory-value readout (`M: <value>`) remains a separate
+full-width status line below this grid, not a grid cell.
 
 ## Future Information Controls
 
@@ -128,7 +158,31 @@ palette, or fixed-position layout is authorized.
 
 Resolved:
 
-- `0` is double width.
+- **`0` is single width (supersedes the prior "`0` is double width" decision).**
+  Decided by Gavi (2026-07-29) while working CFL-25: the double-width `0` was
+  originally a visual preference, not a functional requirement; keeping every
+  base-keypad button a uniform size was judged more important than that
+  preference once the keypad needed to make room for `±` moving next to `0`.
+  **Pending Eldad's joint sign-off per Design Control before permanent
+  implementation** — recorded here as the proposed/agreed direction on
+  Gavi's side, not yet a completed two-person approval.
+- **Base keypad revision (CFL-25):** `±` moves from the top row (next to
+  `AC`) to the bottom row (next to `0`); `%` moves from the
+  Scientific-controls section into the vacated top-row slot. The base
+  keypad is now identical in Basic and Scientific mode — the alternative of
+  a Scientific-only reordering was considered and rejected because it would
+  have made the "permanent" base keypad mode-dependent, a bigger rule
+  conflict than a single universal revision. **Pending Eldad's joint
+  sign-off**, same as above.
+- **Scientific-controls grid is one 4-column, 5-row grid, `(`/`)` included
+  (CFL-25):** replaces the previous separate 2-column expression-controls
+  row _within Scientific mode only_ — see Scientific-Controls Grid Order.
+  20 controls divide evenly at 4 columns with no partial row; 5 and 6
+  columns were also compared (see CFL-25 QA/PR evidence) and rejected: 5
+  columns is also numerically even but splits the 4-item thematic groupings
+  awkwardly, and 6 columns does not divide 20 evenly at all. Basic mode's
+  own expression-controls row (`(`/`)` only) is unchanged by this. **Pending
+  Eldad's joint sign-off**, same as above.
 - The calculator has a visible header.
 - Scientific mode is the approved Basic / Scientific toggle on one shared
   calculator surface.
@@ -151,6 +205,13 @@ Resolved:
   keypress would make checking the help panel destructive for the exact
   case it's meant to serve. The panel is non-modal and never blocks
   interaction while open (per CFL-70's "focus is not trapped" AC), so nothing is lost by requiring the second press.
+  **Updated by CFL-25:** `%` moved from the Scientific-controls section to
+  the universal base keypad (see Base Keypad and Expression Workflow), so
+  its keyboard shortcut is no longer Scientific-mode-gated either — it now
+  works in both modes, consistent with the "shortcuts mirror what's on
+  screen" principle this scheme was built on. All other scientific
+  shortcuts in this list remain Scientific-mode-only, since their controls
+  are still Scientific-only.
 - Scoped exception to the "no fixed-position layout" rule below (approved
   by both Gavi and Eldad, CFL-24/CFL-70 only): the `?` shortcuts-help panel
   is a floating window (`position: fixed`), not in-flow. It does not
@@ -164,8 +225,7 @@ Still open and not to be guessed:
 
 - primary theme, final palette, and font family;
 - final header/subtitle presentation;
-- whether the previous-expression line is always displayed when empty;
-- exact scientific control grid/order beyond preserving the shared surface.
+- whether the previous-expression line is always displayed when empty.
 
 ## AI Rules
 
