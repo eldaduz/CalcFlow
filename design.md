@@ -133,14 +133,39 @@ Resolved:
 - Scientific mode is the approved Basic / Scientific toggle on one shared
   calculator surface.
 - Active-operator highlighting is obsolete.
+- CFL-24/CFL-70 scientific keyboard shortcuts (approved by both Gavi and
+  Eldad): bare letter/symbol keys, active only in Scientific mode since
+  their controls are only visible there — `s`/`c`/`t` sin/cos/tan, `l`/`n`
+  log/ln, `r` square root, `u` nth root, `^` power, `!` factorial, `%`
+  percent, `p`/`e` constants, `d` toggles DEG/RAD. No shortcut for `x²`
+  since `^` then `2` already produces the same token. Memory shortcuts
+  (MC/MR/M+/M−) are intentionally excluded from this pass — not part of
+  this control set. A `?` key (any mode) toggles a shortcuts-help panel
+  listing all shortcuts. `Esc` while the panel is open closes the panel
+  **only** — it does not also clear the expression in that same keypress.
+  A second, separate `Esc` press (with the panel already closed) then
+  clears, same as always. This is deliberate, not an oversight: the panel
+  exists so a user can look something up mid-calculation (e.g. "what's the
+  shortcut for π?") without losing their in-progress expression as a side
+  effect of dismissing it. Collapsing "close panel" and "clear" into one
+  keypress would make checking the help panel destructive for the exact
+  case it's meant to serve. The panel is non-modal and never blocks
+  interaction while open (per CFL-70's "focus is not trapped" AC), so nothing is lost by requiring the second press.
+- Scoped exception to the "no fixed-position layout" rule below (approved
+  by both Gavi and Eldad, CFL-24/CFL-70 only): the `?` shortcuts-help panel
+  is a floating window (`position: fixed`), not in-flow. It does not
+  capture focus, does not block interaction with the rest of the
+  calculator while open, and uses only existing color/spacing tokens — no
+  new UI library or backdrop/dimming layer. This exception does not extend
+  to any other future panel; a new floating element still needs its own
+  explicit joint approval.
 
 Still open and not to be guessed:
 
 - primary theme, final palette, and font family;
 - final header/subtitle presentation;
 - whether the previous-expression line is always displayed when empty;
-- exact scientific control grid/order beyond preserving the shared surface;
-- feature-owned scientific keyboard shortcuts.
+- exact scientific control grid/order beyond preserving the shared surface.
 
 ## AI Rules
 

@@ -9,8 +9,30 @@ import {
 import Display from './Display.jsx';
 import History from './History.jsx';
 import Keypad from './Keypad.jsx';
+import ShortcutsHelp from './ShortcutsHelp.jsx';
 
 const OPERATOR_KEYS = new Set(['+', '-', '*', '/']);
+
+/**
+ * Scientific-mode-only keyboard shortcuts (CFL-70). Gated to Scientific mode
+ * because their corresponding controls are only visible there -- shortcuts
+ * mirror what's on screen rather than acting as hidden bindings.
+ */
+const SCIENTIFIC_KEY_ACTIONS = {
+  s: { type: 'FUNCTION', name: 'sin' },
+  c: { type: 'FUNCTION', name: 'cos' },
+  t: { type: 'FUNCTION', name: 'tan' },
+  l: { type: 'FUNCTION', name: 'log' },
+  n: { type: 'FUNCTION', name: 'ln' },
+  r: { type: 'SQUARE_ROOT' },
+  u: { type: 'NTH_ROOT' },
+  '^': { type: 'POWER', square: false },
+  '!': { type: 'FACTORIAL' },
+  '%': { type: 'PERCENT' },
+  p: { type: 'CONSTANT', symbol: 'π' },
+  e: { type: 'CONSTANT', symbol: 'e' },
+  d: { type: 'TOGGLE_ANGLE_MODE' },
+};
 
 function readStoredMemory() {
   if (typeof sessionStorage === 'undefined') {
@@ -44,6 +66,7 @@ const init = (initial) => ({
 export default function Calculator() {
   const [state, dispatch] = useReducer(expressionReducer, initialState, init);
   const [mode, setMode] = useState('basic');
+  const [showShortcuts, setShowShortcuts] = useState(false);
 
   useEffect(() => {
     if (typeof sessionStorage !== 'undefined') {
@@ -66,6 +89,24 @@ export default function Calculator() {
   useEffect(() => {
     function handleKeyDown(event) {
       const { key } = event;
+
+      // Never intercept a modifier combo (Cmd/Ctrl/Alt) -- those are the
+      // browser's or OS's shortcuts (zoom, refresh, etc.), not ours.
+      if (event.metaKey || event.ctrlKey || event.altKey) {
+        return;
+      }
+
+      if (key === '?') {
+        event.preventDefault();
+        setShowShortcuts((current) => !current);
+        return;
+      }
+
+      if (key === 'Escape' && showShortcuts) {
+        event.preventDefault();
+        setShowShortcuts(false);
+        return;
+      }
 
       if (/^[0-9]$/.test(key)) {
         event.preventDefault();
@@ -91,12 +132,15 @@ export default function Calculator() {
       } else if (key === 'Backspace') {
         event.preventDefault();
         dispatch({ type: 'DELETE' });
+      } else if (mode === 'scientific' && SCIENTIFIC_KEY_ACTIONS[key]) {
+        event.preventDefault();
+        dispatch(SCIENTIFIC_KEY_ACTIONS[key]);
       }
     }
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [mode, showShortcuts]);
 
   return (
     <div className="calculator">
@@ -116,6 +160,7 @@ export default function Calculator() {
           ))}
         </div>
       </div>
+      <ShortcutsHelp open={showShortcuts} />
       <Display
         currentValue={formatExpressionForDisplay(state.expression) || '0'}
         previousExpression={formatExpressionForDisplay(state.previousExpression)}
