@@ -205,14 +205,6 @@ body {
   font-weight: 600;
 }
 
-/* Open design decision (design.md #4): whether "0" is double-width.
-   design.md's own MVP keypad diagram draws it double-width; implemented
-   that way behind this single class so it is trivial to flip once
-   Gavi/Eldad approve a final answer. */
-.calculator-button--zero-wide {
-  grid-column: span 2;
-}
-
 .calculator-memory-indicator {
   grid-column: span 4;
   font-size: 14px;
@@ -351,10 +343,25 @@ body {
   .calculator-shortcuts-grid {
     grid-template-columns: 1fr;
   }
-}
 
-@media (max-width: 420px) {
   .calculator {
     max-width: none;
   }
 }
+
+/* CFL-25/CFL-71/CFL-72: on the narrowest supported phones (~320-380px,
+   e.g. iPhone SE), the default page padding leaves less room than the
+   4-column grids want. Tighten it instead of shrinking touch targets. */
+@media (max-width: 380px) {
+  .calculator-page {
+    padding: var(--space-16) var(--space-8);
+  }
+
+  .calculator {
+    padding: var(--space-12);
+  }
+}
+
+/* CFL-72: on wide viewports the calculator is a small, permanently
+   constrained surface (design.md "Desktop keeps one constrained calculator
+   surface"); nothing further changes above the existing 400px cap. */

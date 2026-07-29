@@ -85,6 +85,22 @@ export default function Keypad({
           <button
             type="button"
             className="calculator-button"
+            aria-label="Factorial"
+            onClick={onFactorial}
+          >
+            x!
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Absolute value"
+            onClick={onAbs}
+          >
+            |x|
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
             aria-label="Base-10 logarithm"
             onClick={() => onFunction('log')}
           >
@@ -133,26 +149,18 @@ export default function Keypad({
           <button
             type="button"
             className="calculator-button"
-            aria-label="Percent"
-            onClick={onPercent}
+            aria-label="Open parenthesis"
+            onClick={onOpenParen}
           >
-            %
+            (
           </button>
           <button
             type="button"
             className="calculator-button"
-            aria-label="Absolute value"
-            onClick={onAbs}
+            aria-label="Close parenthesis"
+            onClick={onCloseParen}
           >
-            |x|
-          </button>
-          <button
-            type="button"
-            className="calculator-button"
-            aria-label="Factorial"
-            onClick={onFactorial}
-          >
-            x!
+            )
           </button>
           <button
             type="button"
@@ -207,24 +215,26 @@ export default function Keypad({
           </div>
         </div>
       )}
-      <div className="calculator-expression-row">
-        <button
-          type="button"
-          className="calculator-button"
-          aria-label="Open parenthesis"
-          onClick={onOpenParen}
-        >
-          (
-        </button>
-        <button
-          type="button"
-          className="calculator-button"
-          aria-label="Close parenthesis"
-          onClick={onCloseParen}
-        >
-          )
-        </button>
-      </div>
+      {!scientific && (
+        <div className="calculator-expression-row">
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Open parenthesis"
+            onClick={onOpenParen}
+          >
+            (
+          </button>
+          <button
+            type="button"
+            className="calculator-button"
+            aria-label="Close parenthesis"
+            onClick={onCloseParen}
+          >
+            )
+          </button>
+        </div>
+      )}
       <div className="calculator-keypad">
         <button
           type="button"
@@ -236,10 +246,10 @@ export default function Keypad({
         <button
           type="button"
           className="calculator-button calculator-button--action"
-          aria-label="Toggle positive or negative"
-          onClick={onToggleSign}
+          aria-label="Percent"
+          onClick={onPercent}
         >
-          ±
+          %
         </button>
         <button
           type="button"
@@ -284,12 +294,16 @@ export default function Keypad({
         </button>
         <OperatorButton operator="+" onOperator={onOperator} />
 
+        <button type="button" className="calculator-button" onClick={() => onDigit('0')}>
+          0
+        </button>
         <button
           type="button"
-          className="calculator-button calculator-button--zero-wide"
-          onClick={() => onDigit('0')}
+          className="calculator-button calculator-button--action"
+          aria-label="Toggle positive or negative"
+          onClick={onToggleSign}
         >
-          0
+          ±
         </button>
         <button type="button" className="calculator-button" onClick={onDecimal}>
           .

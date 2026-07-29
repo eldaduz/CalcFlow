@@ -166,6 +166,17 @@ test('closing parenthesis button is ignored when nothing is open to close', () =
   expect(currentValue()).toBe('5');
 });
 
+test('the % key works in Basic mode, unlike the other Scientific-only shortcuts (CFL-25)', () => {
+  renderCalculator();
+
+  pressKey('5');
+  pressKey('0');
+  pressKey('%');
+  pressKey('Enter');
+
+  expect(currentValue()).toBe('0.5');
+});
+
 test('keyboard input builds and evaluates an expression, including parentheses', () => {
   renderCalculator();
 
@@ -394,12 +405,23 @@ test('absolute value, factorial, and constant buttons are hidden in Basic mode',
 
   expect(() => clickButton('|x|')).toThrow('No button found');
   expect(() => clickButton('x!')).toThrow('No button found');
-  expect(() => clickButton('%')).toThrow('No button found');
   expect(() => clickButton('π')).toThrow('No button found');
   expect(() => clickButton('e')).toThrow('No button found');
 });
 
-test('percent divides the preceding operand by 100 using the shared expression flow', () => {
+test('percent lives on the universal base keypad and works without switching to Scientific mode', () => {
+  renderCalculator();
+
+  clickButton('5');
+  clickButton('0');
+  clickButton('%');
+  clickButton('=');
+
+  expect(currentValue()).toBe('0.5');
+  expect(previousExpression()).toBe('50%');
+});
+
+test('percent also works in Scientific mode, using the same shared expression flow', () => {
   renderCalculator();
 
   clickButton('Scientific');
