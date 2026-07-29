@@ -465,6 +465,14 @@ test.each([
   ['nth root', nthRoot],
   ['factorial', factorialKey],
   ['percent', percentKey],
+  ['digit', () => digit('5')],
+  ['decimal', decimal],
+  ['square root', squareRoot],
+  ['function (log)', () => func('log')],
+  ['abs', absKey],
+  ['constant (π)', () => constant('π')],
+  ['open paren', openParen],
+  ['memory recall', () => ({ type: 'MEMORY_RECALL' })],
 ])('preserves angle mode after continuing with %s', (_, actionFactory) => {
   const evaluated = dispatchAll([
     { type: 'TOGGLE_ANGLE_MODE' },

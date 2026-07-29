@@ -313,7 +313,7 @@ Update this file when:
 
 - Jira: CFL-89 is In Progress under the completed CFL-20 Angle Mode Feature; no open GitHub PR touches `src/lib/expressionEngine.js`.
 - Branch: `bug/CFL-89-angle-mode-preservation`.
-- Scope: Preserve the active `angleMode` when `OPERATOR`, `POWER`, `NTH_ROOT`, `FACTORIAL`, or `PERCENT` continues an evaluated expression.
+- Scope: Preserve the active `angleMode` across all `justEvaluated` continuation branches (`DIGIT`, `DECIMAL`, `OPERATOR`, `POWER`, `SQUARE_ROOT`, `NTH_ROOT`, `FUNCTION`, `FACTORIAL`, `PERCENT`, `ABS`, `CONSTANT`, `OPEN_PAREN`, `MEMORY_RECALL`).
 - Verification: Regression test is red before the fix and green after it; full suite 244/244, lint, format check, and build pass.
 - PR: [PR #45](https://github.com/eldaduz/CalcFlow/pull/45) is open against `main`; Gavi (`GaviLazan`) was requested as reviewer.
 - Next safe action: Await Gavi's Code Review.

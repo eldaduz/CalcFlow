@@ -242,10 +242,11 @@ export function expressionReducer(state, action) {
     case 'DIGIT': {
       if (state.justEvaluated) {
         return {
-          ...initialState,
-          history: state.history,
-          memory: state.memory,
+          ...state,
           expression: appendDigit('', action.digit),
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
         };
       }
       return { ...state, error: null, expression: appendDigit(state.expression, action.digit) };
@@ -253,10 +254,11 @@ export function expressionReducer(state, action) {
     case 'DECIMAL': {
       if (state.justEvaluated) {
         return {
-          ...initialState,
-          history: state.history,
-          memory: state.memory,
+          ...state,
           expression: appendDecimal(''),
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
         };
       }
       return { ...state, error: null, expression: appendDecimal(state.expression) };
@@ -293,10 +295,11 @@ export function expressionReducer(state, action) {
     case 'SQUARE_ROOT': {
       if (state.justEvaluated) {
         return {
-          ...initialState,
-          history: state.history,
-          memory: state.memory,
+          ...state,
           expression: '√',
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
         };
       }
       return { ...state, error: null, expression: appendSquareRoot(state.expression) };
@@ -317,10 +320,11 @@ export function expressionReducer(state, action) {
     case 'FUNCTION': {
       if (state.justEvaluated) {
         return {
-          ...initialState,
-          history: state.history,
-          memory: state.memory,
+          ...state,
           expression: appendFunction('', action.name),
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
         };
       }
       return { ...state, error: null, expression: appendFunction(state.expression, action.name) };
@@ -354,10 +358,11 @@ export function expressionReducer(state, action) {
     case 'ABS': {
       if (state.justEvaluated) {
         return {
-          ...initialState,
-          history: state.history,
-          memory: state.memory,
+          ...state,
           expression: appendAbsBar(''),
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
         };
       }
       return { ...state, error: null, expression: appendAbsBar(state.expression) };
@@ -365,10 +370,11 @@ export function expressionReducer(state, action) {
     case 'CONSTANT': {
       if (state.justEvaluated) {
         return {
-          ...initialState,
-          history: state.history,
-          memory: state.memory,
+          ...state,
           expression: appendConstant('', action.symbol),
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
         };
       }
       return { ...state, error: null, expression: appendConstant(state.expression, action.symbol) };
@@ -376,10 +382,11 @@ export function expressionReducer(state, action) {
     case 'OPEN_PAREN': {
       if (state.justEvaluated) {
         return {
-          ...initialState,
-          history: state.history,
-          memory: state.memory,
+          ...state,
           expression: '(',
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
         };
       }
       return { ...state, error: null, expression: appendOpenParen(state.expression) };
@@ -407,10 +414,11 @@ export function expressionReducer(state, action) {
       const token = formatResultForExpression(state.memory);
       if (state.justEvaluated) {
         return {
-          ...initialState,
-          history: state.history,
-          memory: state.memory,
+          ...state,
           expression: token,
+          previousExpression: '',
+          justEvaluated: false,
+          error: null,
         };
       }
       return { ...state, error: null, expression: appendConstant(state.expression, token) };
