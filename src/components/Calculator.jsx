@@ -172,6 +172,11 @@ export default function Calculator() {
         previousExpression={formatExpressionForDisplay(state.previousExpression)}
         error={state.error}
         angleMode={state.angleMode}
+        resultAnnouncement={
+          state.justEvaluated && !state.error
+            ? `Result: ${formatExpressionForDisplay(state.expression)}`
+            : ''
+        }
       />
       <Keypad
         onDigit={(digit) => dispatch({ type: 'DIGIT', digit })}

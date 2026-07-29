@@ -1,4 +1,10 @@
-export default function Display({ currentValue, previousExpression, error, angleMode }) {
+export default function Display({
+  currentValue,
+  previousExpression,
+  error,
+  angleMode,
+  resultAnnouncement,
+}) {
   return (
     <div>
       <div className="calculator-display">
@@ -12,6 +18,9 @@ export default function Display({ currentValue, previousExpression, error, angle
       </div>
       <div className="calculator-error" role="alert" aria-live="assertive">
         {error ? error.message : ''}
+      </div>
+      <div className="sr-only" aria-live="polite">
+        {resultAnnouncement}
       </div>
     </div>
   );
