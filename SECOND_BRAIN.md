@@ -15,7 +15,7 @@ The AI must verify all live information against Jira and GitHub before acting.
 ## Last Updated
 
 - Date: 2026-07-29
-- Updated by: Eldad / Codex
+- Updated by: Gavi / Claude
 - Human owner: Gavi
 - AI used: Claude
 
@@ -23,13 +23,13 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 Two tracks are in flight in parallel, one per owner:
 
-- **Gavi — v0.5.0 (History and Memory): shipped, Done, tagged and released** (GitHub tag/release `v0.5.0`). v0.6.0 — Complete User Experience is now in progress: CFL-24 (Keyboard Support: CFL-69/70) and **CFL-25 (Responsive Interface: CFL-71/72) are both Done**, merged ([PR #41](https://github.com/eldaduz/CalcFlow/pull/41), [PR #46](https://github.com/eldaduz/CalcFlow/pull/46)), deployed, and smoke-tested live on https://calc-flow-fawn.vercel.app/. Next up for Gavi: **CFL-26 — Accessibility**, next Feature of v0.6.0 in the CFL-5 sequence. The two docs-only PRs that were open as of the last update ([#43](https://github.com/eldaduz/CalcFlow/pull/43), [#44](https://github.com/eldaduz/CalcFlow/pull/44)) are both approved by Eldad and merged.
-- **Eldad — v1.0.0 (Stable Final Release): in progress.** CFL-31 — Release Management tooling merged via PR #34, Ready for Deployment. CFL-32 — Dependency Governance's PR ([#38](https://github.com/eldaduz/CalcFlow/pull/38)) is **merged**, but as of this update Jira still shows CFL-32/CFL-85/CFL-86 at Code Review — a live Jira/GitHub mismatch on Eldad's Feature, re-verified as still true on 2026-07-29 and flagged here rather than corrected (not ours to touch per the established ownership boundary). Separately, [PR #45](https://github.com/eldaduz/CalcFlow/pull/45) (CFL-89, an angle-mode bug fix) is open with an unresolved "Changes Requested" review — not yet addressed/re-reviewed as of this update, and not ours to merge regardless.
+- **Gavi — v0.5.0 (History and Memory): shipped, Done, tagged and released** (GitHub tag/release `v0.5.0`). v0.6.0 — Complete User Experience is now in progress: CFL-24 and **CFL-25 are both Done**, merged ([PR #41](https://github.com/eldaduz/CalcFlow/pull/41), [PR #46](https://github.com/eldaduz/CalcFlow/pull/46)), deployed, and smoke-tested. **CFL-26 (Accessibility)** is in Code Review ([PR #48](https://github.com/eldaduz/CalcFlow/pull/48)). Beyond v0.6.0, **CFL-30/CFL-28/CFL-33 (the last three Gavi Features toward v1.0.0) are also in Code Review, bundled into one PR** per the explicit combined-PR exception recorded below — see that entry for detail. Docs PRs [#43](https://github.com/eldaduz/CalcFlow/pull/43)/[#44](https://github.com/eldaduz/CalcFlow/pull/44) are merged; [#49](https://github.com/eldaduz/CalcFlow/pull/49) (reflecting the CFL-89 merge) is still open awaiting Eldad.
+- **Eldad — v1.0.0 (Stable Final Release): in progress.** CFL-31 — Release Management tooling merged via PR #34, Ready for Deployment (the actual tag/release execution is his remaining step, and per the release sequence comes after Gavi's remaining Features finish). CFL-32 is merged in GitHub but Jira still shows Code Review — live mismatch, flagged not corrected (his own item). [PR #45](https://github.com/eldaduz/CalcFlow/pull/45) (CFL-89) is **merged**; Jira still shows Code Review, same kind of mismatch, also his own item to correct.
 
 ## Current Approved Sequence
 
-1. Gavi: CFL-26 — Accessibility (next, v0.6.0, CFL-5 sequence)
-2. Eldad: CFL-31 / CFL-32 / CFL-89 (per his section below; verify live — CFL-32's Jira status is currently stale relative to GitHub)
+1. Gavi: CFL-26 (Code Review), CFL-30/CFL-28/CFL-33 (Code Review, combined PR) — all awaiting Eldad
+2. Eldad: CFL-31 (execute release, after Gavi's Features finish) / CFL-32 / CFL-89 (Jira corrections; verify live — both stale relative to GitHub)
 
 The Foundation sequence below is historical context, not current active work.
 
@@ -205,6 +205,16 @@ The Foundation sequence below is historical context, not current active work.
 - Note on process: this branch also picked up a rebase onto `main` after two unrelated docs PRs (#43, #44 — CFL-24 status corrections) merged first, since all three touched `SECOND_BRAIN.md`. Conflict resolved by taking the more accurate/complete wording from each side rather than either version outright; no code was affected.
 - Production deployment confirmed and smoke-tested live on https://calc-flow-fawn.vercel.app/ (same Playwright checks re-run against production: zero console errors, zero horizontal overflow, correct button order/behavior in both modes at all four widths), confirmed by Gavi.
 - Next required action: none. CFL-26 (Accessibility) is next in the CFL-5 sequence.
+
+### Gavi — CFL-30 / CFL-28 / CFL-33 (active, 2026-07-29)
+
+- Jira: CFL-30 — Vercel Deployment (children CFL-81, CFL-82), CFL-28 — Log Export and Submission Evidence, and CFL-33 — License Reporting (children CFL-87, CFL-88), all **Code Review**. Final three Gavi-owned Features toward v1.0.0, done while CFL-26 (Accessibility, PR #48) awaits Eldad's review.
+- **Process exception:** all three are bundled into one branch/PR rather than the standard one-PR-per-Feature rule, since they're small, independent, and don't touch overlapping code (deployment docs, a new log-export control, and a license report). Approved explicitly by Gavi given Eldad's limited review availability — same kind of documented exception as the earlier CFL-15/CFL-34 combined QA.
+- **CFL-30**: preview/production deploys were already working in practice (confirmed via every prior Feature's smoke test); this pass adds the missing formal documentation. New `docs/DEPLOYMENT.md` records build settings (Vite auto-detected, `npm ci`, `vite build`, `dist` output, Node version per `package.json` engines), the deployment flow, and a consolidated smoke-test record. README updated: corrected a stale Features list (history/memory/keyboard/responsive were listed as "not yet implemented" despite being Done) and added a Deployment section.
+- **CFL-28**: new `LogExport.jsx` component (button + inline `aria-live="polite"` status, rendered below History) exports `getLogs()` as a downloaded `calcflow-logs.json`, with try/catch producing a failure status instead of throwing. New `logs/README.md` documents the event structure and submission process. **Not fully closeable by Gavi alone**: CFL-28's own acceptance criteria require a second teammate to review the final committed `logs/calcflow-submission-log.json` before submission — that step is still pending Eldad.
+- **CFL-33**: generated `ALL_LICENSES`'s dependency table via `npx license-checker --production=false --json` (not added as a project dependency, run standalone like `axe-core`/Playwright). 372 direct + transitive packages, zero unknown/missing licenses. Reviewed the non-standard ones found: `MPL-2.0` (`lightningcss`, build-time only, not redistributed), `Python-2.0`/`CC-BY-4.0`/`CC0-1.0`/`BlueOak-1.0.0` (all permissive, all transitive dev-tooling). **Also not fully closeable solo**: CFL-88 explicitly requires the final report to be "reviewed by the second teammate" — flagged in `ALL_LICENSES` itself as pending.
+- Verification (real pipeline): clean `npm ci`; lint, format:check clean; 258 tests passing (14 new — `LogExport` component tests); 97.62% statement coverage (70% threshold); production build and `git diff --check` clean. Independently verified in a real browser (Playwright against the dev server): Export Logs downloads a valid JSON array with the correct event structure and shows the correct singular/plural status text; also re-ran the full CFL-25 responsive/functional smoke suite against the live Production URL as CFL-82's deployment evidence (app load, basic and Scientific calculation, keyboard shortcuts, 320/375/768/1280px in both modes) — all passed, zero console errors.
+- Next required action: open PR (combined), request Eldad as reviewer. Even once approved and merged, CFL-28 and CFL-33 cannot move to Done until Eldad (or another second reviewer) completes the human log/license-report review their own acceptance criteria require.
 
 ### Design Decision Resolution (2026-07-26)
 

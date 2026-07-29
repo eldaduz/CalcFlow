@@ -51,18 +51,35 @@ recovery.
   tangent, etc.) -- the invalid expression stays on screen for editing
   rather than resetting
 
+### History and memory
+
+- Calculation history: a collapsible list of past expressions and results,
+  each reusable (restores the full editable expression) and independently
+  clearable; persists for the session via `sessionStorage`
+- Memory operations (`MC`, `MR`, `M+`, `M−`) in Scientific mode, surviving
+  `AC` and controlled errors; only `MC` clears memory
+
+### Keyboard and responsive
+
+- Full keyboard entry: digits, the four basic operators, parentheses,
+  decimal point, Enter/Backspace/Escape, plus the complete Scientific-mode
+  shortcut set (`s`/`c`/`t` for sin/cos/tan, `l`/`n` for log/ln, `r`/`u` for
+  square/nth root, `^`, `!`, `%`, `p`/`e` for constants, `d` for DEG/RAD),
+  and a `?`-triggered shortcuts-help panel
+- Responsive layout verified at phone, tablet, and desktop widths with no
+  horizontal overflow and full-size touch targets
+
 ### Other
 
 - Internal application logging: successful calculations, controlled
   errors, and unexpected evaluator failures are recorded in-memory with a
   timestamp and structured detail, isolated so a logging failure can never
   break a calculation
-- Keyboard entry for digits, the four basic operators, parentheses,
-  decimal point, Enter/Backspace/Escape
+- Accessible by keyboard alone, with results and errors announced to
+  assistive technology via distinct live regions
 
-Calculation history, memory operations, full scientific keyboard shortcuts,
-responsive/accessibility work, and log export are tracked in Jira but not
-yet implemented.
+Log export (JSON) and license reporting are tracked in Jira for v1.0.0 but
+not yet implemented.
 
 ## Structure
 
@@ -91,15 +108,26 @@ yet implemented.
 - `npm test` runs the test suite once.
 - `npm run coverage` produces the coverage report.
 
+## Deployment
+
+CalcFlow deploys to [Vercel](https://calc-flow-fawn.vercel.app/) directly
+from this repository: every pull request gets an automatic Preview
+deployment, and every merge to `main` deploys to Production. See
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for build settings, the full
+deployment flow, and recorded smoke-test evidence.
+
 ## Releases
 
 Tagged releases and notes are published under
 [GitHub Releases](https://github.com/eldaduz/CalcFlow/releases); v0.1.0
-through v0.4.0 are shipped (MVP arithmetic, expressions and parentheses,
-powers and roots, and the full scientific-function set described above).
+through v0.5.0 are shipped (MVP arithmetic through history and memory).
+v0.6.0 (keyboard support, responsive interface, accessibility) is in
+progress toward v1.0.0.
 
 ## Project References
 
 - [design.md](design.md) defines the shared UI and UX rules.
 - [PROJECT_PLAN.md](PROJECT_PLAN.md) defines scope, roles, workflow, review policy, sources of truth, and release process.
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) documents the Vercel deployment approach and smoke-test evidence.
+- [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md) documents dependency governance.
 - [ALL_LICENSES](ALL_LICENSES) records third-party asset and dependency licensing.

@@ -244,6 +244,35 @@ body {
   outline-offset: 2px;
 }
 
+.calculator-log-export {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.calculator-log-export-button {
+  min-height: var(--control-min-height);
+  border: 1px solid var(--color-text-secondary);
+  border-radius: var(--space-4);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font: inherit;
+  cursor: pointer;
+  padding: 0 var(--space-12);
+}
+
+.calculator-log-export-button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.calculator-log-export-status {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  min-height: 1.2em;
+}
+
 .calculator-history-list {
   list-style: none;
   margin: 0;
