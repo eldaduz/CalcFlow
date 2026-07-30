@@ -35,6 +35,18 @@
   box-sizing: border-box;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 body {
   margin: 0;
   background: var(--color-background);
@@ -131,7 +143,10 @@ body {
 
 .calculator-angle-mode-indicator {
   font-size: 14px;
-  color: var(--color-text-secondary);
+  /* CFL-74: --color-text-secondary is 3.21:1 against --color-display,
+     failing WCAG AA (needs 4.5:1). Matches .previous-expression, the
+     sibling label already on this same dark background (8.86:1). */
+  color: rgba(255, 255, 255, 0.7);
   font-weight: bold;
   margin-bottom: var(--space-8);
 }

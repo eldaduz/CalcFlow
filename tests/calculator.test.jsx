@@ -61,6 +61,10 @@ function errorText() {
   return container.querySelector('.calculator-error').textContent;
 }
 
+function resultAnnouncement() {
+  return container.querySelector('.sr-only').textContent;
+}
+
 test('a multi-operand expression with parentheses evaluates with correct precedence', () => {
   renderCalculator();
 
@@ -951,4 +955,43 @@ test('the shortcuts panel does not trap other keyboard input while open', () => 
 
   expect(currentValue()).toBe('2');
   expect(container.querySelector('.calculator-shortcuts-help')).not.toBeNull();
+});
+
+test('a successful calculation is announced via the polite live region (CFL-74)', () => {
+  renderCalculator();
+
+  expect(resultAnnouncement()).toBe('');
+
+  clickButton('2');
+  clickButton('+');
+  clickButton('3');
+  expect(resultAnnouncement()).toBe('');
+
+  clickButton('=');
+  expect(resultAnnouncement()).toBe('Result: 5');
+});
+
+test('the result announcement clears once editing resumes after a calculation', () => {
+  renderCalculator();
+
+  clickButton('2');
+  clickButton('+');
+  clickButton('3');
+  clickButton('=');
+  expect(resultAnnouncement()).toBe('Result: 5');
+
+  clickButton('1');
+  expect(resultAnnouncement()).toBe('');
+});
+
+test('a controlled error does not produce a result announcement', () => {
+  renderCalculator();
+
+  clickButton('5');
+  clickButton('÷');
+  clickButton('0');
+  clickButton('=');
+
+  expect(errorText()).not.toBe('');
+  expect(resultAnnouncement()).toBe('');
 });
