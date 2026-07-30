@@ -12,6 +12,7 @@ import History from './History.jsx';
 import Keypad from './Keypad.jsx';
 import LogExport from './LogExport.jsx';
 import ShortcutsHelp from './ShortcutsHelp.jsx';
+import TelemetryExport from './TelemetryExport.jsx';
 
 const OPERATOR_KEYS = new Set(['+', '-', '*', '/']);
 
@@ -262,6 +263,7 @@ export default function Calculator() {
         onClear={() => loggedDispatch({ type: 'CLEAR_HISTORY' })}
       />
       <LogExport />
+      <TelemetryExport />
     </div>
   );
 }
