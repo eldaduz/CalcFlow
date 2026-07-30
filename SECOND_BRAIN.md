@@ -23,12 +23,12 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 Two tracks are in flight in parallel, one per owner:
 
-- **Gavi — v0.5.0 (History and Memory): shipped, Done, tagged and released** (GitHub tag/release `v0.5.0`). v0.6.0 — Complete User Experience is now in progress: CFL-24 and **CFL-25 are both Done**, merged ([PR #41](https://github.com/eldaduz/CalcFlow/pull/41), [PR #46](https://github.com/eldaduz/CalcFlow/pull/46)), deployed, and smoke-tested. **CFL-26 (Accessibility)** is in Code Review ([PR #48](https://github.com/eldaduz/CalcFlow/pull/48)). Beyond v0.6.0, **CFL-30/CFL-28/CFL-33 (the last three Gavi Features toward v1.0.0) are also in Code Review, bundled into one PR** per the explicit combined-PR exception recorded below — see that entry for detail. Docs PRs [#43](https://github.com/eldaduz/CalcFlow/pull/43)/[#44](https://github.com/eldaduz/CalcFlow/pull/44) are merged; [#49](https://github.com/eldaduz/CalcFlow/pull/49) (reflecting the CFL-89 merge) is still open awaiting Eldad.
+- **Gavi — v0.5.0 (History and Memory): shipped, Done, tagged and released** (GitHub tag/release `v0.5.0`). v0.6.0 — Complete User Experience is now in progress: CFL-24 (Keyboard Support: CFL-69/70) and **CFL-25 (Responsive Interface: CFL-71/72) are both Done**, merged ([PR #41](https://github.com/eldaduz/CalcFlow/pull/41), [PR #46](https://github.com/eldaduz/CalcFlow/pull/46)), deployed, and smoke-tested live on https://calc-flow-fawn.vercel.app/. **CFL-26 (Accessibility)** is in Code Review ([PR #48](https://github.com/eldaduz/CalcFlow/pull/48)). Beyond v0.6.0, **CFL-30/CFL-28/CFL-33 (the last three Gavi Features toward v1.0.0) are also in Code Review, bundled into one PR** ([PR #50](https://github.com/eldaduz/CalcFlow/pull/50)) per the explicit combined-PR exception recorded below — see that entry for detail. Docs PRs [#43](https://github.com/eldaduz/CalcFlow/pull/43)/[#44](https://github.com/eldaduz/CalcFlow/pull/44)/[#49](https://github.com/eldaduz/CalcFlow/pull/49)/[#51](https://github.com/eldaduz/CalcFlow/pull/51) are all merged.
 - **Eldad — v1.0.0 (Stable Final Release): in progress.** CFL-31 — Release Management tooling merged via PR #34, Ready for Deployment (the actual tag/release execution is his remaining step, and per the release sequence comes after Gavi's remaining Features finish). CFL-32 is merged in GitHub but Jira still shows Code Review — live mismatch, flagged not corrected (his own item). [PR #45](https://github.com/eldaduz/CalcFlow/pull/45) (CFL-89) is **merged**; Jira still shows Code Review, same kind of mismatch, also his own item to correct.
 
 ## Current Approved Sequence
 
-1. Gavi: CFL-26 (Code Review), CFL-30/CFL-28/CFL-33 (Code Review, combined PR) — all awaiting Eldad
+1. Gavi: CFL-26 (Code Review, [PR #48](https://github.com/eldaduz/CalcFlow/pull/48)), CFL-30/CFL-28/CFL-33 (Code Review, combined [PR #50](https://github.com/eldaduz/CalcFlow/pull/50)) — all awaiting Eldad
 2. Eldad: CFL-31 (execute release, after Gavi's Features finish) / CFL-32 / CFL-89 (Jira corrections; verify live — both stale relative to GitHub)
 
 The Foundation sequence below is historical context, not current active work.
@@ -324,21 +324,20 @@ Update this file when:
 
 ## CFL-89 — Angle mode preservation bug
 
-- Jira: CFL-89 is in Code Review under the completed CFL-20 Angle Mode Feature. QA passed, but the rebase onto current `main` dismissed Gavi's prior approval.
-- Branch: `bug/CFL-89-angle-mode-preservation`.
-- Sync: Rebased onto current `main` (`317cc12`) before QA; `SECOND_BRAIN.md` retains main's newer CFL-24/CFL-25 handoff.
+- Jira: CFL-89 still shows **Code Review** under the completed CFL-20 Angle Mode Feature — a live Jira/GitHub mismatch, since the code is merged (below). Not corrected here: this is Eldad's own bug fix, same ownership boundary as CFL-32's mismatch.
+- Branch: `bug/CFL-89-angle-mode-preservation` (deleted post-merge).
 - Scope: Preserve the active `angleMode` across all `justEvaluated` continuation branches (`DIGIT`, `DECIMAL`, `OPERATOR`, `POWER`, `SQUARE_ROOT`, `NTH_ROOT`, `FUNCTION`, `FACTORIAL`, `PERCENT`, `ABS`, `CONSTANT`, `OPEN_PAREN`, `MEMORY_RECALL`).
-- Verification: Clean `npm ci` found zero vulnerabilities; lint, format check, 254 tests, 97.55% statement coverage, production build, and diff check pass. The regression matrix covers all 13 continuation actions. Browser QA confirmed `sin(90)` in DEG returns `1`, and DIGIT and `log` continuations retain DEG.
-- PR: [PR #45](https://github.com/eldaduz/CalcFlow/pull/45) is open against `main`; Gavi's approval was dismissed by the rebase and must be renewed.
-- Next safe action: Await Gavi's renewed approval, then return to Ready for Deployment.
+- Verification: Clean `npm ci`, lint, format check, 254 tests, 97.55% statement coverage, production build, and diff check passed. Regression matrix covered all 13 continuation actions. Browser QA confirmed `sin(90)` in DEG returns `1`, and DIGIT/`log` continuations retain DEG.
+- PR: [PR #45](https://github.com/eldaduz/CalcFlow/pull/45), approved by Gavi against the final commit, **merged by Eldad** on 2026-07-29.
+- Next safe action: none from Gavi's side. Only the stale CFL-89 Jira status above needs Eldad's own correction.
 
 ## Latest Handoff
 
-- Current work: CFL-89 awaits renewed Code Review after rebase.
-- Scope: Root-cause fix preserves `angleMode` across all 13 evaluated-expression continuation paths; regression coverage covers all 13.
-- Verification: PR rebased onto current `main`; clean install, lint, format, 254 tests, coverage, build, diff check, and focused browser QA pass.
-- Current risks: No known code risk; GitHub requires renewed approval after rebase. Merge, deployment, and production smoke test remain pending.
-- Next safe action: Await Gavi's renewed approval on PR #45.
+- Current work: CFL-89 merged; CFL-26 (Accessibility) is Gavi's active Feature, in Code Review ([PR #48](https://github.com/eldaduz/CalcFlow/pull/48)).
+- Scope: CFL-89's root-cause fix preserves `angleMode` across all 13 evaluated-expression continuation paths, now on `main`.
+- Verification: CFL-89 — clean install, lint, format, 254 tests, coverage, build, diff check, and focused browser QA passed before merge.
+- Current risks: CFL-89's Jira status is stale (Code Review vs. merged code) — Eldad's to correct. CFL-26 (PR #48) and PR #45's Jira correction both await Eldad, whose availability may be limited for a while.
+- Next safe action: await Eldad on PR #48 (CFL-26) and the CFL-89/CFL-32 Jira corrections; no other Gavi-side action pending.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
