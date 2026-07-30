@@ -29,6 +29,7 @@ The project is intentionally small in product complexity and strong in engineeri
 - Accessibility
 - Application logging and JSON log export
 - Unit tests, QA, regression testing, CI/CD, releases, and deployment
+- Novelty telemetry: button-press/trace-span logging, ridiculous usage metrics, and a parody cookie-consent banner (Epic CFL-6 extension via CFL-90/CFL-91, and Epic CFL-92) -- a comedic implementation of the same logging, tracing, and metrics capabilities the project already demonstrates seriously elsewhere, not a separate product goal
 
 ### Out of scope
 
@@ -41,6 +42,7 @@ The project is intentionally small in product complexity and strong in engineeri
 - Native mobile applications
 - Docker
 - AWS unless explicitly reintroduced as an optional bonus
+- Alerting or monitoring (even in the novelty-telemetry spirit above) -- judged excessive for a calculator
 
 ## 3. Sources of Truth
 
@@ -602,6 +604,8 @@ Do not log:
 - personal or sensitive information;
 - secrets;
 - excessive noise.
+
+**Novelty-telemetry exception (CFL-90/CFL-91):** the "every click" restriction above does not apply to the deliberately comedic button-press/trace-span logging approved as its own in-scope item (see Product Summary). That data shares the same underlying logger as the real events above, bounded by a rolling 6-hour window rather than unbounded growth. It must never be written into or alter `logs/calcflow-submission-log.json` -- that file remains limited to the real calculation events this section otherwise governs. Computed novelty metrics (most-pressed button, most common error, etc.) are exported separately, on demand, not as an always-visible panel.
 
 The application must support JSON log export. The final reviewed submission log will be committed under:
 
