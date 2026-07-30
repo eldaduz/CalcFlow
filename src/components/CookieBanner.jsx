@@ -10,8 +10,10 @@ export default function CookieBanner() {
   return (
     <div className="calculator-cookie-banner" role="region" aria-label="Cookie notice">
       <p className="calculator-cookie-banner-text">
-        CalcFlow uses zero cookies and stores nothing outside this browser tab, but we&apos;re
-        contractually obligated to interrupt your arithmetic to tell you that anyway.
+        CalcFlow logs every button you press, complete with fake trace IDs and timestamps, because
+        someone decided a calculator needed observability. You don&apos;t have a choice in this —
+        the button below doesn&apos;t opt you out of anything, it just makes this message go away.
+        Relax, it&apos;s just numbers. What do you care?
       </p>
       <button
         type="button"
