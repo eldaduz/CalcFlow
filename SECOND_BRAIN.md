@@ -28,7 +28,7 @@ Two tracks are in flight in parallel, one per owner:
 
 ## Current Approved Sequence
 
-1. Gavi: CFL-26 merged ([PR #48](https://github.com/eldaduz/CalcFlow/pull/48), Jira: QA); CFL-30/CFL-28/CFL-33 merged ([PR #50](https://github.com/eldaduz/CalcFlow/pull/50), Jira: CFL-30/81/82 in QA, CFL-87 Done) — CFL-28 (Code Review, missing its actual `logs/calcflow-submission-log.json`) and CFL-33/CFL-88 (Code Review, second-teammate license review not yet confirmed) still need Eldad's (or another second reviewer's) human log/license review before Jira Done, per their own acceptance criteria
+1. Gavi: CFL-26 merged ([PR #48](https://github.com/eldaduz/CalcFlow/pull/48), Jira: QA); CFL-30/CFL-28/CFL-33 merged ([PR #50](https://github.com/eldaduz/CalcFlow/pull/50), Jira: CFL-30/81/82 in QA, CFL-87 Done) — CFL-28's `logs/calcflow-submission-log.json` is now exported and committed (this branch); it and CFL-33/CFL-88 (Code Review, second-teammate license review not yet confirmed) still need Eldad's (or another second reviewer's) human log/license review before Jira Done, per their own acceptance criteria
 2. Eldad: CFL-31 (execute release, after Gavi's Features finish and CFL-28/CFL-33 close out)
 
 The Foundation sequence below is historical context, not current active work.
@@ -346,7 +346,7 @@ Update this file when:
 ## Latest Handoff
 
 - Current work: all of Gavi's remaining v0.6.0/v1.0.0 Features are merged — CFL-26 (Accessibility, PR #48), CFL-30/CFL-28/CFL-33 (Vercel Deployment / Log Export / License Reporting, combined PR #50). Nothing left to build on Gavi's side.
-- Jira, corrected to match: CFL-26/CFL-73/CFL-74 and CFL-30/CFL-81/CFL-82 moved to QA (merged and auto-deployed, pending a production smoke test); CFL-87 moved to Done (self-contained, no deployment dependency). CFL-28, CFL-33, and CFL-88 left untouched — CFL-28 is missing the actual `logs/calcflow-submission-log.json` its AC requires, and CFL-33/CFL-88 hinge on whether Eldad's PR #50 review already counts as the required second-teammate license review (his call, not assumed here).
+- Jira, corrected to match: CFL-26/CFL-73/CFL-74 and CFL-30/CFL-81/CFL-82 moved to QA (merged and auto-deployed, pending a production smoke test); CFL-87 moved to Done (self-contained, no deployment dependency). CFL-28's submission log is now exported and committed (this branch) — still needs Eldad's second-teammate review before Jira Done. CFL-33 and CFL-88 left untouched here; see companion PR for that status.
 - Current risks: **Two competing docs PRs were both open against this exact section at once** — [PR #52](https://github.com/eldaduz/CalcFlow/pull/52) (Eldad's Antigravity/Gemini session) and [PR #53](https://github.com/eldaduz/CalcFlow/pull/53, this correction). #52 correctly caught that CFL-32/CFL-89 have since moved to Done, but incorrectly claimed the CFL-28/CFL-33/CFL-88 second-teammate audits were "completed and signed off" — live Jira shows CFL-28/33/88 still in Code Review, unresolved. Neither PR was accurate in full; this correction reconciles both against live Jira rather than merging either wholesale. Recommend consolidating to one of the two (closing the other) once Eldad is available, rather than merging both.
 - Next safe action: production smoke test for CFL-26/CFL-30/CFL-28/CFL-33 to close out QA; Eldad's call on CFL-28's submission-log review and the CFL-33/CFL-88 second-review question; reconcile/close PR #52 vs #53.
 
