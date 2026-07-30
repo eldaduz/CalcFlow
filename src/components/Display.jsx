@@ -3,21 +3,32 @@ export default function Display({
   previousExpression,
   error,
   angleMode,
+  memory,
   resultAnnouncement,
 }) {
+  const topRightText = error ? error.message : previousExpression;
+
   return (
     <div>
       <div className="calculator-display">
-        <div className="previous-expression">{previousExpression}</div>
+        <div className="calculator-display-row calculator-display-row--top">
+          <span className="calculator-memory-indicator">M: {memory}</span>
+          <span
+            className={
+              error ? 'calculator-top-right calculator-top-right--error' : 'calculator-top-right'
+            }
+            role="alert"
+            aria-live="assertive"
+          >
+            {topRightText}
+          </span>
+        </div>
         <div className="calculator-display-row">
           <span className="calculator-angle-mode-indicator">
             {angleMode ? angleMode.toUpperCase() : 'RAD'}
           </span>
           <div className="current-value">{currentValue}</div>
         </div>
-      </div>
-      <div className="calculator-error" role="alert" aria-live="assertive">
-        {error ? error.message : ''}
       </div>
       <div className="sr-only" aria-live="polite">
         {resultAnnouncement}

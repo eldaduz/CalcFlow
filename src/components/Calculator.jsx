@@ -10,6 +10,7 @@ import { logButtonPress } from '../lib/logger.js';
 import CookieBanner from './CookieBanner.jsx';
 import Display from './Display.jsx';
 import History from './History.jsx';
+import HistoryIcon from './icons/HistoryIcon.jsx';
 import Keypad from './Keypad.jsx';
 import LogExport from './LogExport.jsx';
 import ShortcutsHelp from './ShortcutsHelp.jsx';
@@ -109,8 +110,8 @@ const init = (initial) => ({
 
 export default function Calculator() {
   const [state, dispatch] = useReducer(expressionReducer, initialState, init);
-  const [mode, setMode] = useState('basic');
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   function loggedDispatch(action) {
     logButtonPress(describeAction(action), { triggersCalculation: action.type === 'EQUALS' });
@@ -188,7 +189,7 @@ export default function Calculator() {
       } else if (key === 'Backspace') {
         event.preventDefault();
         loggedDispatch({ type: 'DELETE' });
-      } else if (mode === 'scientific' && SCIENTIFIC_KEY_ACTIONS[key]) {
+      } else if (state.mode === 'scientific' && SCIENTIFIC_KEY_ACTIONS[key]) {
         event.preventDefault();
         loggedDispatch(SCIENTIFIC_KEY_ACTIONS[key]);
       }
@@ -196,75 +197,100 @@ export default function Calculator() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [mode, showShortcuts]);
+  }, [state.mode, showShortcuts]);
+
+  const scientific = state.mode === 'scientific';
 
   return (
-    <div className="calculator">
-      <CookieBanner />
-      <div className="calculator-header">
-        <h1>CalcFlow</h1>
-        <div className="calculator-mode-toggle" aria-label="Calculator mode">
-          {['basic', 'scientific'].map((option) => (
+    <div className="calculator-frame">
+      <div className={scientific ? 'calculator calculator--scientific' : 'calculator'}>
+        <CookieBanner />
+        <div className="calculator-header">
+          <h1>CalcFlow</h1>
+          <div className="calculator-header-right">
             <button
-              key={option}
               type="button"
-              className="calculator-mode-button"
-              aria-pressed={mode === option}
-              onClick={() => {
-                logButtonPress(`Mode: ${option === 'basic' ? 'Basic' : 'Scientific'}`);
-                setMode(option);
-              }}
+              className="calculator-icon-button"
+              aria-label="History"
+              aria-expanded={historyOpen}
+              onClick={() => setHistoryOpen((current) => !current)}
             >
-              {option === 'basic' ? 'Basic' : 'Scientific'}
+              <HistoryIcon />
             </button>
-          ))}
+            <LogExport />
+            <div
+              className={
+                scientific
+                  ? 'calculator-mode-toggle calculator-mode-toggle--scientific'
+                  : 'calculator-mode-toggle'
+              }
+              aria-label="Calculator mode"
+            >
+              <div className="calculator-mode-toggle-thumb" aria-hidden="true" />
+              {['basic', 'scientific'].map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  className="calculator-mode-button"
+                  aria-pressed={state.mode === option}
+                  onClick={() => {
+                    logButtonPress(`Mode: ${option === 'basic' ? 'Basic' : 'Scientific'}`);
+                    dispatch({ type: 'SET_MODE', mode: option });
+                  }}
+                >
+                  {option === 'basic' ? 'Basic' : 'Scientific'}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
+        <ShortcutsHelp open={showShortcuts} />
+        <Display
+          currentValue={formatExpressionForDisplay(state.expression) || '0'}
+          previousExpression={formatExpressionForDisplay(state.previousExpression)}
+          error={state.error}
+          angleMode={state.angleMode}
+          memory={formatResultForExpression(state.memory)}
+          mode={state.mode}
+          resultAnnouncement={
+            state.justEvaluated && !state.error
+              ? `Result: ${formatExpressionForDisplay(state.expression)}`
+              : ''
+          }
+        />
+        <History
+          entries={state.history}
+          open={historyOpen}
+          onReuse={(entry) => loggedDispatch({ type: 'REUSE_HISTORY', expression: entry.expression })}
+          onClear={() => loggedDispatch({ type: 'CLEAR_HISTORY' })}
+        />
+        <Keypad
+          onDigit={(digit) => loggedDispatch({ type: 'DIGIT', digit })}
+          onDecimal={() => loggedDispatch({ type: 'DECIMAL' })}
+          onOperator={(operator) => loggedDispatch({ type: 'OPERATOR', operator })}
+          onOpenParen={() => loggedDispatch({ type: 'OPEN_PAREN' })}
+          onCloseParen={() => loggedDispatch({ type: 'CLOSE_PAREN' })}
+          onEquals={() => loggedDispatch({ type: 'EQUALS' })}
+          onClear={() => loggedDispatch({ type: 'CLEAR' })}
+          onDelete={() => loggedDispatch({ type: 'DELETE' })}
+          onToggleSign={() => loggedDispatch({ type: 'TOGGLE_SIGN' })}
+          scientific={scientific}
+          angleMode={state.angleMode}
+          onToggleAngleMode={() => loggedDispatch({ type: 'TOGGLE_ANGLE_MODE' })}
+          onPower={(square) => loggedDispatch({ type: 'POWER', square })}
+          onSquareRoot={() => loggedDispatch({ type: 'SQUARE_ROOT' })}
+          onNthRoot={() => loggedDispatch({ type: 'NTH_ROOT' })}
+          onFunction={(name) => loggedDispatch({ type: 'FUNCTION', name })}
+          onFactorial={() => loggedDispatch({ type: 'FACTORIAL' })}
+          onPercent={() => loggedDispatch({ type: 'PERCENT' })}
+          onAbs={() => loggedDispatch({ type: 'ABS' })}
+          onConstant={(symbol) => loggedDispatch({ type: 'CONSTANT', symbol })}
+          onMemoryAdd={() => loggedDispatch({ type: 'MEMORY_ADD' })}
+          onMemorySubtract={() => loggedDispatch({ type: 'MEMORY_SUBTRACT' })}
+          onMemoryRecall={() => loggedDispatch({ type: 'MEMORY_RECALL' })}
+          onMemoryClear={() => loggedDispatch({ type: 'MEMORY_CLEAR' })}
+        />
       </div>
-      <ShortcutsHelp open={showShortcuts} />
-      <Display
-        currentValue={formatExpressionForDisplay(state.expression) || '0'}
-        previousExpression={formatExpressionForDisplay(state.previousExpression)}
-        error={state.error}
-        angleMode={state.angleMode}
-        resultAnnouncement={
-          state.justEvaluated && !state.error
-            ? `Result: ${formatExpressionForDisplay(state.expression)}`
-            : ''
-        }
-      />
-      <Keypad
-        onDigit={(digit) => loggedDispatch({ type: 'DIGIT', digit })}
-        onDecimal={() => loggedDispatch({ type: 'DECIMAL' })}
-        onOperator={(operator) => loggedDispatch({ type: 'OPERATOR', operator })}
-        onOpenParen={() => loggedDispatch({ type: 'OPEN_PAREN' })}
-        onCloseParen={() => loggedDispatch({ type: 'CLOSE_PAREN' })}
-        onEquals={() => loggedDispatch({ type: 'EQUALS' })}
-        onClear={() => loggedDispatch({ type: 'CLEAR' })}
-        onDelete={() => loggedDispatch({ type: 'DELETE' })}
-        onToggleSign={() => loggedDispatch({ type: 'TOGGLE_SIGN' })}
-        scientific={mode === 'scientific'}
-        angleMode={state.angleMode}
-        onToggleAngleMode={() => loggedDispatch({ type: 'TOGGLE_ANGLE_MODE' })}
-        onPower={(square) => loggedDispatch({ type: 'POWER', square })}
-        onSquareRoot={() => loggedDispatch({ type: 'SQUARE_ROOT' })}
-        onNthRoot={() => loggedDispatch({ type: 'NTH_ROOT' })}
-        onFunction={(name) => loggedDispatch({ type: 'FUNCTION', name })}
-        onFactorial={() => loggedDispatch({ type: 'FACTORIAL' })}
-        onPercent={() => loggedDispatch({ type: 'PERCENT' })}
-        onAbs={() => loggedDispatch({ type: 'ABS' })}
-        onConstant={(symbol) => loggedDispatch({ type: 'CONSTANT', symbol })}
-        memory={formatResultForExpression(state.memory)}
-        onMemoryAdd={() => loggedDispatch({ type: 'MEMORY_ADD' })}
-        onMemorySubtract={() => loggedDispatch({ type: 'MEMORY_SUBTRACT' })}
-        onMemoryRecall={() => loggedDispatch({ type: 'MEMORY_RECALL' })}
-        onMemoryClear={() => loggedDispatch({ type: 'MEMORY_CLEAR' })}
-      />
-      <History
-        entries={state.history}
-        onReuse={(entry) => loggedDispatch({ type: 'REUSE_HISTORY', expression: entry.expression })}
-        onClear={() => loggedDispatch({ type: 'CLEAR_HISTORY' })}
-      />
-      <LogExport />
       <TelemetryExport />
     </div>
   );

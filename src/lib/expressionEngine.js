@@ -25,7 +25,36 @@ export const initialState = {
   angleMode: 'rad',
   history: [],
   memory: 0,
+  mode: 'basic',
 };
+
+// CFL-95: the displayed expression stops accepting new characters at this
+// length rather than scrolling -- Scientific's wider display genuinely has
+// room for more. Applied as a single gate at the top of the reducer for
+// every expression-growing action, rather than duplicated per-action, so a
+// press that's already at the cap is a complete no-op (matches every other
+// "rejected edit" in this file, e.g. appendOperator's no-preceding-operand
+// guard).
+function maxExpressionLength(mode) {
+  return mode === 'scientific' ? 26 : 14;
+}
+
+const GROWING_ACTION_TYPES = new Set([
+  'DIGIT',
+  'DECIMAL',
+  'OPERATOR',
+  'POWER',
+  'SQUARE_ROOT',
+  'NTH_ROOT',
+  'FUNCTION',
+  'FACTORIAL',
+  'PERCENT',
+  'ABS',
+  'CONSTANT',
+  'OPEN_PAREN',
+  'CLOSE_PAREN',
+  'MEMORY_RECALL',
+]);
 
 const OPERATOR_GLYPHS = { '+': '+', '-': '−', '*': '×', '/': '÷' };
 const GLYPH_TO_ASCII = { '−': '-', '×': '*', '÷': '/' };
@@ -238,7 +267,17 @@ function evaluateCurrentExpression(state) {
 }
 
 export function expressionReducer(state, action) {
+  if (
+    GROWING_ACTION_TYPES.has(action.type) &&
+    !state.justEvaluated &&
+    state.expression.length >= maxExpressionLength(state.mode)
+  ) {
+    return state;
+  }
+
   switch (action.type) {
+    case 'SET_MODE':
+      return { ...state, mode: action.mode };
     case 'DIGIT': {
       if (state.justEvaluated) {
         return {
@@ -400,7 +439,7 @@ export function expressionReducer(state, action) {
     case 'EQUALS':
       return evaluateCurrentExpression(state);
     case 'CLEAR':
-      return { ...initialState, history: state.history, memory: state.memory };
+      return { ...initialState, history: state.history, memory: state.memory, mode: state.mode };
     case 'MEMORY_ADD':
     case 'MEMORY_SUBTRACT': {
       const value = evaluateCurrentValue(state);
