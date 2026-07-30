@@ -18,9 +18,22 @@ types are:
 - `UNEXPECTED_EVALUATION_ERROR` — a genuinely unexpected evaluator
   exception, contained so it can never crash the calculator: the
   expression, angle mode, and the underlying error's name/message.
+- `BUTTON_PRESS` — a deliberately comedic, over-instrumented record of
+  every button press (CFL-90), styled like real distributed-tracing/APM
+  output for a calculator that obviously doesn't need it: `button` (a
+  human-readable identifier, e.g. `"7"`, `"="`, `"Mode: Scientific"`,
+  `"Shortcuts: Toggle"`), `traceId`, `spanId`, and a fabricated
+  `durationNs`. Presses that trigger a calculation (`=`) additionally
+  include a `spans` array with a fake nested waterfall:
+  `parse-expression`, `evaluate`, `format-result`, `render`, each with its
+  own `spanId` and `durationNs`. Unlike the three event types above,
+  `BUTTON_PRESS` entries are kept to a rolling 6-hour window (older
+  entries are auto-evicted) rather than growing unbounded, since a real
+  session can generate many of them.
 
 Logging never records personal or sensitive information — only
-calculator-internal data (expressions, results, error codes).
+calculator-internal data (expressions, results, error codes, and button
+identifiers).
 
 ## How the log is produced
 

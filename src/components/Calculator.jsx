@@ -6,6 +6,7 @@ import {
   formatResultForExpression,
   initialState,
 } from '../lib/expressionEngine.js';
+import { logButtonPress } from '../lib/logger.js';
 import Display from './Display.jsx';
 import History from './History.jsx';
 import Keypad from './Keypad.jsx';
@@ -35,6 +36,45 @@ const SCIENTIFIC_KEY_ACTIONS = {
   e: { type: 'CONSTANT', symbol: 'e' },
   d: { type: 'TOGGLE_ANGLE_MODE' },
 };
+
+const ACTION_BUTTON_NAMES = {
+  DECIMAL: '.',
+  OPEN_PAREN: '(',
+  CLOSE_PAREN: ')',
+  EQUALS: '=',
+  CLEAR: 'AC',
+  DELETE: '⌫',
+  TOGGLE_SIGN: '±',
+  TOGGLE_ANGLE_MODE: 'DEG/RAD',
+  SQUARE_ROOT: '√',
+  NTH_ROOT: 'ⁿ√',
+  FACTORIAL: 'x!',
+  PERCENT: '%',
+  ABS: '|x|',
+  MEMORY_ADD: 'M+',
+  MEMORY_SUBTRACT: 'M−',
+  MEMORY_RECALL: 'MR',
+  MEMORY_CLEAR: 'MC',
+  REUSE_HISTORY: 'history-reuse',
+  CLEAR_HISTORY: 'history-clear',
+};
+
+function describeAction(action) {
+  switch (action.type) {
+    case 'DIGIT':
+      return action.digit;
+    case 'OPERATOR':
+      return action.operator;
+    case 'POWER':
+      return action.square ? 'x²' : 'xʸ';
+    case 'FUNCTION':
+      return action.name;
+    case 'CONSTANT':
+      return action.symbol;
+    default:
+      return ACTION_BUTTON_NAMES[action.type] || action.type;
+  }
+}
 
 function readStoredMemory() {
   if (typeof sessionStorage === 'undefined') {
@@ -70,6 +110,11 @@ export default function Calculator() {
   const [mode, setMode] = useState('basic');
   const [showShortcuts, setShowShortcuts] = useState(false);
 
+  function loggedDispatch(action) {
+    logButtonPress(describeAction(action), { triggersCalculation: action.type === 'EQUALS' });
+    dispatch(action);
+  }
+
   useEffect(() => {
     if (typeof sessionStorage !== 'undefined') {
       sessionStorage.setItem('calcflow_angle_mode', state.angleMode);
@@ -100,48 +145,50 @@ export default function Calculator() {
 
       if (key === '?') {
         event.preventDefault();
+        logButtonPress('Shortcuts: Toggle');
         setShowShortcuts((current) => !current);
         return;
       }
 
       if (key === 'Escape' && showShortcuts) {
         event.preventDefault();
+        logButtonPress('Shortcuts: Close');
         setShowShortcuts(false);
         return;
       }
 
       if (/^[0-9]$/.test(key)) {
         event.preventDefault();
-        dispatch({ type: 'DIGIT', digit: key });
+        loggedDispatch({ type: 'DIGIT', digit: key });
       } else if (key === '.') {
         event.preventDefault();
-        dispatch({ type: 'DECIMAL' });
+        loggedDispatch({ type: 'DECIMAL' });
       } else if (OPERATOR_KEYS.has(key)) {
         event.preventDefault();
-        dispatch({ type: 'OPERATOR', operator: key });
+        loggedDispatch({ type: 'OPERATOR', operator: key });
       } else if (key === '(') {
         event.preventDefault();
-        dispatch({ type: 'OPEN_PAREN' });
+        loggedDispatch({ type: 'OPEN_PAREN' });
       } else if (key === ')') {
         event.preventDefault();
-        dispatch({ type: 'CLOSE_PAREN' });
+        loggedDispatch({ type: 'CLOSE_PAREN' });
       } else if (key === '%') {
         // Not mode-gated: the % button lives on the universal base keypad
         // (CFL-25), unlike the other Scientific-only shortcuts below.
         event.preventDefault();
-        dispatch({ type: 'PERCENT' });
+        loggedDispatch({ type: 'PERCENT' });
       } else if (key === 'Enter' || key === '=') {
         event.preventDefault();
-        dispatch({ type: 'EQUALS' });
+        loggedDispatch({ type: 'EQUALS' });
       } else if (key === 'Escape') {
         event.preventDefault();
-        dispatch({ type: 'CLEAR' });
+        loggedDispatch({ type: 'CLEAR' });
       } else if (key === 'Backspace') {
         event.preventDefault();
-        dispatch({ type: 'DELETE' });
+        loggedDispatch({ type: 'DELETE' });
       } else if (mode === 'scientific' && SCIENTIFIC_KEY_ACTIONS[key]) {
         event.preventDefault();
-        dispatch(SCIENTIFIC_KEY_ACTIONS[key]);
+        loggedDispatch(SCIENTIFIC_KEY_ACTIONS[key]);
       }
     }
 
@@ -160,7 +207,10 @@ export default function Calculator() {
               type="button"
               className="calculator-mode-button"
               aria-pressed={mode === option}
-              onClick={() => setMode(option)}
+              onClick={() => {
+                logButtonPress(`Mode: ${option === 'basic' ? 'Basic' : 'Scientific'}`);
+                setMode(option);
+              }}
             >
               {option === 'basic' ? 'Basic' : 'Scientific'}
             </button>
@@ -180,36 +230,36 @@ export default function Calculator() {
         }
       />
       <Keypad
-        onDigit={(digit) => dispatch({ type: 'DIGIT', digit })}
-        onDecimal={() => dispatch({ type: 'DECIMAL' })}
-        onOperator={(operator) => dispatch({ type: 'OPERATOR', operator })}
-        onOpenParen={() => dispatch({ type: 'OPEN_PAREN' })}
-        onCloseParen={() => dispatch({ type: 'CLOSE_PAREN' })}
-        onEquals={() => dispatch({ type: 'EQUALS' })}
-        onClear={() => dispatch({ type: 'CLEAR' })}
-        onDelete={() => dispatch({ type: 'DELETE' })}
-        onToggleSign={() => dispatch({ type: 'TOGGLE_SIGN' })}
+        onDigit={(digit) => loggedDispatch({ type: 'DIGIT', digit })}
+        onDecimal={() => loggedDispatch({ type: 'DECIMAL' })}
+        onOperator={(operator) => loggedDispatch({ type: 'OPERATOR', operator })}
+        onOpenParen={() => loggedDispatch({ type: 'OPEN_PAREN' })}
+        onCloseParen={() => loggedDispatch({ type: 'CLOSE_PAREN' })}
+        onEquals={() => loggedDispatch({ type: 'EQUALS' })}
+        onClear={() => loggedDispatch({ type: 'CLEAR' })}
+        onDelete={() => loggedDispatch({ type: 'DELETE' })}
+        onToggleSign={() => loggedDispatch({ type: 'TOGGLE_SIGN' })}
         scientific={mode === 'scientific'}
         angleMode={state.angleMode}
-        onToggleAngleMode={() => dispatch({ type: 'TOGGLE_ANGLE_MODE' })}
-        onPower={(square) => dispatch({ type: 'POWER', square })}
-        onSquareRoot={() => dispatch({ type: 'SQUARE_ROOT' })}
-        onNthRoot={() => dispatch({ type: 'NTH_ROOT' })}
-        onFunction={(name) => dispatch({ type: 'FUNCTION', name })}
-        onFactorial={() => dispatch({ type: 'FACTORIAL' })}
-        onPercent={() => dispatch({ type: 'PERCENT' })}
-        onAbs={() => dispatch({ type: 'ABS' })}
-        onConstant={(symbol) => dispatch({ type: 'CONSTANT', symbol })}
+        onToggleAngleMode={() => loggedDispatch({ type: 'TOGGLE_ANGLE_MODE' })}
+        onPower={(square) => loggedDispatch({ type: 'POWER', square })}
+        onSquareRoot={() => loggedDispatch({ type: 'SQUARE_ROOT' })}
+        onNthRoot={() => loggedDispatch({ type: 'NTH_ROOT' })}
+        onFunction={(name) => loggedDispatch({ type: 'FUNCTION', name })}
+        onFactorial={() => loggedDispatch({ type: 'FACTORIAL' })}
+        onPercent={() => loggedDispatch({ type: 'PERCENT' })}
+        onAbs={() => loggedDispatch({ type: 'ABS' })}
+        onConstant={(symbol) => loggedDispatch({ type: 'CONSTANT', symbol })}
         memory={formatResultForExpression(state.memory)}
-        onMemoryAdd={() => dispatch({ type: 'MEMORY_ADD' })}
-        onMemorySubtract={() => dispatch({ type: 'MEMORY_SUBTRACT' })}
-        onMemoryRecall={() => dispatch({ type: 'MEMORY_RECALL' })}
-        onMemoryClear={() => dispatch({ type: 'MEMORY_CLEAR' })}
+        onMemoryAdd={() => loggedDispatch({ type: 'MEMORY_ADD' })}
+        onMemorySubtract={() => loggedDispatch({ type: 'MEMORY_SUBTRACT' })}
+        onMemoryRecall={() => loggedDispatch({ type: 'MEMORY_RECALL' })}
+        onMemoryClear={() => loggedDispatch({ type: 'MEMORY_CLEAR' })}
       />
       <History
         entries={state.history}
-        onReuse={(entry) => dispatch({ type: 'REUSE_HISTORY', expression: entry.expression })}
-        onClear={() => dispatch({ type: 'CLEAR_HISTORY' })}
+        onReuse={(entry) => loggedDispatch({ type: 'REUSE_HISTORY', expression: entry.expression })}
+        onClear={() => loggedDispatch({ type: 'CLEAR_HISTORY' })}
       />
       <LogExport />
     </div>
