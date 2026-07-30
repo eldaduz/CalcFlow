@@ -7,6 +7,7 @@ import {
   initialState,
 } from '../lib/expressionEngine.js';
 import { logButtonPress } from '../lib/logger.js';
+import CookieBanner from './CookieBanner.jsx';
 import Display from './Display.jsx';
 import History from './History.jsx';
 import Keypad from './Keypad.jsx';
@@ -198,6 +199,7 @@ export default function Calculator() {
 
   return (
     <div className="calculator">
+      <CookieBanner />
       <div className="calculator-header">
         <h1>CalcFlow</h1>
         <div className="calculator-mode-toggle" aria-label="Calculator mode">

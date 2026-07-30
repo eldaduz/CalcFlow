@@ -409,3 +409,52 @@ body {
 /* CFL-72: on wide viewports the calculator is a small, permanently
    constrained surface (design.md "Desktop keeps one constrained calculator
    surface"); nothing further changes above the existing 400px cap. */
+
+/* CFL-93/94: second scoped fixed-position exception (design.md), mirroring
+   the CFL-24/70 shortcuts-help panel's pattern. */
+.calculator-cookie-banner {
+  position: fixed;
+  left: var(--space-16);
+  right: var(--space-16);
+  bottom: var(--space-16);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  background: var(--color-surface);
+  border: 1px solid var(--color-text-secondary);
+  border-radius: var(--space-8);
+  padding: var(--space-12);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.calculator-cookie-banner-text {
+  flex: 1;
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.calculator-cookie-banner-button {
+  min-height: var(--control-min-height);
+  border: 1px solid var(--color-text-secondary);
+  border-radius: var(--space-4);
+  background: var(--color-action-button);
+  color: var(--color-text-primary);
+  font: inherit;
+  cursor: pointer;
+  padding: 0 var(--space-16);
+  white-space: nowrap;
+}
+
+.calculator-cookie-banner-button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (max-width: 420px) {
+  .calculator-cookie-banner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
