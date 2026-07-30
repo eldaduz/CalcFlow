@@ -220,6 +220,15 @@ Resolved:
   new UI library or backdrop/dimming layer. This exception does not extend
   to any other future panel; a new floating element still needs its own
   explicit joint approval.
+- Second scoped exception to the "no fixed-position layout" rule (approved
+  by both Gavi and Eldad, CFL-93/CFL-94 only): the parody cookie-consent
+  banner is a floating, fixed-position element, shown once per session.
+  It has a single "Accept" control and no other option — since there is
+  nothing to actually consent to, accepting gates nothing and sets no
+  state elsewhere in the app. Uses only existing color/spacing tokens, no
+  new UI library or backdrop/dimming layer. This exception is scoped to
+  this one banner, same as the CFL-24/CFL-70 shortcuts panel above; it
+  does not extend to any other future panel.
 
 Still open and not to be guessed:
 
