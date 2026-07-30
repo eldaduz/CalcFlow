@@ -14,22 +14,23 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 ## Last Updated
 
-- Date: 2026-07-30
+- Date: 2026-07-31
 - Updated by: Gavi / Claude
 - Human owner: Gavi
 - AI used: Claude
+- **Note on this session's own process gap:** this file was not updated at the PR-opened milestone for CFL-90/91/93/94 until asked directly (see the entry below), and this update itself only lands now alongside CFL-95's PR — same lesson as before, restated because it recurred.
 
 ## Current Release
 
-Two tracks are in flight in parallel, one per owner:
-
-- **Gavi — v0.5.0 (History and Memory): shipped, Done, tagged and released** (GitHub tag/release `v0.5.0`). v0.6.0 — Complete User Experience is now in progress: CFL-24 (Keyboard Support: CFL-69/70) and **CFL-25 (Responsive Interface: CFL-71/72) are both Done**, merged ([PR #41](https://github.com/eldaduz/CalcFlow/pull/41), [PR #46](https://github.com/eldaduz/CalcFlow/pull/46)), deployed, and smoke-tested live on https://calc-flow-fawn.vercel.app/. **CFL-26 (Accessibility) is merged** ([PR #48](https://github.com/eldaduz/CalcFlow/pull/48), reviewed and approved by Eldad), Jira moved to QA pending a production smoke-test confirmation. **CFL-30/CFL-28/CFL-33 (the last three Gavi Features toward v1.0.0) are merged**, bundled into one PR ([PR #50](https://github.com/eldaduz/CalcFlow/pull/50)) per the explicit combined-PR exception recorded below — see that entry for detail. Docs PRs [#43](https://github.com/eldaduz/CalcFlow/pull/43)/[#44](https://github.com/eldaduz/CalcFlow/pull/44)/[#49](https://github.com/eldaduz/CalcFlow/pull/49)/[#51](https://github.com/eldaduz/CalcFlow/pull/51) are all merged.
-- **Eldad — v1.0.0 (Stable Final Release): in progress.** CFL-31 — Release Management tooling merged via PR #34, Ready for Deployment (the actual tag/release execution is his remaining step, and per the release sequence comes after Gavi's remaining Features finish). **CFL-32 (Dependency Governance: CFL-85/86) and CFL-89 (Angle mode preservation bug) are both confirmed Done in Jira** as of 2026-07-30 (verified live) — the previously-flagged Jira/GitHub mismatch on both has since been corrected, presumably by Eldad directly.
+- **Gavi — v0.6.0 (Complete User Experience) is fully Done**: CFL-24, CFL-25, CFL-26 (CFL-73/74) all Done, merged, deployed, smoke-tested. Of the original three v1.0.0 Features: **CFL-30 (Vercel Deployment) is Done.** **CFL-33 (License Reporting) and CFL-88 are Done, verified live** — Eldad's PR #50 review counted as the required second-teammate license sign-off. **CFL-28 (Log Export) is still Code Review**: it's missing its actual committed `logs/calcflow-submission-log.json` — a ready copy of that file exists in open PR #60, not yet merged (see "Open threads" below).
+- **Gavi — Novelty Telemetry (Epic CFL-92, plus CFL-90/91 under CFL-6/CFL-28):** CFL-90, CFL-91, CFL-93, CFL-94 are all code-complete, Code Review, three PRs open — [PR #56](https://github.com/eldaduz/CalcFlow/pull/56) (CFL-90), [PR #57](https://github.com/eldaduz/CalcFlow/pull/57, stacked on #56) (CFL-91), [PR #58](https://github.com/eldaduz/CalcFlow/pull/58) (CFL-93/94).
+- **Gavi — CFL-95 (Calculator Design Tweaks):** code-complete, Code Review, [PR #63](https://github.com/eldaduz/CalcFlow/pull/63). Reviewed as an interactive Artifact mockup across 11+ rounds before any code changed; **pending Eldad's joint sign-off per design.md's Design Control rule** (same status as CFL-25's still-open base-keypad decision) since it revises the Scientific-grid position and introduces new interaction patterns. See its own entry below.
+- **Eldad — v1.0.0 (Stable Final Release): in progress.** CFL-31 (Release Management tooling merged via PR #34) is Ready for Deployment — tag/release execution is his remaining step, comes after everything above lands. CFL-32 (Dependency Governance) and CFL-89 (Angle mode preservation bug) are both **Done**, verified live.
 
 ## Current Approved Sequence
 
-1. Gavi: CFL-26 merged ([PR #48](https://github.com/eldaduz/CalcFlow/pull/48), Jira: QA); CFL-30/CFL-28/CFL-33 merged ([PR #50](https://github.com/eldaduz/CalcFlow/pull/50), Jira: CFL-30/81/82 in QA, CFL-87 Done) — CFL-28's `logs/calcflow-submission-log.json` is now exported and committed (this branch); it and CFL-33/CFL-88 (Code Review, second-teammate license review not yet confirmed) still need Eldad's (or another second reviewer's) human log/license review before Jira Done, per their own acceptance criteria
-2. Eldad: CFL-31 (execute release, after Gavi's Features finish and CFL-28/CFL-33 close out)
+1. Gavi: CFL-28's `logs/calcflow-submission-log.json` is now exported and committed ([PR #60](https://github.com/eldaduz/CalcFlow/pull/60), merged); awaiting Eldad's review on PR #63 (CFL-95 design)
+2. Eldad: CFL-31 (execute release) — comes after everything above lands, per the release sequence
 
 The Foundation sequence below is historical context, not current active work.
 
@@ -343,12 +344,23 @@ Update this file when:
 - PR: [PR #45](https://github.com/eldaduz/CalcFlow/pull/45), approved by Gavi against the final commit, **merged by Eldad** on 2026-07-29.
 - Next safe action: none.
 
+## CFL-95 — Calculator Design Tweaks (pending Eldad's joint sign-off)
+
+- Jira: CFL-95, Code Review. Six related layout changes reviewed as an interactive Artifact mockup with Gavi across 11+ rounds (desktop and mobile) before any code changed: https://claude.ai/code/artifact/9c378fcb-4cbe-47e6-a59c-1bf49081210d
+- **Not yet a completed two-person approval** — recorded in design.md as pending Eldad's joint sign-off, same status as CFL-25's still-open base-keypad decision, since this revises the Scientific-grid position and introduces new interaction patterns (slider toggle, icon-only History/Export, non-reflowing side panel).
+- Scope: memory indicator moved to display top-left (mirrors angle-mode, now bottom-left, always visible both modes); error message moved into the display's top-right slot instead of a separate row; Scientific grid now sits beside the base keypad (calculator widens 400px→616px, anchored via a reserved-width frame so the header never moves); digit cap 14 (Basic)/26 (Scientific); mode toggle is a slider built from the same two real `<button aria-pressed>` elements as before; History is a header icon opening a non-reflowing overlay (desktop) or inline pushed-down region (mobile, new 900px breakpoint); Export Logs is a header icon with floating status feedback. Real Noun Project icon artwork (History/Export by Alzam, CC BY 3.0) from Gavi's PR #62, relocated to `src/assets/icons/`.
+- Two real bugs found and fixed during implementation (mockup didn't catch either, since it JS-simulated the device breakpoint rather than using real CSS media queries): (1) the reviewed 22-char Scientific digit cap collided with a pre-existing test needing `tan(1.5707963267948966)` at full float precision (23 chars) to trip the domain-error threshold — raised to 26 rather than break real prior functionality; (2) mobile Scientific-grid buttons only filled ~50% width (`align-items: flex-start` flips from governing the vertical axis to the horizontal axis once `flex-direction: column-reverse` kicks in on mobile — needed an explicit `stretch` override).
+- Verification: clean pipeline (lint, format, 266 tests — rewrote History/Display/LogExport coverage for the new contracts —, 97.66% statement coverage, production build); real-browser Playwright pass at desktop (1200px) and mobile (375px), 17/17 checks, including a measured (not just visual) confirmation that the header's on-screen position is byte-identical before/after toggling Scientific or opening History.
+- PR: [PR #63](https://github.com/eldaduz/CalcFlow/pull/63), Eldad requested.
+- Structural risk: branched off `main`, not stacked on CFL-90/91/93/94's still-open PRs (#56/#57/#58), even though both touch `Calculator.jsx`/`calculator.css`. Expect a real merge conflict whenever either side lands first.
+- Next safe action: Eldad's review + joint design sign-off; watch for the conflict with #56/#57/#58 whichever merges first.
+
 ## Latest Handoff
 
-- Current work: all of Gavi's remaining v0.6.0/v1.0.0 Features are merged — CFL-26 (Accessibility, PR #48), CFL-30/CFL-28/CFL-33 (Vercel Deployment / Log Export / License Reporting, combined PR #50). Nothing left to build on Gavi's side.
-- Jira, corrected to match: CFL-26/CFL-73/CFL-74 and CFL-30/CFL-81/CFL-82 moved to QA (merged and auto-deployed, pending a production smoke test); CFL-87 moved to Done (self-contained, no deployment dependency). CFL-28's submission log is now exported and committed (this branch) — still needs Eldad's second-teammate review before Jira Done. CFL-33 and CFL-88 left untouched here; see companion PR for that status.
-- Current risks: **Two competing docs PRs were both open against this exact section at once** — [PR #52](https://github.com/eldaduz/CalcFlow/pull/52) (Eldad's Antigravity/Gemini session) and [PR #53](https://github.com/eldaduz/CalcFlow/pull/53, this correction). #52 correctly caught that CFL-32/CFL-89 have since moved to Done, but incorrectly claimed the CFL-28/CFL-33/CFL-88 second-teammate audits were "completed and signed off" — live Jira shows CFL-28/33/88 still in Code Review, unresolved. Neither PR was accurate in full; this correction reconciles both against live Jira rather than merging either wholesale. Recommend consolidating to one of the two (closing the other) once Eldad is available, rather than merging both.
-- Next safe action: production smoke test for CFL-26/CFL-30/CFL-28/CFL-33 to close out QA; Eldad's call on CFL-28's submission-log review and the CFL-33/CFL-88 second-review question; reconcile/close PR #52 vs #53.
+- Current work: v0.6.0 and CFL-30 Done. CFL-33/CFL-88 confirmed Done live. CFL-28's submission log is now merged (PR #60); still needs a second-teammate review before Jira Done. Novelty Telemetry (CFL-90/91/93/94) and CFL-95 are both code-complete, Code Review, PR #63 still open, awaiting Eldad.
+- Current risk: PR #63 (CFL-95) will conflict with whichever of #56/#57/#58 lands first, since both touch `Calculator.jsx`/`calculator.css`.
+- Also flagged, not fixed: a StrictMode-only dev-mode duplicate-logging quirk found while QA'ing CFL-91 (`CALCULATION_ERROR` logs twice per `=` press in `npm run dev` only, confirmed absent in production builds) — Eldad's CFL-16/27 territory, no Bug filed, zero production impact.
+- Next safe action: await Eldad's review on PR #63; second-teammate review of CFL-28's submission log.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
