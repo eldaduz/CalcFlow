@@ -9,6 +9,7 @@ import {
 import Display from './Display.jsx';
 import History from './History.jsx';
 import Keypad from './Keypad.jsx';
+import LogExport from './LogExport.jsx';
 import ShortcutsHelp from './ShortcutsHelp.jsx';
 
 const OPERATOR_KEYS = new Set(['+', '-', '*', '/']);
@@ -210,6 +211,7 @@ export default function Calculator() {
         onReuse={(entry) => dispatch({ type: 'REUSE_HISTORY', expression: entry.expression })}
         onClear={() => dispatch({ type: 'CLEAR_HISTORY' })}
       />
+      <LogExport />
     </div>
   );
 }

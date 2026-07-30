@@ -459,6 +459,35 @@ test('TOGGLE_ANGLE_MODE mid-edit does not re-evaluate', () => {
   expect(state.angleMode).toBe('deg');
 });
 
+test.each([
+  ['operator', () => operator('+')],
+  ['power', power],
+  ['nth root', nthRoot],
+  ['factorial', factorialKey],
+  ['percent', percentKey],
+  ['digit', () => digit('5')],
+  ['decimal', decimal],
+  ['square root', squareRoot],
+  ['function (log)', () => func('log')],
+  ['abs', absKey],
+  ['constant (π)', () => constant('π')],
+  ['open paren', openParen],
+  ['memory recall', () => ({ type: 'MEMORY_RECALL' })],
+])('preserves angle mode after continuing with %s', (_, actionFactory) => {
+  const evaluated = dispatchAll([
+    { type: 'TOGGLE_ANGLE_MODE' },
+    func('sin'),
+    digit('9'),
+    digit('0'),
+    closeParen(),
+    equals(),
+  ]);
+
+  const next = expressionReducer(evaluated, actionFactory());
+
+  expect(next.angleMode).toBe('deg');
+});
+
 // --- calculation history (CFL-65 / CFL-66) ---
 
 test('initialState includes an empty history', () => {
