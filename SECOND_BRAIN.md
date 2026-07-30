@@ -23,12 +23,12 @@ The AI must verify all live information against Jira and GitHub before acting.
 
 Two tracks are in flight in parallel, one per owner:
 
-- **Gavi — v0.5.0 (History and Memory): shipped, Done, tagged and released** (GitHub tag/release `v0.5.0`). v0.6.0 — Complete User Experience is now in progress: CFL-24 (Keyboard Support: CFL-69/70) and **CFL-25 (Responsive Interface: CFL-71/72) are both Done**, merged ([PR #41](https://github.com/eldaduz/CalcFlow/pull/41), [PR #46](https://github.com/eldaduz/CalcFlow/pull/46)), deployed, and smoke-tested live on https://calc-flow-fawn.vercel.app/. **CFL-26 (Accessibility)** is reviewed and approved by Eldad, merging now ([PR #48](https://github.com/eldaduz/CalcFlow/pull/48)). **CFL-30/CFL-28/CFL-33 (the last three Gavi Features toward v1.0.0) are merged**, bundled into one PR ([PR #50](https://github.com/eldaduz/CalcFlow/pull/50)) per the explicit combined-PR exception recorded below — see that entry for detail. Docs PRs [#43](https://github.com/eldaduz/CalcFlow/pull/43)/[#44](https://github.com/eldaduz/CalcFlow/pull/44)/[#49](https://github.com/eldaduz/CalcFlow/pull/49)/[#51](https://github.com/eldaduz/CalcFlow/pull/51) are all merged.
+- **Gavi — v0.5.0 (History and Memory): shipped, Done, tagged and released** (GitHub tag/release `v0.5.0`). v0.6.0 — Complete User Experience is now in progress: CFL-24 (Keyboard Support: CFL-69/70) and **CFL-25 (Responsive Interface: CFL-71/72) are both Done**, merged ([PR #41](https://github.com/eldaduz/CalcFlow/pull/41), [PR #46](https://github.com/eldaduz/CalcFlow/pull/46)), deployed, and smoke-tested live on https://calc-flow-fawn.vercel.app/. **CFL-26 (Accessibility) is merged** ([PR #48](https://github.com/eldaduz/CalcFlow/pull/48), reviewed and approved by Eldad), Jira moved to QA pending a production smoke-test confirmation. **CFL-30/CFL-28/CFL-33 (the last three Gavi Features toward v1.0.0) are merged**, bundled into one PR ([PR #50](https://github.com/eldaduz/CalcFlow/pull/50)) per the explicit combined-PR exception recorded below — see that entry for detail. Docs PRs [#43](https://github.com/eldaduz/CalcFlow/pull/43)/[#44](https://github.com/eldaduz/CalcFlow/pull/44)/[#49](https://github.com/eldaduz/CalcFlow/pull/49)/[#51](https://github.com/eldaduz/CalcFlow/pull/51) are all merged.
 - **Eldad — v1.0.0 (Stable Final Release): in progress.** CFL-31 — Release Management tooling merged via PR #34, Ready for Deployment (the actual tag/release execution is his remaining step, and per the release sequence comes after Gavi's remaining Features finish). CFL-32 is merged in GitHub but Jira still shows Code Review — live mismatch, flagged not corrected (his own item). [PR #45](https://github.com/eldaduz/CalcFlow/pull/45) (CFL-89) is **merged**; Jira still shows Code Review, same kind of mismatch, also his own item to correct.
 
 ## Current Approved Sequence
 
-1. Gavi: CFL-26 (approved, merging — [PR #48](https://github.com/eldaduz/CalcFlow/pull/48)); CFL-30/CFL-28/CFL-33 merged ([PR #50](https://github.com/eldaduz/CalcFlow/pull/50)) — CFL-28/CFL-33 still need Eldad's (or another second reviewer's) human log/license review before Jira Done, per their own acceptance criteria
+1. Gavi: CFL-26 merged ([PR #48](https://github.com/eldaduz/CalcFlow/pull/48), Jira: QA); CFL-30/CFL-28/CFL-33 merged ([PR #50](https://github.com/eldaduz/CalcFlow/pull/50), Jira: CFL-30/81/82 in QA, CFL-87 Done) — CFL-28/CFL-33 still need Eldad's (or another second reviewer's) human log/license review before Jira Done, per their own acceptance criteria
 2. Eldad: CFL-31 (execute release, after Gavi's Features finish) / CFL-32 / CFL-89 (Jira corrections; verify live — both stale relative to GitHub)
 
 The Foundation sequence below is historical context, not current active work.
@@ -213,8 +213,9 @@ The Foundation sequence below is historical context, not current active work.
 - **Second contrast finding, reported rather than fixed:** `.calculator-history-expression` uses `--color-text-secondary` against `--color-action-button` (#ececef) — **4.495:1, marginally under the 4.5:1 AA minimum.** Unlike the indicator bug above, both tokens here are used exactly as intended; the tokens themselves are just borderline insufficient. Since `design.md` marks the palette as an Open Design Decision requiring Gavi + Eldad joint sign-off, this was flagged for a decision rather than silently patched — Eldad's PR #48 review acknowledged it and deferred it to a future joint palette review, not blocking this merge.
 - Focus order / keyboard reach (CFL-73): full keyboard-only tab walkthrough in Basic and Scientific mode, plus with the Shortcuts-help panel open — confirmed the panel does not trap focus (real calculator controls underneath remain tab-reachable while it's open, consistent with CFL-70's original claim), and a full keyboard-only calculation (`2`, `+`, `3`, `Enter`) works with no mouse. No missing accessible names found — existing controls already have adequate text content or `aria-label`s from prior Features.
 - Verification (real pipeline): clean `npm ci`; lint, format:check clean; 244 tests passing (3 new for the result-announcement behavior); 96.8% statement coverage (70% threshold); production build and `git diff --check` clean. axe-core WCAG2A/AA scan (Basic mode, Scientific mode, Scientific + Shortcuts panel open, History expanded) clean after the indicator-contrast fix, aside from the reported (not fixed) history-text finding above.
-- PR: [PR #48](https://github.com/eldaduz/CalcFlow/pull/48), reviewed and approved by Eldad (deferred the contrast finding above rather than blocking on it), merging to `main`.
-- Next required action: none from Gavi's side once merged. The deferred contrast finding awaits a future joint `design.md` palette review with Eldad.
+- PR: [PR #48](https://github.com/eldaduz/CalcFlow/pull/48), reviewed and approved by Eldad (deferred the contrast finding above rather than blocking on it), merged to `main`.
+- Jira: CFL-26, CFL-73, and CFL-74 moved to QA (code merged and auto-deployed via Vercel; not yet Done since no production smoke test has been logged for this merge).
+- Next required action: none from Gavi's side beyond a production smoke test to close out QA. The deferred contrast finding awaits a future joint `design.md` palette review with Eldad.
 
 ### Gavi — CFL-30 / CFL-28 / CFL-33 (2026-07-29)
 
@@ -344,11 +345,10 @@ Update this file when:
 
 ## Latest Handoff
 
-- Current work: CFL-89 merged; CFL-26 (Accessibility) is Gavi's active Feature, in Code Review ([PR #48](https://github.com/eldaduz/CalcFlow/pull/48)).
-- Scope: CFL-89's root-cause fix preserves `angleMode` across all 13 evaluated-expression continuation paths, now on `main`.
-- Verification: CFL-89 — clean install, lint, format, 254 tests, coverage, build, diff check, and focused browser QA passed before merge.
-- Current risks: CFL-89's Jira status is stale (Code Review vs. merged code) — Eldad's to correct. CFL-26 (PR #48) and PR #45's Jira correction both await Eldad, whose availability may be limited for a while.
-- Next safe action: await Eldad on PR #48 (CFL-26) and the CFL-89/CFL-32 Jira corrections; no other Gavi-side action pending.
+- Current work: all of Gavi's remaining v0.6.0/v1.0.0 Features are merged — CFL-26 (Accessibility, PR #48), CFL-30/CFL-28/CFL-33 (Vercel Deployment / Log Export / License Reporting, combined PR #50). Nothing left to build on Gavi's side.
+- Jira, corrected to match: CFL-26/CFL-73/CFL-74 and CFL-30/CFL-81/CFL-82 moved to QA (merged and auto-deployed, pending a production smoke test); CFL-87 moved to Done (self-contained, no deployment dependency). CFL-28, CFL-33, and CFL-88 left untouched — CFL-28 is missing the actual `logs/calcflow-submission-log.json` its AC requires, and CFL-33/CFL-88 hinge on whether Eldad's PR #50 review already counts as the required second-teammate license review (his call, not assumed here).
+- Current risks: CFL-89's and CFL-32's Jira statuses are still stale (Code Review vs. merged code) — Eldad's own items, not corrected here per the ownership boundary.
+- Next safe action: production smoke test for CFL-26/CFL-30/CFL-28/CFL-33 to close out QA; Eldad's call on CFL-28's submission-log review and the CFL-33/CFL-88 second-review question; Eldad's own CFL-32/CFL-89 Jira corrections.
 
 ## Overnight Session (2026-07-26, Cowork/Claude, Gavi offline) — CFL-12/13/14 run
 
