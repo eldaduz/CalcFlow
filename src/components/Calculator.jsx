@@ -9,12 +9,11 @@ import {
 import { logButtonPress } from '../lib/logger.js';
 import CookieBanner from './CookieBanner.jsx';
 import Display from './Display.jsx';
+import ExportMenu from './ExportMenu.jsx';
 import History from './History.jsx';
 import HistoryIcon from './icons/HistoryIcon.jsx';
 import Keypad from './Keypad.jsx';
-import LogExport from './LogExport.jsx';
 import ShortcutsHelp from './ShortcutsHelp.jsx';
-import TelemetryExport from './TelemetryExport.jsx';
 
 const OPERATOR_KEYS = new Set(['+', '-', '*', '/']);
 
@@ -217,7 +216,7 @@ export default function Calculator() {
             >
               <HistoryIcon />
             </button>
-            <LogExport />
+            <ExportMenu />
             <div
               className={
                 scientific
@@ -293,7 +292,6 @@ export default function Calculator() {
           onMemoryClear={() => loggedDispatch({ type: 'MEMORY_CLEAR' })}
         />
       </div>
-      <TelemetryExport />
     </div>
   );
 }
