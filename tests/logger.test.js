@@ -1,5 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { logEvent, logButtonPress, getLogs, clearLogs } from '../src/lib/logger.js';
+import {
+  logEvent,
+  logButtonPress,
+  getLogs,
+  clearLogs,
+  getButtonPressLogs,
+  getTelemetryMetrics,
+} from '../src/lib/logger.js';
 
 describe('Logger', () => {
   beforeEach(() => {
@@ -128,5 +135,67 @@ describe('Button press logging', () => {
 
     Date.prototype.toISOString = originalToISOString;
     consoleSpy.mockRestore();
+  });
+});
+
+describe('Telemetry metrics', () => {
+  beforeEach(() => {
+    clearLogs();
+  });
+
+  it('reports empty-state metrics when nothing has been logged', () => {
+    const metrics = getTelemetryMetrics();
+    expect(metrics.totalButtonPresses).toBe(0);
+    expect(metrics.mostPressedButton).toBeNull();
+    expect(metrics.mostCommonError).toBeNull();
+    expect(metrics.longestStreakWithoutClear).toBe(0);
+    expect(metrics.neglectedButtons.length).toBeGreaterThan(0);
+  });
+
+  it('identifies the most-pressed button', () => {
+    logButtonPress('7');
+    logButtonPress('7');
+    logButtonPress('+');
+
+    const metrics = getTelemetryMetrics();
+    expect(metrics.mostPressedButton).toEqual({ button: '7', count: 2 });
+    expect(metrics.totalButtonPresses).toBe(3);
+  });
+
+  it('identifies the most common calculation error, independent of button presses', () => {
+    logEvent('CALCULATION_ERROR', { expression: '5/0', errorCode: 'DIVIDE_BY_ZERO' });
+    logEvent('CALCULATION_ERROR', { expression: '3/0', errorCode: 'DIVIDE_BY_ZERO' });
+    logEvent('CALCULATION_ERROR', { expression: 'log(-1)', errorCode: 'LOG_DOMAIN_ERROR' });
+
+    const metrics = getTelemetryMetrics();
+    expect(metrics.mostCommonError).toEqual({ errorCode: 'DIVIDE_BY_ZERO', count: 2 });
+  });
+
+  it('reports a neglected button that was never pressed', () => {
+    logButtonPress('7');
+    const metrics = getTelemetryMetrics();
+    expect(metrics.neglectedButtons).toContain('MC');
+    expect(metrics.neglectedButtons).not.toContain('7');
+  });
+
+  it('computes the longest streak of presses without AC', () => {
+    logButtonPress('1');
+    logButtonPress('+');
+    logButtonPress('2');
+    logButtonPress('AC');
+    logButtonPress('3');
+
+    const metrics = getTelemetryMetrics();
+    expect(metrics.longestStreakWithoutClear).toBe(3);
+  });
+
+  it('getButtonPressLogs returns only BUTTON_PRESS entries', () => {
+    logEvent('CALCULATION_SUCCESS', { expression: '2+2', result: '4' });
+    logButtonPress('2');
+    logButtonPress('=', { triggersCalculation: true });
+
+    const buttonPresses = getButtonPressLogs();
+    expect(buttonPresses).toHaveLength(2);
+    expect(buttonPresses.every((entry) => entry.type === 'BUTTON_PRESS')).toBe(true);
   });
 });

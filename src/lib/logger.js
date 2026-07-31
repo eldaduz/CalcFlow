@@ -107,3 +107,117 @@ export function logButtonPress(button, { triggersCalculation = false } = {}) {
     console.warn('Logger failure:', error);
   }
 }
+
+// Every real button the calculator can render, used to compute the
+// "neglected button" metric below. Kept close to logButtonPress since it's
+// the identifier scheme those log entries actually use.
+export const KNOWN_BUTTONS = [
+  '0',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '.',
+  '+',
+  '-',
+  '*',
+  '/',
+  '(',
+  ')',
+  '=',
+  'AC',
+  '⌫',
+  '±',
+  'DEG/RAD',
+  '√',
+  'ⁿ√',
+  'x!',
+  '%',
+  '|x|',
+  'x²',
+  'xʸ',
+  'sin',
+  'cos',
+  'tan',
+  'log',
+  'ln',
+  'π',
+  'e',
+  'M+',
+  'M−',
+  'MR',
+  'MC',
+  'history-reuse',
+  'history-clear',
+  'Mode: Basic',
+  'Mode: Scientific',
+  'Shortcuts: Toggle',
+  'Shortcuts: Close',
+];
+
+/**
+ * Retrieves only the button-press/trace entries currently in the rolling
+ * 6-hour window -- the raw data included in a Telemetry export.
+ */
+export function getButtonPressLogs() {
+  return logs.filter((event) => event.type === 'BUTTON_PRESS');
+}
+
+function topEntry(counts) {
+  const entries = Object.entries(counts);
+  if (entries.length === 0) {
+    return null;
+  }
+  return entries.sort((a, b) => b[1] - a[1])[0];
+}
+
+/**
+ * Computes deliberately over-engineered "observability" metrics from the
+ * current logs: most-pressed button, most common calculation error, a
+ * neglected button, and two vanity stats. Never touches or depends on
+ * logs/calcflow-submission-log.json -- purely derived from the in-memory
+ * store at call time.
+ */
+export function getTelemetryMetrics() {
+  const buttonPresses = getButtonPressLogs();
+  const errorEvents = logs.filter((event) => event.type === 'CALCULATION_ERROR');
+
+  const pressCounts = {};
+  buttonPresses.forEach((event) => {
+    pressCounts[event.button] = (pressCounts[event.button] || 0) + 1;
+  });
+  const topButton = topEntry(pressCounts);
+
+  const errorCounts = {};
+  errorEvents.forEach((event) => {
+    errorCounts[event.errorCode] = (errorCounts[event.errorCode] || 0) + 1;
+  });
+  const topError = topEntry(errorCounts);
+
+  const pressedButtons = new Set(buttonPresses.map((event) => event.button));
+  const neglectedButtons = KNOWN_BUTTONS.filter((button) => !pressedButtons.has(button));
+
+  let longestStreakWithoutClear = 0;
+  let currentStreak = 0;
+  buttonPresses.forEach((event) => {
+    if (event.button === 'AC') {
+      currentStreak = 0;
+    } else {
+      currentStreak += 1;
+      longestStreakWithoutClear = Math.max(longestStreakWithoutClear, currentStreak);
+    }
+  });
+
+  return {
+    totalButtonPresses: buttonPresses.length,
+    mostPressedButton: topButton ? { button: topButton[0], count: topButton[1] } : null,
+    mostCommonError: topError ? { errorCode: topError[0], count: topError[1] } : null,
+    neglectedButtons,
+    longestStreakWithoutClear,
+  };
+}
