@@ -4,6 +4,7 @@ export default function Display({
   error,
   angleMode,
   memory,
+  mode,
   resultAnnouncement,
 }) {
   const topRightText = error ? error.message : previousExpression;
@@ -12,7 +13,9 @@ export default function Display({
     <div>
       <div className="calculator-display">
         <div className="calculator-display-row calculator-display-row--top">
-          <span className="calculator-memory-indicator">M: {memory}</span>
+          {mode === 'scientific' && (
+            <span className="calculator-memory-indicator">M: {memory}</span>
+          )}
           <span
             className={
               error ? 'calculator-top-right calculator-top-right--error' : 'calculator-top-right'

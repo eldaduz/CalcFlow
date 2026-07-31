@@ -264,6 +264,7 @@ body {
   font-weight: 400;
   color: rgba(255, 255, 255, 0.7);
   min-height: 1.2em;
+  margin-left: auto;
   text-align: right;
   white-space: nowrap;
   overflow: hidden;
@@ -408,12 +409,18 @@ body {
   .calculator-history {
     position: absolute;
     top: 0;
+    bottom: 0;
     right: calc(100% + var(--space-16));
     width: 220px;
     background: var(--color-surface);
     border-radius: var(--space-12);
     padding: var(--space-16);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.16);
+  }
+
+  .calculator-history .calculator-history-list {
+    flex: 1;
+    max-height: none;
   }
 }
 
