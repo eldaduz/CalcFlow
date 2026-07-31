@@ -14,9 +14,11 @@ export default function History({ entries, open, onReuse, onClear }) {
     <div className="calculator-history">
       <div className="calculator-history-header">
         <h2 className="calculator-history-title">History</h2>
-        <button type="button" className="calculator-history-clear" onClick={onClear}>
-          Clear
-        </button>
+        {entries.length > 0 && (
+          <button type="button" className="calculator-history-clear" onClick={onClear}>
+            Clear
+          </button>
+        )}
       </div>
       <ul className="calculator-history-list">
         {entries.map((entry, index) => (

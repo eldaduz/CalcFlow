@@ -20,8 +20,8 @@ export default function Display({
             className={
               error ? 'calculator-top-right calculator-top-right--error' : 'calculator-top-right'
             }
-            role="alert"
-            aria-live="assertive"
+            role={error ? 'alert' : undefined}
+            aria-live={error ? 'assertive' : undefined}
           >
             {topRightText}
           </span>

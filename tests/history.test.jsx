@@ -45,6 +45,21 @@ test('renders an empty panel when open with no entries', () => {
   expect(container.querySelector('.calculator-history-list').children).toHaveLength(0);
 });
 
+test('hides the Clear button when there are no entries', () => {
+  render({ entries: [], open: true, onReuse: vi.fn(), onClear: vi.fn() });
+  expect(container.querySelector('.calculator-history-clear')).toBeNull();
+});
+
+test('shows the Clear button once there is at least one entry', () => {
+  render({
+    entries: [{ expression: '1+1', result: '2' }],
+    open: true,
+    onReuse: vi.fn(),
+    onClear: vi.fn(),
+  });
+  expect(container.querySelector('.calculator-history-clear')).not.toBeNull();
+});
+
 test('shows each entry with its expression and result when open', () => {
   render({
     entries: [
