@@ -261,7 +261,9 @@ export default function Calculator() {
         <History
           entries={state.history}
           open={historyOpen}
-          onReuse={(entry) => loggedDispatch({ type: 'REUSE_HISTORY', expression: entry.expression })}
+          onReuse={(entry) =>
+            loggedDispatch({ type: 'REUSE_HISTORY', expression: entry.expression })
+          }
           onClear={() => loggedDispatch({ type: 'CLEAR_HISTORY' })}
         />
         <Keypad
