@@ -1,0 +1,59 @@
+[
+  {
+    "timestamp": "2026-07-30T18:44:02.760Z",
+    "type": "CALCULATION_SUCCESS",
+    "expression": "7+3",
+    "result": "10",
+    "angleMode": "rad"
+  },
+  {
+    "timestamp": "2026-07-30T18:44:02.994Z",
+    "type": "CALCULATION_SUCCESS",
+    "expression": "12*4",
+    "result": "48",
+    "angleMode": "rad"
+  },
+  {
+    "timestamp": "2026-07-30T18:44:03.244Z",
+    "type": "CALCULATION_SUCCESS",
+    "expression": "100/5",
+    "result": "20",
+    "angleMode": "rad"
+  },
+  {
+    "timestamp": "2026-07-30T18:44:03.462Z",
+    "type": "CALCULATION_ERROR",
+    "expression": "5/0",
+    "angleMode": "rad",
+    "errorCode": "DIVISION_BY_ZERO",
+    "errorMessage": "Cannot divide by zero."
+  },
+  {
+    "timestamp": "2026-07-30T18:44:03.878Z",
+    "type": "CALCULATION_SUCCESS",
+    "expression": "9-4",
+    "result": "5",
+    "angleMode": "rad"
+  },
+  {
+    "timestamp": "2026-07-30T18:44:04.470Z",
+    "type": "CALCULATION_SUCCESS",
+    "expression": "sin(90)",
+    "result": "0.893996663601",
+    "angleMode": "rad"
+  },
+  {
+    "timestamp": "2026-07-30T18:44:04.728Z",
+    "type": "CALCULATION_SUCCESS",
+    "expression": "log(100)",
+    "result": "2",
+    "angleMode": "rad"
+  },
+  {
+    "timestamp": "2026-07-30T18:44:04.961Z",
+    "type": "CALCULATION_SUCCESS",
+    "expression": "2^8",
+    "result": "256",
+    "angleMode": "rad"
+  }
+]
