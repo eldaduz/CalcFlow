@@ -39,6 +39,20 @@ aligned and handles long values through controlled sizing or horizontal
 scrolling. Errors stay near the display, use `aria-live`, preserve the
 editable expression, and clear after valid editing or reset.
 
+## CFL-95 Calculator Design Tweaks (pending Eldad's joint sign-off)
+
+Reviewed as an interactive Artifact mockup with Gavi across many rounds (11+ iterations covering desktop and mobile, https://claude.ai/code/artifact/9c378fcb-4cbe-47e6-a59c-1bf49081210d) before any code changed, matching this project's established practice for layout changes (see the CFL-25 mockup precedent below). Gavi approved the mockup; **written here as the proposed/agreed direction on Gavi's side, not yet a completed two-person approval** -- same status as CFL-25's still-pending base-keypad decision, and for the same reason: this revises the Scientific-controls grid position and introduces new interaction patterns (a slider toggle, icon-only History/Export controls, a non-reflowing side panel) that design.md's AI Rules require joint sign-off for before permanent/final status, even though the code has been implemented and is going through the normal review cycle. Flagging explicitly in the implementing PR for Eldad's review.
+
+- **Memory indicator** moves from its own row inside the Scientific-controls grid to the display's top-left, mirroring the angle-mode indicator (which stays bottom-left, alongside the current value). Top row: memory indicator (left, Scientific mode only), previous expression / error message (right). Bottom row: angle-mode indicator (left), current value (right). **Basic mode never shows the memory indicator** -- memory is exclusively controlled by `MC`/`MR`/`M+`/`M-`, which only exist in the Scientific-controls grid, so a visible `M: 0` in Basic mode has nothing behind it to explain.
+- **Error message** moves into the display's top-right slot (previously dead space when there was no previous expression to show) instead of a separate row below the display box. Same `role="alert"`/`aria-live="assertive"` semantics, just relocated. Mutually exclusive with showing the previous expression in that slot -- an error means evaluation didn't produce a new previous-expression state anyway.
+- **Scientific-controls grid** sits to the right of the base keypad (not stacked above it), and the calculator itself genuinely widens (400px -> 616px) to hold it, with a 16px gap between the two columns. The base keypad's own position and the header (title, icons, mode toggle) never move on screen when this happens -- the calculator is anchored so only its right edge grows. This supersedes the CFL-25 stacked-above arrangement.
+- **Digit cap**: the displayed expression stops accepting new characters at 14 (Basic) / 26 (Scientific) rather than scrolling horizontally -- the wider Scientific display genuinely has room for more. (Raised from an initially-reviewed 22 during implementation: a pre-existing test needs `tan(1.5707963267948966)`, 23 characters at full float precision, to actually trip the tangent domain-error threshold -- a shorter/rounded value wouldn't reliably trigger the same error, so the cap needed headroom past that rather than the test being rewritten around an arbitrary limit.)
+- **Mode toggle** becomes a single slider control with both "Basic" and "Scientific" labels visible on it, replacing the two separate buttons.
+- **History** becomes an icon control (bare icon, no button box, matching Export Logs below) instead of a text "History (n)" button. Opens a panel to the left of the calculator as a true overlay -- it does not resize or reflow the calculator or its header, on desktop/wide viewports, and spans the calculator's full height (top edge to bottom edge) rather than only as tall as its own content, with its entry list scrolling internally once it overflows. Below a new responsive breakpoint (900px), it instead renders inline, directly below the display, pushing the keypad down -- there isn't room to open sideways on a narrow screen. Same breakpoint governs the Scientific-grid fallback below.
+- **Scientific below 900px**: reverts to a stacked-above-the-keypad arrangement (same 4-column, 5-row grid, unchanged control order) rather than the side-by-side layout, at roughly half the usual button height, since there isn't room for the calculator to widen to 616px on a narrow screen either.
+- **Export Logs** becomes an icon control (bare icon, no button box), moved into the header, immediately to the left of the mode slider.
+- Icons for History and Export Logs: real Noun Project artwork ("History" and "Export", both by Alzam, CC BY 3.0), rendered inline as `<svg fill="currentColor">` so they inherit the button's color/hover state rather than a static raster image -- same licensing pattern as the existing favicon, credited in `ALL_LICENSES` and as a code comment.
+
 ## Base Keypad and Expression Workflow
 
 The base keypad is permanent and identical in Basic and Scientific mode:
@@ -104,20 +118,28 @@ MC  MR  M+  M−
 
 `(` and `)` here are the same controls as Basic mode's expression-controls
 row (see Base Keypad and Expression Workflow) — Scientific mode does not
-show both. The memory-value readout (`M: <value>`) remains a separate
-full-width status line below this grid, not a grid cell.
+show both. **Revised by CFL-95** (pending Eldad's joint sign-off): this grid
+now sits to the right of the base keypad rather than stacked above it, and
+the memory-value readout (`M: <value>`) moved into the display itself
+(top-left, mirroring the angle-mode indicator) rather than being a status
+line below this grid. Row order and control set are unchanged.
 
 ## Future Information Controls
 
 History and memory add no permanently reserved blank space.
 
-- CFL-22 history is a collapsible region below the keypad. Each entry displays
-  an expression and result, can be reused, and clears independently.
+- CFL-22 history: each entry displays an expression and result, can be
+  reused, and clears independently. **Revised by CFL-95** (see that section):
+  the toggle is now an icon opening a side panel (desktop) or an inline
+  pushed-down region (narrow viewports), not a collapsible text button below
+  the keypad.
 - CFL-23 memory controls (`MC`, `MR`, `M+`, `M−`) live in Scientific mode. Any
   visible memory state is accessible; errors and `AC` do not silently erase it.
 - CFL-27 logging adds no click-by-click UI.
 - CFL-28 adds an `Export Logs` control that downloads JSON. Export success or
   failure uses inline status feedback and never exposes sensitive data.
+  **Revised by CFL-95**: the control is now an icon in the header, not a text
+  button below History.
 
 ## Accessibility and Responsive Rules
 

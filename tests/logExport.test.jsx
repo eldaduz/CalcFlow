@@ -34,14 +34,14 @@ function render() {
 }
 
 function clickExport() {
-  const button = container.querySelector('.calculator-log-export-button');
+  const button = container.querySelector('.calculator-icon-button');
   act(() => {
     button.click();
   });
 }
 
 function statusText() {
-  return container.querySelector('.calculator-log-export-status').textContent;
+  return container.querySelector('.calculator-icon-status').textContent;
 }
 
 describe('LogExport', () => {

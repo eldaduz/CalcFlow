@@ -62,6 +62,26 @@ body {
   padding: var(--space-24) var(--space-16);
 }
 
+/* CFL-95: the page centers this frame, not the calculator card directly.
+   At wide viewports the frame reserves a fixed footprint (history gutter +
+   max Scientific-mode width) and the calculator sits left-aligned inside
+   it, so growing into Scientific mode or opening History never shifts the
+   calculator's own left edge (and therefore its header) on screen -- only
+   content to the right/left of that fixed anchor point changes. Below the
+   900px breakpoint there's no room for either side panel, so the frame
+   collapses back to simple centering of the calculator alone. */
+.calculator-frame {
+  position: relative;
+}
+
+@media (min-width: 900px) {
+  .calculator-frame {
+    /* history gutter (220px panel + 16px gap) + max calculator width (616px) */
+    width: 852px;
+    padding-left: 236px;
+  }
+}
+
 .calculator {
   width: 100%;
   max-width: 400px;
@@ -71,6 +91,13 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-16);
+  position: relative;
+}
+
+@media (min-width: 900px) {
+  .calculator--scientific {
+    max-width: 616px;
+  }
 }
 
 .calculator-header {
@@ -85,24 +112,114 @@ body {
   margin: 0;
 }
 
-.calculator-mode-toggle {
+.calculator-header-right {
   display: flex;
-  gap: var(--space-4);
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/* Bare icon buttons (History, Export Logs) -- no border/background box,
+   just the icon, larger and darker than a typical small control so it
+   reads at the same visual weight as the mode slider next to it. Touch
+   target stays the full 48x48 (design.md's minimum), it's just invisible. */
+.calculator-icon-button {
+  flex: none;
+  width: var(--control-min-height);
+  height: var(--control-min-height);
+  border: none;
+  border-radius: var(--space-4);
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calculator-icon-button:hover,
+.calculator-icon-button[aria-expanded='true'] {
+  color: var(--color-equals-button);
+}
+
+.calculator-icon-button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.calculator-icon-button svg {
+  width: 34px;
+  height: 34px;
+}
+
+.calculator-icon-control {
+  position: relative;
+}
+
+.calculator-icon-status {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--space-4);
+  padding: var(--space-4) var(--space-8);
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-action-button);
+  border-radius: var(--space-4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.calculator-icon-status:empty {
+  display: none;
+}
+
+/* Mode toggle: a real toggle-button group underneath (two semantic
+   <button aria-pressed> elements, same as before) with a sliding highlight
+   layer purely for the visual "slider" look -- keeps full accessibility
+   semantics rather than a custom widget needing its own ARIA slider
+   pattern for what is fundamentally a two-option choice. */
+.calculator-mode-toggle {
+  position: relative;
+  display: flex;
+  width: 140px;
+  height: var(--control-min-height);
+  padding: 2px;
+  border: 1px solid var(--color-text-secondary);
+  border-radius: calc(var(--control-min-height) / 2);
+  background: var(--color-action-button);
+}
+
+.calculator-mode-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(50% - 2px);
+  height: calc(100% - 4px);
+  border-radius: calc((var(--control-min-height) - 4px) / 2);
+  background: var(--color-equals-button);
+  transition: transform 0.2s ease;
+}
+
+.calculator-mode-toggle--scientific .calculator-mode-toggle-thumb {
+  transform: translateX(calc(140px / 2 - 2px));
 }
 
 .calculator-mode-button {
-  min-height: var(--control-min-height);
-  border: 1px solid var(--color-text-secondary);
-  border-radius: var(--space-4);
-  background: var(--color-surface);
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  border: none;
+  background: transparent;
   color: var(--color-text-secondary);
   font: inherit;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .calculator-mode-button[aria-pressed='true'] {
-  background: var(--color-operator-button);
-  color: var(--color-text-primary);
+  color: #ffffff;
 }
 
 .calculator-mode-button:focus-visible {
@@ -113,25 +230,11 @@ body {
 .calculator-display {
   background: var(--color-display);
   border-radius: var(--space-8);
-  padding: var(--space-16);
+  padding: var(--space-8);
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
   gap: var(--space-4);
-  overflow-x: auto;
-}
-
-.calculator-display .previous-expression {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.7);
-  min-height: 1.2em;
-}
-
-.calculator-display .current-value {
-  font-size: 40px;
-  color: #ffffff;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  overflow: hidden;
 }
 
 .calculator-display-row {
@@ -141,24 +244,65 @@ body {
   width: 100%;
 }
 
-.calculator-angle-mode-indicator {
-  font-size: 14px;
-  /* CFL-74: --color-text-secondary is 3.21:1 against --color-display,
-     failing WCAG AA (needs 4.5:1). Matches .previous-expression, the
-     sibling label already on this same dark background (8.86:1). */
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: bold;
-  margin-bottom: var(--space-8);
+.calculator-display-row--top {
+  align-items: flex-start;
 }
 
-.calculator-error {
-  min-height: 1.4em;
+.calculator-memory-indicator,
+.calculator-angle-mode-indicator {
   font-size: 14px;
-  color: var(--color-error);
-  padding: 0 var(--space-4);
+  font-weight: bold;
+  /* CFL-74: --color-text-secondary is 3.21:1 against --color-display,
+     failing WCAG AA (needs 4.5:1). Matches the sibling label already on
+     this same dark background (8.86:1). */
+  color: rgba(255, 255, 255, 0.7);
+  flex: none;
+}
+
+.calculator-top-right {
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  min-height: 1.2em;
+  margin-left: auto;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.calculator-top-right--error {
+  color: #ff0000;
+}
+
+.current-value {
+  font-size: 40px;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .calculator-keypad-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* CFL-95: the base keypad and (when Scientific) the scientific-controls
+   grid sit side by side, 16px gap. Below 900px there's no room for that,
+   so this reverts to a stacked arrangement -- see the media query below,
+   which relies on column-reverse (not DOM reordering) to put the
+   scientific grid above the keypad while keeping one DOM structure. */
+.calculator-keypad-row {
+  display: flex;
+  gap: var(--space-16);
+  align-items: flex-start;
+}
+
+.calculator-keypad-main {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
@@ -170,16 +314,46 @@ body {
   gap: var(--space-8);
 }
 
-.calculator-scientific-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-8);
+/* Scientific mode's own grid already includes ( ) -- hide the base
+   keypad's row whenever Scientific is active, at any viewport width (this
+   is deliberately not gated by the 900px layout breakpoint above). */
+.calculator--scientific .calculator-expression-row {
+  display: none;
 }
 
 .calculator-keypad {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-8);
+}
+
+.calculator-scientific-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-8);
+}
+
+@media (max-width: 899px) {
+  .calculator-keypad-row {
+    flex-direction: column-reverse;
+    /* align-items: flex-start above governs the cross axis, which is
+       vertical in the default row layout (fine) but becomes horizontal
+       once direction flips to column here -- without overriding it,
+       children shrink to their own content width instead of stretching
+       full-width, which is exactly the "keys only fill ~50% width" bug. */
+    align-items: stretch;
+    gap: var(--space-8);
+  }
+
+  .calculator-scientific-grid {
+    --control-min-height: 26px;
+  }
+
+  .calculator-scientific-grid .calculator-button {
+    font-size: 12px;
+    border-radius: var(--space-4);
+  }
 }
 
 .calculator-button {
@@ -220,17 +394,49 @@ body {
   font-weight: 600;
 }
 
-.calculator-memory-indicator {
-  grid-column: span 4;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  font-weight: bold;
-}
-
+/* History: a true non-reflowing overlay at wide viewports (opens to the
+   left of the calculator, never resizes/moves it); an in-flow region
+   between the display and keypad below 900px, where there's no room to
+   open sideways -- it pushes the keypad down instead, which is the one
+   deliberate exception to "opening panels never reflows the calculator". */
 .calculator-history {
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
+}
+
+@media (min-width: 900px) {
+  .calculator-history {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: calc(100% + var(--space-16));
+    width: 220px;
+    background: var(--color-surface);
+    border-radius: var(--space-12);
+    padding: var(--space-16);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.16);
+  }
+
+  .calculator-history .calculator-history-list {
+    flex: 1;
+    max-height: none;
+  }
+}
+
+@media (max-width: 899px) {
+  .calculator-history {
+    background: var(--color-surface);
+    border: 1px solid var(--color-action-button);
+    border-radius: var(--space-8);
+    padding: var(--space-8);
+    gap: var(--space-4);
+  }
+
+  .calculator-history .calculator-history-entry {
+    padding: var(--space-4) var(--space-8);
+    font-size: 12px;
+  }
 }
 
 .calculator-history-header {
@@ -240,7 +446,11 @@ body {
   gap: var(--space-8);
 }
 
-.calculator-history-toggle,
+.calculator-history-title {
+  font-size: 14px;
+  margin: 0;
+}
+
 .calculator-history-clear {
   min-height: var(--control-min-height);
   border: 1px solid var(--color-text-secondary);
@@ -252,40 +462,10 @@ body {
   padding: 0 var(--space-12);
 }
 
-.calculator-history-toggle:focus-visible,
 .calculator-history-clear:focus-visible,
 .calculator-history-entry:focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 2px;
-}
-
-.calculator-log-export {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-4);
-}
-
-.calculator-log-export-button {
-  min-height: var(--control-min-height);
-  border: 1px solid var(--color-text-secondary);
-  border-radius: var(--space-4);
-  background: var(--color-surface);
-  color: var(--color-text-secondary);
-  font: inherit;
-  cursor: pointer;
-  padding: 0 var(--space-12);
-}
-
-.calculator-log-export-button:focus-visible {
-  outline: 3px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
-.calculator-log-export-status {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  min-height: 1.2em;
 }
 
 .calculator-telemetry-export {
@@ -420,6 +600,20 @@ body {
   .calculator {
     max-width: none;
   }
+
+  /* CFL-95: title + two icons + slider (~252px for the icon/slider group
+     alone) doesn't reliably fit next to "CalcFlow" once the calculator is
+     this narrow, even before the 380px padding tightens further -- wrap to
+     a second row instead of shrinking anything below real size. */
+  .calculator-header {
+    flex-wrap: wrap;
+    row-gap: var(--space-8);
+  }
+
+  .calculator-header-right {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+  }
 }
 
 /* CFL-25/CFL-71/CFL-72: on the narrowest supported phones (~320-380px,
@@ -437,7 +631,8 @@ body {
 
 /* CFL-72: on wide viewports the calculator is a small, permanently
    constrained surface (design.md "Desktop keeps one constrained calculator
-   surface"); nothing further changes above the existing 400px cap. */
+   surface"); nothing further changes above the existing 400px cap except
+   the CFL-95 Scientific-mode width growth handled above. */
 
 /* CFL-93/94: second scoped fixed-position exception (design.md), mirroring
    the CFL-24/70 shortcuts-help panel's pattern. */

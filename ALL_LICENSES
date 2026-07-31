@@ -9,6 +9,14 @@ and License Governance rules.
   (https://thenounproject.com/creator/ianbanyuke/) from the Noun Project
   (https://thenounproject.com/icon/calculator-4575983/), licensed under
   CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/).
+- `src/assets/icons/noun-history-5019532.svg` (path data inlined in
+  `src/components/icons/HistoryIcon.jsx`) — "History" icon by Alzam from
+  the Noun Project (https://thenounproject.com/icon/history-5019532/),
+  licensed under CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/).
+- `src/assets/icons/noun-export-5622625.svg` (path data inlined in
+  `src/components/icons/ExportIcon.jsx`) — "Export" icon by Alzam from
+  the Noun Project (https://thenounproject.com/icon/export-5622625/),
+  licensed under CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/).
 
 ## Dependencies
 

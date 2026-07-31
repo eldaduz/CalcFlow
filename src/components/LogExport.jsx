@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import ExportIcon from './icons/ExportIcon.jsx';
 import { getLogs } from '../lib/logger.js';
 
 export default function LogExport() {
@@ -25,11 +26,16 @@ export default function LogExport() {
   }
 
   return (
-    <div className="calculator-log-export">
-      <button type="button" className="calculator-log-export-button" onClick={handleExport}>
-        Export Logs
+    <div className="calculator-icon-control">
+      <button
+        type="button"
+        className="calculator-icon-button"
+        aria-label="Export Logs"
+        onClick={handleExport}
+      >
+        <ExportIcon />
       </button>
-      <div className="calculator-log-export-status" aria-live="polite">
+      <div className="calculator-icon-status" aria-live="polite">
         {status}
       </div>
     </div>

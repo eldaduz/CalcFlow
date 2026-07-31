@@ -700,3 +700,43 @@ test('repeated M+/M- accumulation does not accrue floating-point drift', () => {
   ]);
   expect(state.memory).toBe(0.3);
 });
+
+const setMode = (mode) => ({ type: 'SET_MODE', mode });
+
+test('SET_MODE updates mode and CLEAR preserves it (unlike history/memory reset)', () => {
+  const state = dispatchAll([setMode('scientific'), digit('5'), clear()]);
+  expect(state.mode).toBe('scientific');
+  expect(state.expression).toBe('');
+});
+
+test('digit entry stops at 14 characters in Basic mode', () => {
+  const fourteenDigits = Array.from({ length: 14 }, () => digit('1'));
+  const state = dispatchAll(fourteenDigits);
+  expect(state.expression).toHaveLength(14);
+
+  const withOneMore = expressionReducer(state, digit('1'));
+  expect(withOneMore.expression).toHaveLength(14);
+  expect(withOneMore).toBe(state);
+});
+
+test('digit entry allows up to 26 characters in Scientific mode', () => {
+  const actions = [setMode('scientific'), ...Array.from({ length: 26 }, () => digit('1'))];
+  const state = dispatchAll(actions);
+  expect(state.expression).toHaveLength(26);
+
+  const withOneMore = expressionReducer(state, digit('1'));
+  expect(withOneMore.expression).toHaveLength(26);
+});
+
+test('the cap does not block starting a fresh expression after "="', () => {
+  const fourteenDigits = Array.from({ length: 14 }, () => digit('1'));
+  const state = dispatchAll([...fourteenDigits, operator('+'), digit('1'), equals(), digit('7')]);
+  expect(state.expression).toBe('7');
+});
+
+test('the cap does not block non-growing actions like DELETE or CLEAR', () => {
+  const fourteenDigits = Array.from({ length: 14 }, () => digit('1'));
+  const atCap = dispatchAll(fourteenDigits);
+  expect(expressionReducer(atCap, del()).expression).toHaveLength(13);
+  expect(expressionReducer(atCap, clear()).expression).toBe('');
+});

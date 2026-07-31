@@ -25,35 +25,50 @@ function render(props) {
   });
 }
 
-test('renders nothing when there are no entries', () => {
-  render({ entries: [], onReuse: vi.fn(), onClear: vi.fn() });
-  expect(container.querySelector('.calculator-history')).toBeNull();
-});
+// CFL-95: open/closed state and the toggle control itself now live in
+// Calculator.jsx's header (the History icon), not in this component -- it
+// just renders the panel body when told to.
 
-test('shows a toggle with the entry count but keeps the list collapsed by default', () => {
+test('renders nothing when closed, regardless of entry count', () => {
   render({
     entries: [{ expression: '1+1', result: '2' }],
+    open: false,
     onReuse: vi.fn(),
     onClear: vi.fn(),
   });
-  const toggle = container.querySelector('.calculator-history-toggle');
-  expect(toggle.textContent).toBe('History (1)');
-  expect(toggle.getAttribute('aria-expanded')).toBe('false');
-  expect(container.querySelector('.calculator-history-list')).toBeNull();
+  expect(container.querySelector('.calculator-history')).toBeNull();
 });
 
-test('expanding the toggle shows each entry with its expression and result', () => {
+test('renders an empty panel when open with no entries', () => {
+  render({ entries: [], open: true, onReuse: vi.fn(), onClear: vi.fn() });
+  expect(container.querySelector('.calculator-history')).not.toBeNull();
+  expect(container.querySelector('.calculator-history-list').children).toHaveLength(0);
+});
+
+test('hides the Clear button when there are no entries', () => {
+  render({ entries: [], open: true, onReuse: vi.fn(), onClear: vi.fn() });
+  expect(container.querySelector('.calculator-history-clear')).toBeNull();
+});
+
+test('shows the Clear button once there is at least one entry', () => {
+  render({
+    entries: [{ expression: '1+1', result: '2' }],
+    open: true,
+    onReuse: vi.fn(),
+    onClear: vi.fn(),
+  });
+  expect(container.querySelector('.calculator-history-clear')).not.toBeNull();
+});
+
+test('shows each entry with its expression and result when open', () => {
   render({
     entries: [
       { expression: '2+2', result: '4' },
       { expression: '1+1', result: '2' },
     ],
+    open: true,
     onReuse: vi.fn(),
     onClear: vi.fn(),
-  });
-
-  act(() => {
-    container.querySelector('.calculator-history-toggle').click();
   });
 
   const entries = container.querySelectorAll('.calculator-history-entry');
@@ -66,13 +81,11 @@ test('clicking an entry calls onReuse with that entry', () => {
   const onReuse = vi.fn();
   render({
     entries: [{ expression: '3+3', result: '6' }],
+    open: true,
     onReuse,
     onClear: vi.fn(),
   });
 
-  act(() => {
-    container.querySelector('.calculator-history-toggle').click();
-  });
   act(() => {
     container.querySelector('.calculator-history-entry').click();
   });
@@ -84,13 +97,11 @@ test('clicking Clear calls onClear', () => {
   const onClear = vi.fn();
   render({
     entries: [{ expression: '3+3', result: '6' }],
+    open: true,
     onReuse: vi.fn(),
     onClear,
   });
 
-  act(() => {
-    container.querySelector('.calculator-history-toggle').click();
-  });
   act(() => {
     container.querySelector('.calculator-history-clear').click();
   });

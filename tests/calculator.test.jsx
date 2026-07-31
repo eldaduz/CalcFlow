@@ -53,16 +53,30 @@ function currentValue() {
   return container.querySelector('.current-value').textContent;
 }
 
+// CFL-95: previous-expression and the error message now share a single
+// top-right display slot (error takes priority when present) rather than
+// two separate elements. previousExpression() reads it unconditionally;
+// errorText() only returns content when the error modifier class is
+// actually present, so a successful evaluation (which populates the same
+// slot with the previous expression) doesn't get misread as an error.
 function previousExpression() {
-  return container.querySelector('.previous-expression').textContent;
+  return container.querySelector('.calculator-top-right').textContent;
 }
 
 function errorText() {
-  return container.querySelector('.calculator-error').textContent;
+  const el = container.querySelector('.calculator-top-right');
+  return el.classList.contains('calculator-top-right--error') ? el.textContent : '';
 }
 
 function resultAnnouncement() {
   return container.querySelector('.sr-only').textContent;
+}
+
+function toggleHistory() {
+  const button = container.querySelector('.calculator-icon-button[aria-label="History"]');
+  act(() => {
+    button.click();
+  });
 }
 
 test('a multi-operand expression with parentheses evaluates with correct precedence', () => {
@@ -564,7 +578,7 @@ test('toggling angle mode mid-expression does not evaluate or show spurious erro
   clickButton('RAD');
   expect(container.querySelector('.calculator-angle-mode-indicator').textContent).toBe('DEG');
   expect(currentValue()).toBe('sin(');
-  expect(container.querySelector('.calculator-error').textContent).toBe('');
+  expect(errorText()).toBe('');
 });
 
 test('toggling angle mode on a complete-but-unsubmitted expression does not auto-evaluate', () => {
@@ -603,7 +617,7 @@ test('initial angle mode is loaded from sessionStorage if present', () => {
 
 // --- calculation history (CFL-65 / CFL-66) ---
 
-test('history is hidden until a calculation succeeds, then shows the toggle', () => {
+test('history panel is closed by default and opens via the header icon after a calculation', () => {
   renderCalculator();
   expect(container.querySelector('.calculator-history')).toBeNull();
 
@@ -612,8 +626,12 @@ test('history is hidden until a calculation succeeds, then shows the toggle', ()
   clickButton('1');
   clickButton('=');
 
-  const toggle = container.querySelector('.calculator-history-toggle');
-  expect(toggle.textContent).toBe('History (1)');
+  expect(container.querySelector('.calculator-history')).toBeNull();
+  toggleHistory();
+
+  const entries = container.querySelectorAll('.calculator-history-entry');
+  expect(entries).toHaveLength(1);
+  expect(entries[0].textContent).toBe('1 + 1= 2');
 });
 
 test('a division-by-zero error does not add a history entry', () => {
@@ -624,7 +642,8 @@ test('a division-by-zero error does not add a history entry', () => {
   clickButton('0');
   clickButton('=');
 
-  expect(container.querySelector('.calculator-history')).toBeNull();
+  toggleHistory();
+  expect(container.querySelectorAll('.calculator-history-entry')).toHaveLength(0);
 });
 
 test('reusing a history entry restores its expression for editing', () => {
@@ -637,7 +656,7 @@ test('reusing a history entry restores its expression for editing', () => {
   clickButton('4');
   clickButton('=');
 
-  clickButton('History (2)');
+  toggleHistory();
   clickButton('12= 12');
 
   expect(currentValue()).toBe('12');
@@ -647,16 +666,16 @@ test('reusing a history entry restores its expression for editing', () => {
   expect(currentValue()).toBe('125');
 });
 
-test('clearing history removes all entries and hides the panel again', () => {
+test('clearing history removes all entries and the panel stays open but empty', () => {
   renderCalculator();
 
   clickButton('1');
   clickButton('=');
 
-  clickButton('History (1)');
+  toggleHistory();
   clickButton('Clear');
 
-  expect(container.querySelector('.calculator-history')).toBeNull();
+  expect(container.querySelectorAll('.calculator-history-entry')).toHaveLength(0);
 });
 
 test('history persists across a fresh Calculator mount via sessionStorage', () => {
@@ -677,8 +696,9 @@ test('history persists across a fresh Calculator mount via sessionStorage', () =
     root.render(<Calculator />);
   });
 
-  const toggle = container.querySelector('.calculator-history-toggle');
-  expect(toggle.textContent).toBe('History (1)');
+  toggleHistory();
+  const entries = container.querySelectorAll('.calculator-history-entry');
+  expect(entries).toHaveLength(1);
 });
 
 // --- memory operations (CFL-67 / CFL-68) ---
