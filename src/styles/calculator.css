@@ -174,6 +174,47 @@ body {
   display: none;
 }
 
+/* CFL-91/CFL-95 consolidation: one Export icon opens a small menu choosing
+   between the real submission log and the joke telemetry export, instead of
+   two separate visible controls (a header icon plus a stray text button
+   below the calculator). */
+.calculator-export-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1;
+  margin-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-action-button);
+  border-radius: var(--space-4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.calculator-export-menu-item {
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  padding: var(--space-8);
+  border-radius: var(--space-4);
+}
+
+.calculator-export-menu-item:hover {
+  background: var(--color-action-button);
+}
+
+.calculator-export-menu-item:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
 /* Mode toggle: a real toggle-button group underneath (two semantic
    <button aria-pressed> elements, same as before) with a sliding highlight
    layer purely for the visual "slider" look -- keeps full accessibility
@@ -466,35 +507,6 @@ body {
 .calculator-history-entry:focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 2px;
-}
-
-.calculator-telemetry-export {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-4);
-}
-
-.calculator-telemetry-export-button {
-  min-height: var(--control-min-height);
-  border: 1px solid var(--color-text-secondary);
-  border-radius: var(--space-4);
-  background: var(--color-surface);
-  color: var(--color-text-secondary);
-  font: inherit;
-  cursor: pointer;
-  padding: 0 var(--space-12);
-}
-
-.calculator-telemetry-export-button:focus-visible {
-  outline: 3px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
-.calculator-telemetry-export-status {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  min-height: 1.2em;
 }
 
 .calculator-history-list {
