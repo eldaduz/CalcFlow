@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { getButtonPressLogs, getLogs, getTelemetryMetrics } from '../lib/logger.js';
 import ExportIcon from './icons/ExportIcon.jsx';
@@ -21,10 +21,16 @@ function downloadJson(data, filename) {
 export default function ExportMenu() {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState('');
+  const clearStatusTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    return () => clearTimeout(clearStatusTimeoutRef.current);
+  }, []);
 
   function showStatus(message) {
+    clearTimeout(clearStatusTimeoutRef.current);
     setStatus(message);
-    setTimeout(() => setStatus(''), STATUS_CLEAR_DELAY_MS);
+    clearStatusTimeoutRef.current = setTimeout(() => setStatus(''), STATUS_CLEAR_DELAY_MS);
   }
 
   function handleExportLogs() {

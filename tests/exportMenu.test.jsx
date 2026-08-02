@@ -140,4 +140,34 @@ describe('ExportMenu', () => {
     });
     expect(statusText()).toBe('');
   });
+
+  it('keeps the second status visible for its own full delay when exported shortly after the first', () => {
+    vi.useFakeTimers();
+    logEvent('CALCULATION_SUCCESS', { expression: '2+2', result: '4' });
+    logButtonPress('2');
+    render();
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+
+    openMenu();
+    clickMenuItem('Export Logs');
+    expect(statusText()).toBe('Exported 2 log entries.');
+
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+
+    openMenu();
+    clickMenuItem('Export Telemetry');
+    expect(statusText()).toBe('Exported 1 telemetry entry.');
+
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    expect(statusText()).toBe('Exported 1 telemetry entry.');
+
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    expect(statusText()).toBe('');
+  });
 });
