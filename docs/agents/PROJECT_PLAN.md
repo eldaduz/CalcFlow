@@ -50,10 +50,10 @@ The project uses the following sources of truth:
 
 - **Jira**: work items, hierarchy, ownership, estimates, dependencies, releases, and live status
 - **GitHub**: code, branches, commits, pull requests, reviews, CI checks, tags, and releases
-- **design.md**: approved UI and UX rules
-- **PROJECT_PLAN.md**: permanent process, scope, workflow, ownership, quality, and delivery rules
-- **SECOND_BRAIN.md**: current operational state, active work, latest handoff, blockers, and next safe action
-- **CODEX_MODEL_GUIDE.md**: approved Codex model, reasoning, escalation, and manual-switch rules
+- **design.md** (repo root): approved UI and UX rules
+- **docs/agents/PROJECT_PLAN.md** (this file): permanent process, scope, workflow, ownership, quality, and delivery rules
+- **docs/agents/SECOND_BRAIN.md**: current operational state, active work, latest handoff, blockers, and next safe action
+- **docs/agents/CODEX_MODEL_GUIDE.md**: approved Codex model, reasoning, escalation, and manual-switch rules
 
 When information conflicts:
 

@@ -12,9 +12,9 @@ Committed to git as of 2026-07-28 (Gavi's explicit request, "for posterity") —
 previously local-only. `CLAUDE.md` now lists it as a mandatory startup read,
 immediately after `SECOND_BRAIN.md`.
 
-Read `CLAUDE.md`, `PROJECT_PLAN.md`, `design.md`, and `SECOND_BRAIN.md` first —
-they are still the authoritative, mandatory sources. This file is
-supplementary.
+Read `CLAUDE.md` (repo root), `docs/agents/PROJECT_PLAN.md`, `design.md`
+(repo root), and `docs/agents/SECOND_BRAIN.md` first — they are still the
+authoritative, mandatory sources. This file is supplementary.
 
 Last updated: 2026-07-29 (later session), by Claude (Gavi's session).
 

@@ -2,7 +2,7 @@
 
 > This file is written automatically by the active agent (AGY IDE or Codex) when the context window reaches
 > approximately 60 %. A new session should read this file immediately after reading `AGENTS.md`,
-> `PROJECT_PLAN.md`, `SECOND_BRAIN.md`, `CODEX_MODEL_GUIDE.md`, and `design.md`.
+> `docs/agents/PROJECT_PLAN.md`, `docs/agents/SECOND_BRAIN.md`, `docs/agents/CODEX_MODEL_GUIDE.md`, and `design.md`.
 
 ---
 

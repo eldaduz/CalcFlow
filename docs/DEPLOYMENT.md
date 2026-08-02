@@ -24,7 +24,7 @@ reproducible and reviewable rather than implicit tribal knowledge.
   and local development use.
 
 - No project-specific environment variables are required; CalcFlow is a
-  frontend-only, backend-less application (see `PROJECT_PLAN.md`, Out of
+  frontend-only, backend-less application (see `docs/agents/PROJECT_PLAN.md`, Out of
   scope: Backend or API, Database).
 
 ## 4. Deployment Flow
@@ -41,7 +41,7 @@ reproducible and reviewable rather than implicit tribal knowledge.
   no separate manual deploy step.
 - A **Production smoke test** is performed after every merge to `main`
   before the corresponding Jira Feature is moved to Done, per
-  `PROJECT_PLAN.md` §12/§13.
+  `docs/agents/PROJECT_PLAN.md` §12/§13.
 
 ## 5. Post-Deployment Smoke Test (recorded for v1.0.0, 2026-07-29)
 
@@ -63,7 +63,7 @@ via Playwright (system Chrome), covering every area CFL-82 requires:
   targets ≥48px, correct layout at every width.
 
 This is a rollup of smoke evidence already independently recorded per
-Feature at merge time (CFL-12 through CFL-26 in `SECOND_BRAIN.md`); this
+Feature at merge time (CFL-12 through CFL-26 in `docs/agents/SECOND_BRAIN.md`); this
 document exists so the deployment approach and its evidence trail are
 discoverable in one place rather than scattered across individual Feature
 entries.
