@@ -18,7 +18,7 @@ Its goals are to:
 - avoid unnecessary model changes;
 - require a clear pause when the next stage needs a different configuration.
 
-`PROJECT_PLAN.md` remains the authority for scope, ownership, Jira workflow, branches, reviews, QA, deployment, and approvals.
+`docs/agents/PROJECT_PLAN.md` remains the authority for scope, ownership, Jira workflow, branches, reviews, QA, deployment, and approvals.
 
 ## 2. Mandatory Checkpoints
 
@@ -289,7 +289,7 @@ A review must verify:
 - unit-test quality;
 - regression risk;
 - maintainability and clarity;
-- compliance with `PROJECT_PLAN.md` and `design.md` where relevant.
+- compliance with `docs/agents/PROJECT_PLAN.md` and `design.md` where relevant.
 
 A stronger model is justified only when the matrix or an escalation condition requires it.
 
@@ -340,7 +340,7 @@ When the agent estimates it has consumed approximately **60 % or more** of the a
    - Recommended next action:
    ```
 
-2. **Write or overwrite `CODEX_HANDSHAKE.md`** in the repository root with a structured handoff snapshot so a new session (AGY IDE or Codex) can resume without re-reading the full conversation.
+2. **Write or overwrite `docs/agents/CODEX_HANDSHAKE.md`** with a structured handoff snapshot so a new session (AGY IDE or Codex) can resume without re-reading the full conversation.
 
 ### CODEX_HANDSHAKE.md content at 60 %
 
@@ -379,7 +379,7 @@ The file must contain:
 
 ## Restart prompt
 
-Continue CalcFlow [Feature/Work Item] from [branch]. Read `AGENTS.md`, `PROJECT_PLAN.md`, `SECOND_BRAIN.md`, `CODEX_MODEL_GUIDE.md`, `design.md`, and this file. [Brief state summary]. [Next concrete action].
+Continue CalcFlow [Feature/Work Item] from [branch]. Read `AGENTS.md`, `docs/agents/PROJECT_PLAN.md`, `docs/agents/SECOND_BRAIN.md`, `docs/agents/CODEX_MODEL_GUIDE.md`, `design.md`, and this file. [Brief state summary]. [Next concrete action].
 ```
 
 ### 90 % hard stop

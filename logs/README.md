@@ -49,7 +49,7 @@ identifiers).
 
 ## Review requirement
 
-Per `PROJECT_PLAN.md`'s Feature Delivery Cycle and CFL-28's acceptance
+Per `docs/agents/PROJECT_PLAN.md`'s Feature Delivery Cycle and CFL-28's acceptance
 criteria: **one teammate exports and commits the log; the second teammate
 reviews the final file before submission.** Do not consider the submission
 log final until that second-person review has happened — this mirrors the
