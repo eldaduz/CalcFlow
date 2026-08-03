@@ -62,10 +62,9 @@ avoid unnecessary packages.
   toolchain), none bundled into the shipped application.
 - All remaining licenses (MIT, Apache-2.0, ISC, BSD-2/3-Clause, MIT-0) are
   standard permissive licenses with no action required.
-- **Pending**: final sign-off by the second teammate per CFL-88's
-  acceptance criteria — this report and the review above were produced in
-  one pass and still need that second review before CFL-88 can move to
-  Done.
+- **Second-teammate sign-off complete**: Eldad's PR #50 review counted as
+  the required second-teammate license review per CFL-88's acceptance
+  criteria. CFL-88 and its parent CFL-33 are Done.
 
 ### Full package list
 
